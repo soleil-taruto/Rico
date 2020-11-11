@@ -48,7 +48,7 @@ namespace Charlotte.CSSolutions
 			{
 				nameNew = this.TryCreateNameNew();
 			}
-			while (this.CNN_Names.ContainsKey(nameNew));
+			while (this.CNN_Names.ContainsKey(nameNew) || this.予約語リスト.Contains(nameNew));
 
 			this.CNN_Names.Add(nameNew, null);
 			return nameNew;

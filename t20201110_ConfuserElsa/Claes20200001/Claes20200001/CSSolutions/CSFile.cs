@@ -613,6 +613,7 @@ namespace Charlotte.CSSolutions
 		{
 			public int Start;
 			public int End;
+			public bool HoldingOrder;
 		}
 
 		public void ShuffleMemberOrder()
@@ -633,13 +634,13 @@ namespace Charlotte.CSSolutions
 			for (int index = 0; index < end; index++)
 			{
 				string line = lines[index];
-				bool memberFlag = false;
+				bool foundMemberFlag = false;
 
 				if (line.StartsWith("\t\t[")) // ? [DllImport(... とか
 				{
 					if (!dllImportFlag)
 					{
-						memberFlag = true;
+						foundMemberFlag = true;
 						dllImportFlag = true;
 					}
 				}
@@ -651,12 +652,12 @@ namespace Charlotte.CSSolutions
 					)
 				{
 					if (!dllImportFlag)
-						memberFlag = true;
+						foundMemberFlag = true;
 					else
 						dllImportFlag = false;
 				}
 
-				if (memberFlag)
+				if (foundMemberFlag)
 				{
 					// クラスのメンバーを追加
 					ranges.Add(new SMO_RangeInfo()
@@ -666,9 +667,9 @@ namespace Charlotte.CSSolutions
 					});
 				}
 			}
-			if (ranges.Count == 0) // ? メンバーが１つも無い -> 想定外
+			if (ranges.Count <= 1) // ? メンバーが１つ以下 -> シャッフル不要
 			{
-				Console.WriteLine("シャッフル・キャンセル -- メンバーが１つも無い。");
+				Console.WriteLine("シャッフル・キャンセル -- メンバーが１つ以下");
 				return;
 			}
 			start = ranges[0].Start;
@@ -678,10 +679,46 @@ namespace Charlotte.CSSolutions
 
 			ranges[ranges.Count - 1].End = end;
 
+			// 最初の行に = があったら初期化有りフィールドと見なして、初期化順序を維持するために順序の入れ替えを抑制する。
+			// -- デフォルトの引数有りメソッドも引っ掛かってしまうけど、とりあえずはこれでいいや..
+			//
+			foreach (SMO_RangeInfo range in ranges)
+				range.HoldingOrder = lines[range.Start].Contains("=");
+
 			// シャッフル
 			{
 				SMO_RangeInfo[] arr = ranges.ToArray();
-				SCommon.CRandom.Shuffle(arr);
+				ranges = null; // 2bs
+#if true
+				for (int c = 0; c < 30000; c++) // 回数は適当
+				{
+					// 入れ替え(離れているもの同士)
+					{
+						int a = SCommon.CRandom.GetInt(arr.Length);
+						int b = SCommon.CRandom.GetInt(arr.Length);
+
+						if (
+							!arr[a].HoldingOrder &&
+							!arr[b].HoldingOrder
+							)
+							SCommon.Swap(arr, a, b);
+					}
+
+					// 入れ替え(隣同士)
+					{
+						int a = SCommon.CRandom.GetInt(arr.Length - 1);
+						int b = a + 1;
+
+						if (
+							!arr[a].HoldingOrder ||
+							!arr[b].HoldingOrder
+							)
+							SCommon.Swap(arr, a, b);
+					}
+				}
+#else // old
+				SCommon.CRandom.Shuffle(arr); // 初期化有りフィールドを入れ替えると、初期化順序が狂ってエラーの原因となる。
+#endif
 				ranges = new List<SMO_RangeInfo>(arr);
 			}
 
@@ -714,8 +751,12 @@ namespace Charlotte.CSSolutions
 		private static IEnumerable<string> SMO_GetOrderLines(string[] lines, IEnumerable<SMO_RangeInfo> ranges)
 		{
 			foreach (SMO_RangeInfo range in ranges)
+			{
+				yield return "// HO=" + range.HoldingOrder;
+
 				for (int index = range.Start; index < range.End; index++)
 					yield return lines[index];
+			}
 		}
 	}
 }
