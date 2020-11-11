@@ -687,39 +687,21 @@ namespace Charlotte.CSSolutions
 
 			// シャッフル
 			{
-				SMO_RangeInfo[] arr = ranges.ToArray();
-				ranges = null; // 2bs
-#if true
-				for (int c = 0; c < 30000; c++) // 回数は適当
+				List<SMO_RangeInfo> hoRanges = new List<SMO_RangeInfo>();
+				List<SMO_RangeInfo> unhoRanges = new List<SMO_RangeInfo>();
+
+				foreach (SMO_RangeInfo range in ranges)
 				{
-					// 入れ替え(離れているもの同士)
-					{
-						int a = SCommon.CRandom.GetInt(arr.Length);
-						int b = SCommon.CRandom.GetInt(arr.Length);
-
-						if (
-							!arr[a].HoldingOrder &&
-							!arr[b].HoldingOrder
-							)
-							SCommon.Swap(arr, a, b);
-					}
-
-					// 入れ替え(隣同士)
-					{
-						int a = SCommon.CRandom.GetInt(arr.Length - 1);
-						int b = a + 1;
-
-						if (
-							!arr[a].HoldingOrder ||
-							!arr[b].HoldingOrder
-							)
-							SCommon.Swap(arr, a, b);
-					}
+					if (range.HoldingOrder)
+						hoRanges.Add(range);
+					else
+						unhoRanges.Add(range);
 				}
-#else // old
-				SCommon.CRandom.Shuffle(arr); // 初期化有りフィールドを入れ替えると、初期化順序が狂ってエラーの原因となる。
-#endif
-				ranges = new List<SMO_RangeInfo>(arr);
+				ranges = hoRanges;
+				hoRanges = null;
+
+				foreach (SMO_RangeInfo range in unhoRanges)
+					ranges.Insert(SCommon.CRandom.GetInt(ranges.Count + 1), range);
 			}
 
 			// ファイルの先頭
