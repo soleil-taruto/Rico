@@ -562,8 +562,7 @@ Convert
 GetValues
 
 ; デザイナで自動生成されるメソッド
-; -- 本来名前を変更されるはずのないメソッドなので、ウィルス嫌気を避けるため -- 効果あるかは知らん。念の為
-InitializeComponent
+;InitializeComponent
 
 ";
 

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using Charlotte.Commons;
+using System.Text.RegularExpressions;
 
 namespace Charlotte.CSSolutions
 {
@@ -465,30 +466,21 @@ namespace Charlotte.CSSolutions
 			for (int index = 0; index < lines.Length; index++)
 			{
 				string line = lines[index];
-				string tsLine = line.TrimStart();
 
 				// 以下のリテラル文字列は変数化出来ない。
 				// -- switch の case
 				// -- デフォルト引数
 				// -- [DllImport(... とか
 
-				if (tsLine.StartsWith("case ")) // ? switch の case
+				if (line.Trim().StartsWith("case ")) // ? switch の case
 				{
 					// noop
 				}
-				else if (tsLine.StartsWith("private "))
+				else if (Regex.IsMatch(line, "(private|protected|public).*[(].*[=]")) // ? デフォルト引数
 				{
 					// noop
 				}
-				else if (tsLine.StartsWith("protected "))
-				{
-					// noop
-				}
-				else if (tsLine.StartsWith("public "))
-				{
-					// noop
-				}
-				else if (tsLine.StartsWith("[")) // ? [DllImport(... とか
+				else if (line.Trim().StartsWith("[")) // ? [DllImport(... とか
 				{
 					// noop
 				}
@@ -508,14 +500,60 @@ namespace Charlotte.CSSolutions
 
 						c2++;
 						string varName = SL2_CreateVarName();
+#if true
+						// リテラル文字列難読化_v1112 >
+
+						varLines.Add("\t\tpublic static string " +
+							varName + "_String;"
+							);
+						varLines.Add("\t\tpublic static string " +
+							varName + "() { if(" +
+							varName + "_String == null) { " +
+							varName + "_String = " +
+							varName + "_GetString(); } return " +
+							varName + "_String; }"
+							);
+						varLines.Add("\t\tpublic static string " +
+							varName + "_GetString() { return new string(" +
+							varName + "_E_GetString().Where(" +
+							varName + "_Var => " +
+							varName + "_Var % 65537 != 0).Select(" +
+							varName + "_Var2 => (char)(" +
+							varName + "_Var2 % 65537 - 1)).ToArray()); }"
+							);
+						varLines.Add("\t\tpublic static IEnumerable<int> " +
+							varName + "_E_GetString() { " +
+							string.Join(" ", SL2_ToYR(line.Substring(c, c2 - c))) + " }"
+							);
+
+						// < リテラル文字列難読化_v1112
+
+						line = line.Substring(0, c) + varName + "()" + line.Substring(c2);
+#elif true // old
+						varLines.Add("\t\tpublic static string " + varName + "() { return " + line.Substring(c, c2 - c) + "; }");
+						line = line.Substring(0, c) + varName + "()" + line.Substring(c2);
+#elif true // old
 						varLines.Add("\t\tpublic static string " + varName + " { get { return " + line.Substring(c, c2 - c) + "; }}");
-						//varLines.Add("\t\tpublic static string " + varName + " = " + line.Substring(c, c2 - c) + ";");
 						line = line.Substring(0, c) + varName + line.Substring(c2);
+#else // old
+						varLines.Add("\t\tpublic static string " + varName + " = " + line.Substring(c, c2 - c) + ";");
+						line = line.Substring(0, c) + varName + line.Substring(c2);
+#endif
 					}
 					lines[index] = line;
 				}
 			}
 			File.WriteAllLines(_file, this.SL2_クラスの先頭に挿入(lines, varLines), Encoding.UTF8);
+
+			// リテラル文字列難読化_v1112 >
+
+			// IEnumerable<T>, Where(), Select() を使用するための、追加 using
+			{
+				this.SL2_AddUsingLineIfNotExist("using System.Collections.Generic;");
+				this.SL2_AddUsingLineIfNotExist("using System.Linq;");
+			}
+
+			// < リテラル文字列難読化_v1112
 		}
 
 		private static string SL2_CreateVarName()
@@ -529,6 +567,47 @@ namespace Charlotte.CSSolutions
 				"_z";
 		}
 
+		private static IEnumerable<string> SL2_ToYR(string code)
+		{
+			if (code.Length < 2)
+				throw null;
+
+			if (code[0] != '"')
+				throw null;
+
+			if (code[code.Length - 1] != '"')
+				throw null;
+
+			code = code.Substring(1, code.Length - 2);
+
+			if (code.Length % 6 != 0)
+				throw null;
+
+			if (code.Length == 0)
+				yield return SL2_MakeYR(-1);
+
+			for (int index = 0; index < code.Length; index += 6)
+			{
+				if (code[index] != '\\')
+					throw null;
+
+				if (code[index + 1] != 'u')
+					throw null;
+
+				if (SCommon.CRandom.GetInt(2) == 0) // ? 1/2 ランダム
+					yield return SL2_MakeYR(-1);
+
+				yield return SL2_MakeYR((int)Convert.ToUInt16(code.Substring(index + 2, 4), 16));
+			}
+		}
+
+		private static string SL2_MakeYR(int chr)
+		{
+			int value = (chr + 1) + 65537 * SCommon.CRandom.GetRange(0, 32766);
+
+			return "yield return " + value + ";";
+		}
+
 		private IEnumerable<string> SL2_クラスの先頭に挿入(string[] lines, List<string> varLines)
 		{
 			if (varLines.Count == 0)
@@ -540,6 +619,16 @@ namespace Charlotte.CSSolutions
 				throw new Exception("クラスの先頭を見つけられませんでした。");
 
 			return lines.Take(index).Concat(varLines).Concat(lines.Skip(index));
+		}
+
+		private void SL2_AddUsingLineIfNotExist(string targLine)
+		{
+			string[] lines = File.ReadAllLines(_file, Encoding.UTF8);
+
+			if (!lines.Any(v => v == targLine)) // ? targLine という行は存在しない。
+			{
+				File.WriteAllLines(_file, new string[] { targLine }.Concat(lines), Encoding.UTF8); // targLine を先頭行に追加
+			}
 		}
 
 		public void AddDummyMember()
@@ -737,11 +826,8 @@ namespace Charlotte.CSSolutions
 
 			ranges[ranges.Count - 1].End = end;
 
-			// 最初の行に = があったら初期化有りフィールドと見なして、初期化順序を維持するために順序の入れ替えを抑制する。
-			// -- デフォルトの引数有りメソッドも引っ掛かってしまうけど、とりあえずはこれでいいや..
-			//
 			foreach (SMO_RangeInfo range in ranges)
-				range.HoldingOrder = lines[range.Start].Contains("=");
+				range.HoldingOrder = Regex.IsMatch(lines[range.Start], "^[^(]*[=]"); // ? 初期化有りフィールド
 
 			// シャッフル
 			{
