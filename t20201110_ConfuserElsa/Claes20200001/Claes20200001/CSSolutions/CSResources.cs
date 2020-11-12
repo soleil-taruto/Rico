@@ -1445,91 +1445,145 @@ Earth
 
 		#endregion
 
-		#region ダミーメンバー
+		#region クラス用ダミーメンバー
 
-		public static string DUMMY_MEMBER = @"
+		/// <summary>
+		/// 要置き換え : SSS_ to (RANDOM_WORD)_
+		/// </summary>
+		public static string CLASS_DUMMY_MEMBER = @"
 
-		public int $$_Count;
+		public static int SSS_Count;
 
-		public int $$_GetCount()
+		public int SSS_GetCount()
 		{
-			return this.$$_Count;
+			return SSS_Count;
 		}
 
-		public void $$_SetCount(int $$_SetCount_Prm)
+		public void SSS_SetCount(int SSS_SetCount_Prm)
 		{
-			this.$$_Count = $$_SetCount_Prm;
+			SSS_Count = SSS_SetCount_Prm;
 		}
 
-		public void $$_ResetCount()
+		public void SSS_ResetCount()
 		{
-			this.$$_SetCount(0);
+			this.SSS_SetCount(0);
 		}
 
-		public int $$_NextCount()
+		public int SSS_NextCount()
 		{
-			return this.$$_Count++;
+			return SSS_Count++;
 		}
 
-		public class $$_ValueInfo
+		public class SSS_ValueInfo
 		{
-			public int $$_ValueInfo_A;
-			public int $$_ValueInfo_B;
-			public int $$_ValueInfo_C;
+			public int SSS_ValueInfo_A;
+			public int SSS_ValueInfo_B;
+			public int SSS_ValueInfo_C;
 		}
 
-		public $$_ValueInfo $$_Value;
+		public static SSS_ValueInfo SSS_Value;
 
-		public $$_ValueInfo $$_GetValue()
+		public SSS_ValueInfo SSS_GetValue()
 		{
-			return this.$$_Value;
+			return SSS_Value;
 		}
 
-		public void $$_SetValue($$_ValueInfo $$_SetValue_Prm)
+		public void SSS_SetValue(SSS_ValueInfo SSS_SetValue_Prm)
 		{
-			this.$$_Value = $$_SetValue_Prm;
+			SSS_Value = SSS_SetValue_Prm;
 		}
 
-		public void $$_Overload_00()
+		public void SSS_Overload_00()
 		{
-			this.$$_Overload_01(this.$$_NextCount());
+			this.SSS_Overload_01(this.SSS_NextCount());
 		}
 
-		public void $$_Overload_01(int $$_a)
+		public void SSS_Overload_01(int SSS_a)
 		{
-			this.$$_Overload_02($$_a, this.$$_NextCount());
+			this.SSS_Overload_02(SSS_a, this.SSS_NextCount());
 		}
 
-		public void $$_Overload_02(int $$_a, int $$_b)
+		public void SSS_Overload_02(int SSS_a, int SSS_b)
 		{
-			this.$$_Overload_03($$_a, $$_b, this.$$_NextCount());
+			this.SSS_Overload_03(SSS_a, SSS_b, this.SSS_NextCount());
 		}
 
-		public void $$_Overload_03(int $$_a, int $$_b, int $$_c)
+		public void SSS_Overload_03(int SSS_a, int SSS_b, int SSS_c)
 		{
-			this.$$_Overload_04($$_a, $$_b, $$_c, this.$$_GetValue().$$_ValueInfo_A, this.$$_GetValue().$$_ValueInfo_B, this.$$_GetValue().$$_ValueInfo_C);
+			this.SSS_Overload_04(SSS_a, SSS_b, SSS_c, this.SSS_GetValue().SSS_ValueInfo_A, this.SSS_GetValue().SSS_ValueInfo_B, this.SSS_GetValue().SSS_ValueInfo_C);
 		}
 
-		public void $$_Overload_04(int $$_a, int $$_b, int $$_c, int $$_a2, int $$_b2, int $$_c2)
+		public void SSS_Overload_04(int SSS_a, int SSS_b, int SSS_c, int SSS_a2, int SSS_b2, int SSS_c2)
 		{
-			this.$$_SetValue(new $$_ValueInfo()
+			this.SSS_SetValue(new SSS_ValueInfo()
 			{
-				$$_ValueInfo_A = $$_a,
-				$$_ValueInfo_B = $$_b,
-				$$_ValueInfo_C = $$_c,
+				SSS_ValueInfo_A = SSS_a,
+				SSS_ValueInfo_B = SSS_b,
+				SSS_ValueInfo_C = SSS_c,
 			});
 
-			this.$$_Overload_05($$_a2);
-			this.$$_Overload_05($$_b2);
-			this.$$_Overload_05($$_c2);
+			this.SSS_Overload_05(SSS_a2);
+			this.SSS_Overload_05(SSS_b2);
+			this.SSS_Overload_05(SSS_c2);
 		}
 
-		public void $$_Overload_05(int $$_v)
+		public void SSS_Overload_05(int SSS_v)
 		{
-			if ($$_v != this.$$_GetCount())
-				this.$$_SetCount($$_v);
+			if (SSS_v != this.SSS_GetCount())
+				this.SSS_SetCount(SSS_v);
 			else
-				this.$$_Overload_01($$_v);
+				this.SSS_Overload_01(SSS_v);
+		}
+
+";
+
+		#endregion
+
+		#region 構造体用ダミーメンバー
+
+		/// <summary>
+		/// 要置き換え : SSS_ to (RANDOM_WORD)_
+		/// </summary>
+		public static string STRUCT_DUMMY_MEMBER = @"
+
+		public void SSS_Overload_00()
+		{
+			this.SSS_Overload_01(this.SSS_NextCount());
+		}
+
+		public void SSS_Overload_01(int SSS_a)
+		{
+			this.SSS_Overload_02(SSS_a, this.SSS_NextCount());
+		}
+
+		public void SSS_Overload_02(int SSS_a, int SSS_b)
+		{
+			this.SSS_Overload_03(SSS_a, SSS_b, this.SSS_NextCount());
+		}
+
+		public void SSS_Overload_03(int SSS_a, int SSS_b, int SSS_c)
+		{
+			this.SSS_Overload_04(SSS_a, SSS_b, SSS_c, this.SSS_NextCount());
+		}
+
+		public void SSS_Overload_04(int SSS_a, int SSS_b, int SSS_c, int SSS_d)
+		{
+			this.SSS_AddToCount(SSS_a);
+			this.SSS_AddToCount(SSS_b);
+			this.SSS_AddToCount(SSS_c);
+			this.SSS_AddToCount(SSS_d);
+		}
+
+		public static int SSS_Count;
+
+		public int SSS_NextCount()
+		{
+			return SSS_Count++;
+		}
+
+		public void SSS_AddToCount(int SSS_valueForAdd)
+		{
+			SSS_Count += SSS_valueForAdd;
 		}
 
 ";

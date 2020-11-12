@@ -545,11 +545,9 @@ namespace Charlotte.CSSolutions
 		public void AddDummyMember()
 		{
 			string[] lines = File.ReadAllLines(_file, Encoding.UTF8);
-
-			if (ADM_IsStruct(lines)) // ? 構造体
-				return;
-
-			string[] dmLines = SCommon.TextToLines(CSResources.DUMMY_MEMBER).Where(v => v != "").ToArray();
+			bool structFlag = ADM_IsStruct(lines);
+			string dmText = structFlag ? CSResources.STRUCT_DUMMY_MEMBER : CSResources.CLASS_DUMMY_MEMBER;
+			string[] dmLines = SCommon.TextToLines(dmText).Where(v => v != "").ToArray();
 			int end = ADM_GetClassEnd(lines);
 
 			if (end == -1)
@@ -570,7 +568,7 @@ namespace Charlotte.CSSolutions
 					foreach (string f_line in dmLines)
 					{
 						string line = f_line;
-						line = line.Replace("$$", ident);
+						line = line.Replace("SSS_", ident + "_");
 						dest.Add(line);
 					}
 				}
