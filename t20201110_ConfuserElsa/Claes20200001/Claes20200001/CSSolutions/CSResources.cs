@@ -1444,5 +1444,96 @@ Earth
 ";
 
 		#endregion
+
+		#region ダミーメンバー
+
+		public static string DUMMY_MEMBER = @"
+
+		public int $$_Count;
+
+		public int $$_GetCount()
+		{
+			return this.$$_Count;
+		}
+
+		public void $$_SetCount(int $$_SetCount_Prm)
+		{
+			this.$$_Count = $$_SetCount_Prm;
+		}
+
+		public void $$_ResetCount()
+		{
+			this.$$_SetCount(0);
+		}
+
+		public int $$_NextCount()
+		{
+			return this.$$_Count++;
+		}
+
+		public class $$_ValueInfo
+		{
+			public int $$_ValueInfo_A;
+			public int $$_ValueInfo_B;
+			public int $$_ValueInfo_C;
+		}
+
+		public $$_ValueInfo $$_Value;
+
+		public $$_ValueInfo $$_GetValue()
+		{
+			return this.$$_Value;
+		}
+
+		public void $$_SetValue($$_ValueInfo $$_SetValue_Prm)
+		{
+			this.$$_Value = $$_SetValue_Prm;
+		}
+
+		public void $$_Overload_00()
+		{
+			this.$$_Overload_01(this.$$_NextCount());
+		}
+
+		public void $$_Overload_01(int $$_a)
+		{
+			this.$$_Overload_02($$_a, this.$$_NextCount());
+		}
+
+		public void $$_Overload_02(int $$_a, int $$_b)
+		{
+			this.$$_Overload_03($$_a, $$_b, this.$$_NextCount());
+		}
+
+		public void $$_Overload_03(int $$_a, int $$_b, int $$_c)
+		{
+			this.$$_Overload_04($$_a, $$_b, $$_c, this.$$_GetValue().$$_ValueInfo_A, this.$$_GetValue().$$_ValueInfo_B, this.$$_GetValue().$$_ValueInfo_C);
+		}
+
+		public void $$_Overload_04(int $$_a, int $$_b, int $$_c, int $$_a2, int $$_b2, int $$_c2)
+		{
+			this.$$_SetValue(new $$_ValueInfo()
+			{
+				$$_ValueInfo_A = $$_a,
+				$$_ValueInfo_B = $$_b,
+				$$_ValueInfo_C = $$_c,
+			});
+
+			this.$$_Overload_05($$_a2);
+			this.$$_Overload_05($$_b2);
+			this.$$_Overload_05($$_c2);
+		}
+
+		public void $$_Overload_05(int $$_v)
+		{
+			if ($$_v != this.$$_GetCount())
+				this.$$_SetCount($$_v);
+			else
+				this.$$_Overload_01($$_v);
+		}
+
+";
+
+		#endregion
 	}
 }

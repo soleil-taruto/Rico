@@ -295,6 +295,7 @@ namespace Charlotte.CSSolutions
 			//text = SAM_Replace(text, "private", "public"); // 継承クラスに同名のメンバが居るとマズい。
 			//text = SAM_Replace(text, "protected", "public"); // protected override に対応していない。
 			text = SAM_Replace(text, "public static class", "public class");
+			text = SAM_Replace(text, "static class Program", "public class Program"); // Program.cs 専用
 
 			File.WriteAllText(_file, text, Encoding.UTF8);
 		}
@@ -522,10 +523,10 @@ namespace Charlotte.CSSolutions
 			// crand 128 bit -> 重複を想定しない。
 
 			return
-				"SL2_A_" +
+				"SL2_a_" +
 				SCommon.CRandom.GetUInt64().ToString("D20") + "_" +
 				SCommon.CRandom.GetUInt64().ToString("D20") +
-				"_B";
+				"_z";
 		}
 
 		private IEnumerable<string> SL2_クラスの先頭に挿入(string[] lines, List<string> varLines)
@@ -539,6 +540,65 @@ namespace Charlotte.CSSolutions
 				throw new Exception("クラスの先頭を見つけられませんでした。");
 
 			return lines.Take(index).Concat(varLines).Concat(lines.Skip(index));
+		}
+
+		public void AddDummyMember()
+		{
+			string[] lines = File.ReadAllLines(_file, Encoding.UTF8);
+
+			if (ADM_IsStruct(lines)) // ? 構造体
+				return;
+
+			string[] dmLines = SCommon.TextToLines(CSResources.DUMMY_MEMBER).Where(v => v != "").ToArray();
+			int end = ADM_GetClassEnd(lines);
+
+			if (end == -1)
+				return;
+
+			int dmCount = lines.Length / dmLines.Length;
+			dmCount /= 3;
+			dmCount++;
+
+			// DM-生成＆挿入
+			{
+				List<string> dest = new List<string>();
+
+				for (int index = 0; index < dmCount; index++)
+				{
+					string ident = ADM_CreateIdent();
+
+					foreach (string f_line in dmLines)
+					{
+						string line = f_line;
+						line = line.Replace("$$", ident);
+						dest.Add(line);
+					}
+				}
+				lines = lines.Take(end).Concat(dest).Concat(lines.Skip(end)).ToArray();
+			}
+
+			File.WriteAllLines(_file, lines, Encoding.UTF8);
+		}
+
+		private static bool ADM_IsStruct(string[] lines)
+		{
+			return lines.Any(v => v.StartsWith("\tpublic struct "));
+		}
+
+		private static int ADM_GetClassEnd(string[] lines)
+		{
+			return SMO_GetClassEnd(lines);
+		}
+
+		private static string ADM_CreateIdent()
+		{
+			// crand 128 bit -> 重複を想定しない。
+
+			return
+				"ADM_a_" +
+				SCommon.CRandom.GetUInt64().ToString("D20") + "_" +
+				SCommon.CRandom.GetUInt64().ToString("D20") +
+				"_z";
 		}
 
 		public void RenameEx(Func<string, string> filter)

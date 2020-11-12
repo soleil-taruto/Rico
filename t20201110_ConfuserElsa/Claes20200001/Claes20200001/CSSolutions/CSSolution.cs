@@ -127,6 +127,7 @@ namespace Charlotte.CSSolutions
 				csFile.RemovePreprocessorDirectives();
 				csFile.SolveAccessModifiers();
 				csFile.SolveLiteralStrings();
+				csFile.AddDummyMember();
 				csFile.RenameEx(rvf.Filter);
 				csFile.ShuffleMemberOrder();
 			}
