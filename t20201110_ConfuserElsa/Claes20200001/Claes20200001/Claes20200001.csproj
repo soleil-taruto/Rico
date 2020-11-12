@@ -66,6 +66,7 @@
     <Compile Include="Commons\SCommon.cs" />
     <Compile Include="Commons\WorkingDir.cs" />
     <Compile Include="Consts.cs" />
+    <Compile Include="CSSolutions\CSProjectFile.cs" />
     <Compile Include="CSSolutions\CSRenameVarsFilter.cs" />
     <Compile Include="CSSolutions\CSSolution.cs" />
     <Compile Include="CSSolutions\CSFile.cs" />

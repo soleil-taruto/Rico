@@ -131,6 +131,10 @@ namespace Charlotte.CSSolutions
 				csFile.RenameEx(rvf.Filter);
 				csFile.ShuffleMemberOrder();
 			}
+
+			CSProjectFile projFile = new CSProjectFile(this.ProjectFile);
+
+			projFile.ShuffleCompileOrder();
 		}
 	}
 }
