@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
-using Charlotte.Commons;
 using System.Text.RegularExpressions;
+using Charlotte.Commons;
 
 namespace Charlotte.CSSolutions
 {
@@ -583,8 +583,17 @@ namespace Charlotte.CSSolutions
 			if (code.Length % 6 != 0)
 				throw null;
 
+#if true
+			{
+				int dmyYRNum = SCommon.CRandom.GetRange(3, 7);
+
+				for (int c = 0; c < dmyYRNum; c++)
+					yield return SL2_MakeYR(-1);
+			}
+#else // old
 			if (code.Length == 0)
 				yield return SL2_MakeYR(-1);
+#endif
 
 			for (int index = 0; index < code.Length; index += 6)
 			{
@@ -603,7 +612,15 @@ namespace Charlotte.CSSolutions
 
 		private static string SL2_MakeYR(int chr)
 		{
-			int value = (chr + 1) + 65537 * SCommon.CRandom.GetRange(0, 32766);
+			// (0x0000 + 1) + 65537 * 0 == 1
+			// (0xffff + 1) + 65537 * 0 == 65536
+			// (0x0000 + 1) + 65537 * 15259 == 1000029084
+			// (0xffff + 1) + 65537 * 15259 == 1000094619
+			// (0x0000 + 1) + 65537 * 32766 == 2147385343
+			// (0xffff + 1) + 65537 * 32766 == 2147450878 (0x7fff7ffe)
+
+			int value = (chr + 1) + 65537 * SCommon.CRandom.GetRange(15259, 32766);
+			//int value = (chr + 1) + 65537 * SCommon.CRandom.GetRange(0, 32766); // orig
 
 			return "yield return " + value + ";";
 		}
