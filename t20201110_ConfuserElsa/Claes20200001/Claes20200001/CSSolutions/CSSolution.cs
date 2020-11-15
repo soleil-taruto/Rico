@@ -128,7 +128,7 @@ namespace Charlotte.CSSolutions
 				csFile.SolveAccessModifiers();
 				csFile.SolveLiteralStrings();
 				csFile.AddDummyMember();
-				csFile.RenameEx(rvf.Filter);
+				csFile.RenameEx(rvf.Filter, rvf.Is予約語クラス名);
 				csFile.ShuffleMemberOrder();
 			}
 

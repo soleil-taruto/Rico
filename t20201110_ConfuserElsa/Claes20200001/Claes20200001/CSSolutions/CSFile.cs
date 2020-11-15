@@ -705,12 +705,16 @@ namespace Charlotte.CSSolutions
 				"_z";
 		}
 
-		public void RenameEx(Func<string, string> filter)
+		public void RenameEx(Func<string, string> filter, Predicate<string> f_isUnrenameableClassName)
 		{
 			string text = File.ReadAllText(_file, Encoding.UTF8);
 			string text_bk = text;
 			bool insideOfLiteralChar = false;
 			bool insideOfLiteralString = false;
+
+			// C#の書式上「C#の単語」で終わることは無いはずだが、一応想定する。
+			//
+			text += " "; // 番兵設置
 
 			for (int index = 0; index < text.Length; index++)
 			{
@@ -730,17 +734,33 @@ namespace Charlotte.CSSolutions
 				{
 					int end = index + 1;
 
-					// HACK: ソースファイルは改行(単語ではない)で終わっている想定になっている。
-
 					while (Common.IsCSWordChar(text[end]))
 						end++;
 
 					string name = text.Substring(index, end - index);
 					string nameNew = filter(name);
 
-					if (name == nameNew)
+					if (name == nameNew) // ? 置き換え禁止ワード
 					{
 						index = end;
+
+						// ? 置き換え禁止クラス名
+						// -> (置き換え禁止ワード).(後続のワード).(後続のワード).(後続のワード) ... の「後続のワード」も置き換え禁止とする。
+						if (f_isUnrenameableClassName(name))
+						{
+							//Console.WriteLine("name: " + name); // test
+
+							while (text[index] == '.' && Common.IsCSWordChar(text[index + 1]))
+							{
+								end = index + 2;
+
+								while (Common.IsCSWordChar(text[end]))
+									end++;
+
+								//Console.WriteLine("trailer: " + text.Substring(index, end - index)); // test
+								index = end;
+							}
+						}
 					}
 					else
 					{
@@ -749,6 +769,7 @@ namespace Charlotte.CSSolutions
 					}
 				}
 			}
+			text = text.Substring(0, text.Length - 1); // 復元 -- 番兵除去
 
 			text = RX_Mix(text, text_bk);
 

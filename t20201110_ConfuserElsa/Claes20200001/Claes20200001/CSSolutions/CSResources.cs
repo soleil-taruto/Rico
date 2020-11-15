@@ -9,6 +9,9 @@ namespace Charlotte.CSSolutions
 	{
 		#region 予約語リスト
 
+		/// <summary>
+		/// ここに含まれる単語は置き換えない。
+		/// </summary>
 		public static string 予約語リスト = @"
 
 ; ====
@@ -111,7 +114,6 @@ where
 yield
 when
 
-
 ; ====
 ; using 名前空間
 ; ====
@@ -143,42 +145,56 @@ Threading
 Win32
 Windows
 
-
 ; ====
 ; クラス名 / 型名 / メンバー名
 ; ====
 
+Abs
 AccessControlType
 Action
 Add
 AddAccessRule
+AddFontResourceEx
 AddrOfPinnedObject
 AggregateException
 AllDirectories
 Alloc
 Allow
+Anchor
+AnchorStyles
 Any
 AppDomain
 Append
 Application
 ArgumentException
 Array
+ASCII
 Assembly
 AutoScaleDimensions
 AutoScaleMode
+AutoSize
 Begin
 BeginInvoke
 BltSoftImage
+Bottom
+Button
 ChangeVolumeSoundMem
 ChangeWindowMode
+CheckBox
+Checked
 CheckHitKey
 CheckSoundMem
+CheckState
 Clear
+Click
 ClientSize
+ClientToScreen
 Close
 Collect
 Color
 Combine
+ComboBox
+ComboBoxStyle
 Comparison
 ComponentResourceManager
 Compress
@@ -188,6 +204,8 @@ Concat
 Console
 Contains
 ContainsKey
+Controls
+Convert
 Copy
 CopyTo
 Cos
@@ -221,28 +239,16 @@ DrawModiGraphF
 DrawPixelSoftImage
 DrawString
 DrawStringToHandle
+DropDownList
+DropDownStyle
 DuplicateSoundMem
-DX
-DX_BLENDMODE_ADD
-DX_BLENDMODE_ALPHA
-DX_BLENDMODE_INVSRC
-DX_BLENDMODE_NOBLEND
-DX_CHANGESCREEN_OK
-DX_DRAWMODE_ANISOTROPIC
-DX_DRAWMODE_NEAREST
-DX_FONTTYPE_ANTIALIASING_8X8
-DX_FONTTYPE_NORMAL
-DX_GRAPH_FILTER_GAUSS
-DX_PLAYTYPE_BACK
-DX_PLAYTYPE_LOOP
-DX_SCREEN_BACK
-DxLib_End
-DxLib_Init
 EnableVisualStyles
 Encoding
 EndsWith
 Enqueue
+Enum
 Enumerable
+EnumWindows
 Environment
 Equals
 Error
@@ -265,6 +271,7 @@ Font
 FontStyle
 Form
 Format
+FormattingEnabled
 FormClosed
 FormClosedEventArgs
 FormClosedEventHandler
@@ -294,6 +301,7 @@ GetEntryAssembly
 GetEnumerator
 GetEnvironmentVariable
 GetFileName
+GetFileNameWithoutExtension
 GetFiles
 GetFullPath
 GetGraphSize
@@ -305,14 +313,18 @@ GetMouseDispFlag
 GetMouseInput
 GetMousePoint
 GetMouseWheelRotVol
+GetNames
 GetNowHiPerformanceCount
 GetObject
 GetPixelSoftImage
 GetRange
 GetSoftImageSize
 GetString
+GetValues
+GetWindowText
 GraphFilter
 GraphicsUnit
+GroupBox
 Guid
 GZipStream
 Handle
@@ -330,28 +342,11 @@ Insert
 IntPtr
 IsNaN
 IsNullOrEmpty
+Items
 Join
-KEY_INPUT_A
-KEY_INPUT_BACK
-KEY_INPUT_C
-KEY_INPUT_D
-KEY_INPUT_DOWN
-KEY_INPUT_ESCAPE
-KEY_INPUT_F
-KEY_INPUT_LCONTROL
-KEY_INPUT_LEFT
-KEY_INPUT_RETURN
-KEY_INPUT_RETURN
-KEY_INPUT_RIGHT
-KEY_INPUT_S
-KEY_INPUT_SPACE
-KEY_INPUT_SPACE
-KEY_INPUT_UP
-KEY_INPUT_V
-KEY_INPUT_X
-KEY_INPUT_Z
 Keys
 LayoutKind
+Left
 Length
 LinkDemand
 List
@@ -376,6 +371,7 @@ MessageBoxIcon
 MethodInvoker
 Min
 MinimizeBox
+MinimumSize
 MOUSE_INPUT_LEFT
 MOUSE_INPUT_MIDDLE
 MOUSE_INPUT_RIGHT
@@ -387,12 +383,14 @@ MutexRights
 MutexSecurity
 Name
 NewGuid
+NotImplementedException
 Now
 OK
 Open
 Padding
 Parse
 Path
+PerformLayout
 PI
 Pinned
 PlaySoundMem
@@ -411,8 +409,11 @@ Regular
 ReleaseMutex
 RemoveAll
 RemoveAt
+RemoveFontResourceEx
+Repeat
 Replace
 ResumeLayout
+Right
 RNGCryptoServiceProvider
 Run
 ScreenFlip
@@ -424,6 +425,7 @@ SecurityPermissionFlag
 Seek
 SeekOrigin
 Select
+SelectedIndex
 Sequential
 SessionEnding
 SessionEndingEventArgs
@@ -438,6 +440,8 @@ SetDrawBright
 SetDrawMode
 SetDrawScreen
 SetGraphMode
+SetLoopSamplePosSoundMem
+SetLoopStartSamplePosSoundMem
 SetMainWindowText
 SetMainWindowText
 SetMouseDispFlag
@@ -454,6 +458,7 @@ Shown
 Sin
 Size
 SizeF
+SizeGripStyle
 Skip
 Sleep
 Sort
@@ -465,6 +470,7 @@ StartsWith
 STAThread
 StopSoundMem
 Stream
+StreamReader
 StreamWriter
 StringBuilder
 StructLayout
@@ -472,6 +478,8 @@ Substring
 SuspendLayout
 SuspendLayout
 SystemEvents
+TabIndex
+TabStop
 Tan
 Thread
 ThreadException
@@ -481,14 +489,18 @@ ToArray
 ToInt64
 ToList
 ToLower
+Top
+TopMost
 ToString
 ToUpper
 Trim
 UInt16
+UInt64
 UnhandledException
 UnhandledExceptionEventArgs
 UnhandledExceptionEventHandler
 UnmanagedCode
+UseVisualStyleBackColor
 UTF8
 Value
 Visible
@@ -504,65 +516,22 @@ WriteByte
 WriteLine
 Zero
 
-ClientToScreen
-EnumWindows
-GetWindowText
-AddFontResourceEx
-RemoveFontResourceEx
-
-UInt64
-GetFileNameWithoutExtension
-
-Enum
-GetNames
-NotImplementedException
-Abs
-Repeat
-KEY_INPUT_PGUP
-KEY_INPUT_PGDN
-SetLoopSamplePosSoundMem
-SetLoopStartSamplePosSoundMem
-
-GroupBox
-ComboBox
-CheckBox
-Button
-Anchor
-AnchorStyles
-Top
-Left
-DropDownStyle
-ComboBoxStyle
-DropDownList
-StreamReader
-Right
-TabIndex
-TabStop
-FormattingEnabled
-Click
-Controls
-AutoSize
-Checked
-CheckState
-UseVisualStyleBackColor
-SizeGripStyle
-TopMost
-PerformLayout
-Bottom
-KEY_INPUT_E
-KEY_INPUT_LSHIFT
-KEY_INPUT_RSHIFT
-Items
-SelectedIndex
-MinimumSize
-
-ASCII
-Convert
-
-GetValues
-
 ; デザイナで自動生成されるメソッド
 ;InitializeComponent
+
+";
+
+		#endregion
+
+		/// <summary>
+		/// ここに含まれる単語は置き換えない。
+		/// (この単語).(後続の単語).(後続の単語).(後続の単語) ... の「後続の単語」についても置き換えない。
+		/// </summary>
+		#region 予約語クラス名リスト
+
+		public static string 予約語クラス名リスト = @"
+
+DX
 
 ";
 

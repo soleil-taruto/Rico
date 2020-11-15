@@ -8,7 +8,7 @@ namespace Charlotte.CSSolutions
 {
 	public class CSRenameVarsFilter
 	{
-		private string[] 予約語リスト = SCommon.TextToLines(CSResources.予約語リスト)
+		private string[] 置き換え禁止ワードのリスト = SCommon.TextToLines(CSResources.予約語リスト + Consts.CRLF + CSResources.予約語クラス名リスト)
 			.Select(v => v.Trim())
 			.Where(v => v != "" && v[0] != ';') // ? 空行ではない && コメント行ではない
 			.ToArray();
@@ -20,7 +20,7 @@ namespace Charlotte.CSSolutions
 			if (
 				name == "" ||
 				SCommon.DECIMAL.Contains(name[0]) ||
-				this.予約語リスト.Contains(name)
+				this.置き換え禁止ワードのリスト.Contains(name)
 				)
 				return name;
 
@@ -48,7 +48,7 @@ namespace Charlotte.CSSolutions
 			{
 				nameNew = this.TryCreateNameNew();
 			}
-			while (this.CNN_Names.ContainsKey(nameNew) || this.予約語リスト.Contains(nameNew));
+			while (this.CNN_Names.ContainsKey(nameNew) || this.置き換え禁止ワードのリスト.Contains(nameNew));
 
 			this.CNN_Names.Add(nameNew, null);
 			return nameNew;
@@ -68,6 +68,16 @@ namespace Charlotte.CSSolutions
 				buff.Append(SCommon.CRandom.ChooseOne(this.ランダムな単語リスト));
 
 			return buff.ToString();
+		}
+
+		private string[] 予約語クラス名リスト = SCommon.TextToLines(CSResources.予約語クラス名リスト)
+			.Select(v => v.Trim())
+			.Where(v => v != "" && v[0] != ';') // ? 空行ではない && コメント行ではない
+			.ToArray();
+
+		public bool Is予約語クラス名(string name)
+		{
+			return 予約語クラス名リスト.Contains(name);
 		}
 	}
 }
