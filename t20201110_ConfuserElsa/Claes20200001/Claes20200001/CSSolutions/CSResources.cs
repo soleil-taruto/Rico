@@ -115,7 +115,17 @@ yield
 when
 
 ; ====
-; using 名前空間
+; 外部シンボル名
+; ====
+
+AddFontResourceEx
+ClientToScreen
+EnumWindows
+GetWindowText
+RemoveFontResourceEx
+
+; ====
+; 名前空間 / クラス名 / 型名 / メンバー名
 ; ====
 
 AccessControl
@@ -144,17 +154,11 @@ Text
 Threading
 Win32
 Windows
-
-; ====
-; クラス名 / 型名 / メンバー名
-; ====
-
 Abs
 AccessControlType
 Action
 Add
 AddAccessRule
-AddFontResourceEx
 AddrOfPinnedObject
 AggregateException
 AllDirectories
@@ -188,7 +192,6 @@ CheckState
 Clear
 Click
 ClientSize
-ClientToScreen
 Close
 Collect
 Color
@@ -248,7 +251,6 @@ EndsWith
 Enqueue
 Enum
 Enumerable
-EnumWindows
 Environment
 Equals
 Error
@@ -321,7 +323,6 @@ GetRange
 GetSoftImageSize
 GetString
 GetValues
-GetWindowText
 GraphFilter
 GraphicsUnit
 GroupBox
@@ -409,7 +410,6 @@ Regular
 ReleaseMutex
 RemoveAll
 RemoveAt
-RemoveFontResourceEx
 Repeat
 Replace
 ResumeLayout
@@ -516,6 +516,10 @@ WriteByte
 WriteLine
 Zero
 
+; ====
+; その他
+; ====
+
 ; デザイナで自動生成されるメソッド
 ;InitializeComponent
 
@@ -523,12 +527,12 @@ Zero
 
 		#endregion
 
+		#region 予約語クラス名リスト
+
 		/// <summary>
 		/// ここに含まれる単語は置き換えない。
 		/// (この単語).(後続の単語).(後続の単語).(後続の単語) ... の「後続の単語」についても置き換えない。
 		/// </summary>
-		#region 予約語クラス名リスト
-
 		public static string 予約語クラス名リスト = @"
 
 DX
