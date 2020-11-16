@@ -22,6 +22,7 @@ namespace Charlotte
 			{
 				// -- choose one --
 
+				//new CheckRemovableCSWordsTest().Perform();
 				new Test0001().Test01();
 				//new Test0001().Test02();
 				//new Test0001().Test03();
@@ -43,13 +44,18 @@ namespace Charlotte
 			{
 				ElsaConfuser.Perform(solutionFile, workDir);
 			}
-			catch
+			catch (Exception e)
 			{
-				Console.WriteLine("★★★");
+				Console.WriteLine(e);
+
+				Console.WriteLine("★★★ 警告 ★★★");
 				Console.WriteLine("難読化の処理中に例外を投げました。");
 				Console.WriteLine("以下を確認して下さい。");
 				Console.WriteLine("-- 予約語リスト");
 				Console.WriteLine("★★★");
+
+				Console.WriteLine("エンターキーを押して下さい。");
+				Console.ReadLine();
 			}
 		}
 	}

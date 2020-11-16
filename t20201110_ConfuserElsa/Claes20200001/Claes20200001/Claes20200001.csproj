@@ -74,6 +74,7 @@
     <Compile Include="ElsaConfuser.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Tests\CheckRemovableCSWordsTest.cs" />
     <Compile Include="Tests\DummyMemberSamples\ClassDummyMemberSample.cs" />
     <Compile Include="Tests\Test0001.cs" />
     <Compile Include="Tests\DummyMemberSamples\StructDummyMemberSample.cs" />

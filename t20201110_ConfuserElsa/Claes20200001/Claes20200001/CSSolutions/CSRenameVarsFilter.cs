@@ -8,9 +8,26 @@ namespace Charlotte.CSSolutions
 {
 	public class CSRenameVarsFilter
 	{
+		/// <summary>
+		/// テスト用
+		/// null == 無効
+		/// null 以外 == この文字列を「置き換え禁止ワードのリスト」から除去する。
+		/// </summary>
+		public static string 置き換え禁止ワードの例外ワード = null;
+
+		/// <summary>
+		/// テスト用
+		/// </summary>
+		/// <returns>置き換え禁止ワードのリスト</returns>
+		public string[] Get置き換え禁止ワードのリスト()
+		{
+			return this.置き換え禁止ワードのリスト;
+		}
+
 		private string[] 置き換え禁止ワードのリスト = SCommon.TextToLines(CSResources.予約語リスト + Consts.CRLF + CSResources.予約語クラス名リスト)
 			.Select(v => v.Trim())
 			.Where(v => v != "" && v[0] != ';') // ? 空行ではない && コメント行ではない
+			.Where(v => v != 置き換え禁止ワードの例外ワード) // テスト用
 			.ToArray();
 
 		private Dictionary<string, string> 変換テーブル = SCommon.CreateDictionary<string>();

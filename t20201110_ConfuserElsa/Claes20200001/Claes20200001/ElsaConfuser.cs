@@ -47,11 +47,7 @@ namespace Charlotte
 			{
 				SCommon.CreateDir(masterSol.GetBinDir());
 
-				Console.WriteLine("★★★ 警告 ★★★");
-				Console.WriteLine("ビルドは失敗しました。");
-				Console.WriteLine("エンターキーを押すと続行します。");
-				Console.WriteLine("★★★");
-				Console.ReadLine();
+				throw new Exception("ビルド失敗");
 			}
 		}
 	}
