@@ -76,8 +76,27 @@ namespace Charlotte.CSSolutions
 			.Where(v => v != "" && v[0] != ';') // ? 空行ではない && コメント行ではない
 			.ToArray();
 
+		private string[] 英単語リスト_前置詞 = Get英単語リスト("前置詞");
+		private string[] 英単語リスト_形容詞 = Get英単語リスト("形容詞");
+		private string[] 英単語リスト_代名詞 = Get英単語リスト("代名詞");
+		private string[] 英単語リスト_名詞 = Get英単語リスト("名詞");
+		private string[] 英単語リスト_副詞 = Get英単語リスト("副詞");
+		private string[] 英単語リスト_動詞 = Get英単語リスト("動詞");
+
+		private static string[] Get英単語リスト(string 品詞)
+		{
+			return SCommon.TextToLines(CSResources.英単語リスト)
+				.Select(v => v.Trim())
+				.Where(v => v != "" && v[0] != ';') // ? 空行ではない && コメント行ではない
+				.Where(v => v.Contains(品詞)) // 品詞の絞り込み
+				.Select(v => v.Substring(0, v.IndexOf('\t'))) // 品詞の部分を除去
+				.Select(v => v.Substring(0, 1).ToUpper() + v.Substring(1)) // 先頭の文字を大文字にする。
+				.ToArray();
+		}
+
 		private string TryCreateNameNew()
 		{
+#if !true // ランダムな単語 ver
 			StringBuilder buff = new StringBuilder();
 			int count = SCommon.CRandom.GetRange(3, 5);
 
@@ -85,6 +104,12 @@ namespace Charlotte.CSSolutions
 				buff.Append(SCommon.CRandom.ChooseOne(this.ランダムな単語リスト));
 
 			return buff.ToString();
+#else // 英単語 ver
+			return
+				SCommon.CRandom.ChooseOne(this.英単語リスト_動詞) +
+				SCommon.CRandom.ChooseOne(this.英単語リスト_形容詞) +
+				SCommon.CRandom.ChooseOne(this.英単語リスト_名詞);
+#endif
 		}
 
 		private string[] 予約語クラス名リスト = SCommon.TextToLines(CSResources.予約語クラス名リスト)
