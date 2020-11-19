@@ -12,6 +12,9 @@ namespace Charlotte.Tests
 	{
 		private const string OUTPUT_FILE = @"C:\temp\置き換え禁止ワードから除去可能なワードリスト.txt";
 
+		/// <summary>
+		/// CSResources.予約語リスト から除去可能な単語を OUTPUT_FILE に出力する。
+		/// </summary>
 		public void Perform()
 		{
 			SCommon.DeletePath(OUTPUT_FILE);

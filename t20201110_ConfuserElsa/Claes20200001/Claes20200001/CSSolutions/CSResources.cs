@@ -130,7 +130,7 @@ RemoveFontResourceEx
 ; 名前空間 / クラス名 / 型名 / メンバー名
 ; ====
 
-; e20201109_YokoActTK_Demo
+; e20201109_YokoActTK
 
 AccessControl
 AccessControlType
@@ -454,7 +454,7 @@ RemoveAll
 Abs
 Repeat
 
-; 追加 e20201018_TateShoot_Demo
+; 追加 e20201018_TateShoot
 
 NotImplementedException
 
@@ -462,6 +462,13 @@ NotImplementedException
 
 ASCII
 Convert
+
+; 追加 e20201115_Dungeon -- discontinued
+
+Distinct
+IsMatch
+Regex
+RegularExpressions
 
 
 ; ====

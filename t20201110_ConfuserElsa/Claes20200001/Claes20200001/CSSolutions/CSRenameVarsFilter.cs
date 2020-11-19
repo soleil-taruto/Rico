@@ -90,13 +90,19 @@ namespace Charlotte.CSSolutions
 				.Where(v => v != "" && v[0] != ';') // ? 空行ではない && コメント行ではない
 				.Where(v => v.Contains(品詞)) // 品詞の絞り込み
 				.Select(v => v.Substring(0, v.IndexOf('\t'))) // 品詞の部分を除去
-				.Select(v => v.Substring(0, 1).ToUpper() + v.Substring(1)) // 先頭の文字を大文字にする。
+				.Select(v => v.Substring(0, 1).ToUpper() + v.Substring(1).ToLower()) // 先頭の文字だけ大文字にする。-- 全て小文字のはずなので .ToLower() は不要だけど念の為
 				.ToArray();
 		}
 
+		/// <summary>
+		/// 新しい識別子を作成する。
+		/// 標準のクラス名 List, StringBuilder などと被らない名前を返すこと。
+		/// -- 今の実装は厳密にこれを回避していない。@ 2020.11.x
+		/// </summary>
+		/// <returns>新しい識別子</returns>
 		private string TryCreateNameNew()
 		{
-#if !true // ランダムな単語 ver
+#if !true // ランダムな単語列 ver
 			StringBuilder buff = new StringBuilder();
 			int count = SCommon.CRandom.GetRange(3, 5);
 
@@ -104,10 +110,11 @@ namespace Charlotte.CSSolutions
 				buff.Append(SCommon.CRandom.ChooseOne(this.ランダムな単語リスト));
 
 			return buff.ToString();
-#else // 英単語 ver
+#else // 英語名 ver
 			return
 				SCommon.CRandom.ChooseOne(this.英単語リスト_動詞) +
 				SCommon.CRandom.ChooseOne(this.英単語リスト_形容詞) +
+				SCommon.CRandom.ChooseOne(this.ランダムな単語リスト) +
 				SCommon.CRandom.ChooseOne(this.英単語リスト_名詞);
 #endif
 		}

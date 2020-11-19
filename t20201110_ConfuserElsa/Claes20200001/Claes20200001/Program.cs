@@ -22,7 +22,7 @@ namespace Charlotte
 			{
 				// -- choose one --
 
-				//new CheckRemovableCSWordsTest().Perform();
+				//new CheckRemovableCSWordsTest().Perform(); // CSResources.予約語リスト から除去可能な単語を列挙する。
 				new Test0001().Test01();
 				//new Test0001().Test02();
 				//new Test0001().Test03();

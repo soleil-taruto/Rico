@@ -33,7 +33,7 @@ namespace Charlotte.CSSolutions
 
 			SCO_RangeInfo[] ranges = SCO_GetRanges(lines).ToArray();
 
-			SCO_RangeInfo[] shuffledRanges = ranges.ToArray(); // ToArray() as shallow copy
+			SCO_RangeInfo[] shuffledRanges = ranges.ToArray(); // .ToArray() as shallow copy
 			SCommon.CRandom.Shuffle(shuffledRanges);
 
 			File.WriteAllLines(_file, SCO_GetOutputLines(lines, ranges, shuffledRanges), Encoding.UTF8);

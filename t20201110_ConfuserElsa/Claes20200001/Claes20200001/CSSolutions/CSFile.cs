@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.IO;
+using System.Text;
 using System.Text.RegularExpressions;
 using Charlotte.Commons;
 
@@ -24,15 +24,20 @@ namespace Charlotte.CSSolutions
 
 		public void SolveNamespace()
 		{
+			// クラス配置の平滑化
+			// ROOT_NAMESPACE 配下のクラスを ROOT_NAMESPACE 直下に置く。
+			// クラス名の重複は想定しない。
+
+			const string ROOT_NAMESPACE = "Charlotte";
+
 			string[] lines = File.ReadAllLines(_file, Encoding.UTF8);
 
 			for (int index = 0; index < lines.Length; index++)
 			{
-				if (lines[index].StartsWith("using Charlotte."))
+				if (lines[index].StartsWith("using " + ROOT_NAMESPACE + "."))
 					lines[index] = "";
-
-				if (lines[index].StartsWith("namespace Charlotte."))
-					lines[index] = "namespace Charlotte";
+				else if (lines[index].StartsWith("namespace " + ROOT_NAMESPACE + "."))
+					lines[index] = "namespace " + ROOT_NAMESPACE;
 			}
 			File.WriteAllLines(_file, lines, Encoding.UTF8);
 		}
@@ -162,6 +167,9 @@ namespace Charlotte.CSSolutions
 
 		public void RemovePreprocessorDirectives()
 		{
+			// #if の入れ子に対応していない。
+			// #if, #elif の条件式は true, false, !true, !false のみ想定する。
+
 			string[] lines = File.ReadAllLines(_file, Encoding.UTF8);
 
 			for (int index = 0; index < lines.Length; index++)
@@ -289,6 +297,8 @@ namespace Charlotte.CSSolutions
 
 			text = SAM_Replace(text, "{ get; private set; }", ";");
 			text = SAM_Replace(text, "{ private get; set; }", ";");
+			text = SAM_Replace(text, "{ set; private get; }", ";");
+			text = SAM_Replace(text, "{ private set; get; }", ";");
 			text = SAM_Replace(text, "private const", "public static");
 			text = SAM_Replace(text, "protected const", "public static");
 			text = SAM_Replace(text, "public const", "public static");
@@ -366,7 +376,13 @@ namespace Charlotte.CSSolutions
 						{
 							chr = '\n';
 						}
-						else if (chrs[index] == 'u')
+						else if (
+							chrs[index] == 'u' &&
+							Common.IsHexadecimal(chrs[index + 1]) &&
+							Common.IsHexadecimal(chrs[index + 2]) &&
+							Common.IsHexadecimal(chrs[index + 3]) &&
+							Common.IsHexadecimal(chrs[index + 4])
+							)
 						{
 							chr = (char)Convert.ToUInt16(new string(new char[]
 							{
@@ -438,12 +454,17 @@ namespace Charlotte.CSSolutions
 							index++;
 							chr = chrs[index];
 
-							if (chr == 't')
-								chr = '\t';
-							else if (chr == 'r')
-								chr = '\r';
-							else if (chr == 'n')
-								chr = '\n';
+							switch (chr)
+							{
+								case 't': chr = '\t'; break;
+								case 'r': chr = '\r'; break;
+								case 'n': chr = '\n'; break;
+								case 'u': throw null; // 想定外？？？
+								case '\\': break;
+
+								default:
+									throw null; // 想定外
+							}
 						}
 						dest.Append("\\u");
 						dest.Append(((ushort)chr).ToString("x4"));
@@ -499,7 +520,7 @@ namespace Charlotte.CSSolutions
 							throw null; // never
 
 						c2++;
-						string varName = SL2_CreateVarName();
+						string varName = SLS2_CreateVarName();
 #if true
 						// リテラル文字列難読化_v1112 >
 
@@ -523,7 +544,7 @@ namespace Charlotte.CSSolutions
 							);
 						varLines.Add("\t\tpublic static IEnumerable<int> " +
 							varName + "_E_GetString() { " +
-							string.Join(" ", SL2_ToYR(line.Substring(c, c2 - c))) + " }"
+							string.Join(" ", SLS2_ToYR(line.Substring(c, c2 - c))) + " }"
 							);
 
 						// < リテラル文字列難読化_v1112
@@ -543,20 +564,20 @@ namespace Charlotte.CSSolutions
 					lines[index] = line;
 				}
 			}
-			File.WriteAllLines(_file, this.SL2_クラスの先頭に挿入(lines, varLines), Encoding.UTF8);
+			File.WriteAllLines(_file, this.SLS2_クラスの先頭に挿入(lines, varLines), Encoding.UTF8);
 
 			// リテラル文字列難読化_v1112 >
 
 			// IEnumerable<T>, Where(), Select() を使用するための、追加 using
 			{
-				this.SL2_AddUsingLineIfNotExist("using System.Collections.Generic;");
-				this.SL2_AddUsingLineIfNotExist("using System.Linq;");
+				this.SLS2_AddUsingLineIfNotExist("using System.Collections.Generic;");
+				this.SLS2_AddUsingLineIfNotExist("using System.Linq;");
 			}
 
 			// < リテラル文字列難読化_v1112
 		}
 
-		private static string SL2_CreateVarName()
+		private static string SLS2_CreateVarName()
 		{
 			// crand 128 bit -> 重複を想定しない。
 
@@ -567,7 +588,7 @@ namespace Charlotte.CSSolutions
 				"_z";
 		}
 
-		private static IEnumerable<string> SL2_ToYR(string code)
+		private static IEnumerable<string> SLS2_ToYR(string code)
 		{
 			if (code.Length < 2)
 				throw null;
@@ -588,7 +609,7 @@ namespace Charlotte.CSSolutions
 				int dmyYRNum = SCommon.CRandom.GetRange(3, 7);
 
 				for (int c = 0; c < dmyYRNum; c++)
-					yield return SL2_MakeYR(-1);
+					yield return SLS2_MakeYR(-1);
 			}
 #else // old
 			if (code.Length == 0)
@@ -597,20 +618,24 @@ namespace Charlotte.CSSolutions
 
 			for (int index = 0; index < code.Length; index += 6)
 			{
-				if (code[index] != '\\')
+				if (
+					code[index + 0] != '\\' ||
+					code[index + 1] != 'u' ||
+					!Common.IsHexadecimal(code[index + 2]) ||
+					!Common.IsHexadecimal(code[index + 3]) ||
+					!Common.IsHexadecimal(code[index + 4]) ||
+					!Common.IsHexadecimal(code[index + 5])
+					)
 					throw null;
 
-				if (code[index + 1] != 'u')
-					throw null;
+				if (SCommon.CRandom.GetInt(2) == 0) // ランダムにダミー値を差し込む
+					yield return SLS2_MakeYR(-1);
 
-				if (SCommon.CRandom.GetInt(2) == 0) // ? 1/2 ランダム
-					yield return SL2_MakeYR(-1);
-
-				yield return SL2_MakeYR((int)Convert.ToUInt16(code.Substring(index + 2, 4), 16));
+				yield return SLS2_MakeYR((int)Convert.ToUInt16(code.Substring(index + 2, 4), 16));
 			}
 		}
 
-		private static string SL2_MakeYR(int chr)
+		private static string SLS2_MakeYR(int chr)
 		{
 			// (0x0000 + 1) + 65537 * 0 == 1
 			// (0xffff + 1) + 65537 * 0 == 65536
@@ -620,12 +645,12 @@ namespace Charlotte.CSSolutions
 			// (0xffff + 1) + 65537 * 32766 == 2147450878 (0x7fff7ffe)
 
 			int value = (chr + 1) + 65537 * SCommon.CRandom.GetRange(15259, 32766);
-			//int value = (chr + 1) + 65537 * SCommon.CRandom.GetRange(0, 32766); // orig
+			//int value = (chr + 1) + 65537 * SCommon.CRandom.GetRange(0, 32766); // old
 
 			return "yield return " + value + ";";
 		}
 
-		private IEnumerable<string> SL2_クラスの先頭に挿入(string[] lines, List<string> varLines)
+		private IEnumerable<string> SLS2_クラスの先頭に挿入(string[] lines, List<string> varLines)
 		{
 			if (varLines.Count == 0)
 				return lines;
@@ -638,7 +663,7 @@ namespace Charlotte.CSSolutions
 			return lines.Take(index).Concat(varLines).Concat(lines.Skip(index));
 		}
 
-		private void SL2_AddUsingLineIfNotExist(string targLine)
+		private void SLS2_AddUsingLineIfNotExist(string targLine)
 		{
 			string[] lines = File.ReadAllLines(_file, Encoding.UTF8);
 
@@ -663,7 +688,7 @@ namespace Charlotte.CSSolutions
 			dmCount /= 3;
 			dmCount++;
 
-			// DM-生成＆挿入
+			// ダミーメンバーの生成と挿入
 			{
 				List<string> dest = new List<string>();
 

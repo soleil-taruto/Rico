@@ -22,5 +22,12 @@ namespace Charlotte
 				chr == '_' ||
 				0x100 <= (uint)chr; // ? 日本語
 		}
+
+		public static bool IsHexadecimal(char chr)
+		{
+			return
+				SCommon.HEXADECIMAL.Contains(chr) ||
+				SCommon.hexadecimal.Contains(chr);
+		}
 	}
 }
