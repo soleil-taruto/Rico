@@ -303,6 +303,7 @@ namespace Charlotte.CSSolutions
 			text = SAM_Replace(text, "protected const", "public static");
 			text = SAM_Replace(text, "public const", "public static");
 			text = SAM_Replace(text, "const", "");
+			text = SAM_Replace(text, "readonly", "");
 			//text = SAM_Replace(text, "private", "public"); // 継承クラスに同名のメンバが居るとマズい。
 			//text = SAM_Replace(text, "protected", "public"); // protected override に対応していない。
 			text = SAM_Replace(text, "public static class", "public class");
@@ -709,14 +710,33 @@ namespace Charlotte.CSSolutions
 
 				// ダミーメンバー_02
 				{
-					int dmCount = SCommon.CRandom.GetRange(0, 13);
+					int dmCount = SCommon.CRandom.GetRange(1, 13);
 					string ident = ADM_CreateIdent();
 
-					dest.Add("\t\tpublic int " + ident + "_GetInt_0() { return " + SCommon.CRandom.GetUInt24() + "; }");
+					dest.Add("\t\tpublic static int " +
+						ident + "_Count_0;"
+						);
+					dest.Add("\t\tpublic int " +
+						ident + "_GetInt_0() { return " +
+						ident + "_Count_0; }"
+						);
 
 					for (int index = 0; index < dmCount; index++)
 					{
-						dest.Add("\t\tpublic int " + ident + "_GetInt_" + (index + 1) + "() { return " + ident + "_GetInt_" + index + "(); }");
+						int nextIndex = index + 1;
+
+						dest.Add("\t\tpublic static int " +
+							ident + "_Count_" +
+							nextIndex + ";"
+							);
+						dest.Add("\t\tpublic int " +
+							ident + "_GetInt_" +
+							nextIndex + "() { return " +
+							ident + "_Count_" +
+							nextIndex + " + " +
+							ident + "_GetInt_" +
+							index + "(); }"
+							);
 					}
 				}
 
