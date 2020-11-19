@@ -725,6 +725,27 @@ namespace Charlotte.CSSolutions
 					{
 						int nextIndex = index + 1;
 
+						string op = SCommon.CRandom.ChooseOne(SCommon.TextToLines(@"
+
++
+-
+*
+/
+%
+|
+&
+^
+== 0 ? 0 :
+== 0 ? 1 :
+== 1 ? 0 :
+== 1 ? 1 :
+!= 0 ? 0 :
+!= 0 ? 1 :
+!= 1 ? 0 :
+!= 1 ? 1 :
+
+").Select(v => v.Trim()).Where(v => v != "").ToArray());
+
 						dest.Add("\t\tpublic static int " +
 							ident + "_Count_" +
 							nextIndex + ";"
@@ -732,10 +753,11 @@ namespace Charlotte.CSSolutions
 						dest.Add("\t\tpublic int " +
 							ident + "_GetInt_" +
 							nextIndex + "() { return " +
-							ident + "_Count_" +
-							nextIndex + " + " +
 							ident + "_GetInt_" +
-							index + "(); }"
+							index + "() " +
+							op + " " +
+							ident + "_Count_" +
+							nextIndex + "; }"
 							);
 					}
 				}
