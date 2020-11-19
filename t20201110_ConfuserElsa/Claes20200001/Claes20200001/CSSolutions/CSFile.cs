@@ -684,25 +684,42 @@ namespace Charlotte.CSSolutions
 			if (end == -1)
 				return;
 
-			int dmCount = lines.Length / dmLines.Length;
-			dmCount /= 3;
-			dmCount++;
-
 			// ダミーメンバーの生成と挿入
 			{
 				List<string> dest = new List<string>();
 
-				for (int index = 0; index < dmCount; index++)
+				// ダミーメンバー_01
 				{
-					string ident = ADM_CreateIdent();
+					int dmCount = lines.Length / dmLines.Length;
+					dmCount /= 3;
+					dmCount++;
 
-					foreach (string f_line in dmLines)
+					for (int index = 0; index < dmCount; index++)
 					{
-						string line = f_line;
-						line = line.Replace("SSS_", ident + "_");
-						dest.Add(line);
+						string ident = ADM_CreateIdent();
+
+						foreach (string f_line in dmLines)
+						{
+							string line = f_line;
+							line = line.Replace("SSS_", ident + "_");
+							dest.Add(line);
+						}
 					}
 				}
+
+				// ダミーメンバー_02
+				{
+					int dmCount = SCommon.CRandom.GetRange(0, 13);
+					string ident = ADM_CreateIdent();
+
+					dest.Add("\t\tpublic int " + ident + "_GetInt_0() { return " + SCommon.CRandom.GetUInt24() + "; }");
+
+					for (int index = 0; index < dmCount; index++)
+					{
+						dest.Add("\t\tpublic int " + ident + "_GetInt_" + (index + 1) + "() { return " + ident + "_GetInt_" + index + "(); }");
+					}
+				}
+
 				lines = lines.Take(end).Concat(dest).Concat(lines.Skip(end)).ToArray();
 			}
 
