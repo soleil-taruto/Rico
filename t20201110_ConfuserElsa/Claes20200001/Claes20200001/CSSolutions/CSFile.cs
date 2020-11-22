@@ -299,15 +299,32 @@ namespace Charlotte.CSSolutions
 			text = SAM_Replace(text, "{ private get; set; }", ";");
 			text = SAM_Replace(text, "{ set; private get; }", ";");
 			text = SAM_Replace(text, "{ private set; get; }", ";");
+#if true // string 以外 (int や double など) は const のままにする。
+			text = SAM_Replace(text, "private const string", "public static string");
+			text = SAM_Replace(text, "protected const string", "public static string");
+			text = SAM_Replace(text, "public const string", "public static string");
+			text = SAM_Replace(text, "const string", "string");
+			// ----
+			text = SAM_Replace(text, "private const", "public const");
+			text = SAM_Replace(text, "protected const", "public const");
+			//text = SAM_Replace(text, "public const", "public const"); // 同じ
+#else // old
 			text = SAM_Replace(text, "private const", "public static");
 			text = SAM_Replace(text, "protected const", "public static");
 			text = SAM_Replace(text, "public const", "public static");
 			text = SAM_Replace(text, "const", "");
+#endif
 			text = SAM_Replace(text, "readonly", "");
 			//text = SAM_Replace(text, "private", "public"); // 継承クラスに同名のメンバが居るとマズい。
 			//text = SAM_Replace(text, "protected", "public"); // protected override に対応していない。
 			text = SAM_Replace(text, "public static class", "public class");
 			text = SAM_Replace(text, "static class Program", "public class Program"); // Program.cs 専用
+
+			// public const -> public static 追加_v1122
+			{
+				text = SAM_PublicConstVarToPublicStaticVar(text);
+				text = SAM_Replace(text, "const", ""); // SAM_PublicConstVarToPublicStaticVar による変換により、必要になった。
+			}
 
 			File.WriteAllText(_file, text, Encoding.UTF8);
 		}
@@ -335,6 +352,112 @@ namespace Charlotte.CSSolutions
 		private static bool SAM_IsSpaceOrPunct(char chr)
 		{
 			return !Common.IsCSWordChar(chr);
+		}
+
+		private static string SAM_PublicConstVarToPublicStaticVar(string text)
+		{
+			const string START_PTN = "\tpublic const ";
+
+			int index = 0;
+
+			for (; ; )
+			{
+				int start = text.IndexOf(START_PTN, index);
+
+				if (start == -1)
+					break;
+
+				int end = text.IndexOf('=', start + START_PTN.Length);
+
+				if (end == -1)
+					break;
+
+				int indentLen = SAM_PCVTPSV_GetIndentLen(text, start + 1);
+				string indent = new string(Enumerable.Range(0, indentLen).Select(dummy => '\t').ToArray());
+
+				string midText = text.Substring(start, end - start);
+				string midTextNew;
+
+				Console.WriteLine("* " + midText); // test
+
+				string varType;
+				string varName;
+				string varName_INITED = SAM_CreateVarName();
+				string varName_Value = SAM_CreateVarName();
+
+				{
+					string[] tokens = SCommon.Tokenize(midText, " ", false, true);
+
+					if (tokens.Length != 4)
+						throw null; // 想定外
+
+					// [0] public
+					// [1] const
+					varType = tokens[2]; // 型名
+					varName = tokens[3]; // フィールド名
+
+					midTextNew =
+						"\tpublic static " +
+						varType + " " +
+						varName + " { get { if (!" +
+						varName_INITED + ") { " +
+						varName_INITED + " = true; " +
+						varName_Value + " ";
+				}
+
+				text = text.Substring(0, start) + midTextNew + text.Substring(end);
+
+				index = end;
+				index -= midText.Length;
+				index += midTextNew.Length;
+
+				// ----
+
+				start = text.IndexOf(';', index);
+
+				if (start == -1)
+					throw null; // 想定外
+
+				end = start + 1;
+
+				midText = text.Substring(start, end - start);
+				midTextNew =
+					"; } return " +
+					varName_Value + "; }}" +
+					Consts.CRLF + indent + "public static bool " +
+					varName_INITED + ";" +
+					Consts.CRLF + indent + "public static " +
+					varType + " " +
+					varName_Value + ";";
+
+				text = text.Substring(0, start) + midTextNew + text.Substring(end);
+
+				index = end;
+				index -= midText.Length;
+				index += midTextNew.Length;
+			}
+			return text;
+		}
+
+		private static int SAM_PCVTPSV_GetIndentLen(string text, int end)
+		{
+			int start = end;
+
+			while (0 < start && text[start - 1] == '\t')
+				start--;
+
+			return end - start;
+		}
+
+		private static string SAM_CreateVarName()
+		{
+			// crand 128 bit -> 重複を想定しない。
+
+			return
+				"SAM_a_" +
+				SCommon.CRandom.GetUInt64().ToString("D20") + "_" +
+				SCommon.CRandom.GetUInt64().ToString("D20") +
+				"_z";
 		}
 
 		public void SolveLiteralStrings()
@@ -583,7 +706,7 @@ namespace Charlotte.CSSolutions
 			// crand 128 bit -> 重複を想定しない。
 
 			return
-				"SL2_a_" +
+				"SLS2_a_" +
 				SCommon.CRandom.GetUInt64().ToString("D20") + "_" +
 				SCommon.CRandom.GetUInt64().ToString("D20") +
 				"_z";
@@ -674,6 +797,25 @@ namespace Charlotte.CSSolutions
 			}
 		}
 
+		public void OpenClosedEmptyClass()
+		{
+			string[] lines = File.ReadAllLines(_file, Encoding.UTF8);
+			int bracketPos = SCommon.IndexOf(lines, v => v == "\t{ }");
+
+			if (bracketPos != -1)
+			{
+				// このメソッドが処理した痕跡を残したいのでブロックの間にコメントを差し込んでおく
+				// 単語の置換に引っかからないよう、数字で始まる「単語」にする。
+				// --> // 00_ocec
+
+				File.WriteAllLines(
+					_file,
+					lines.Take(bracketPos).Concat(new string[] { "\t{", "\t\t// 00_ocec", "\t}" }).Concat(lines.Skip(bracketPos + 1)),
+					Encoding.UTF8
+					);
+			}
+		}
+
 		public void AddDummyMember()
 		{
 			string[] lines = File.ReadAllLines(_file, Encoding.UTF8);
@@ -683,7 +825,7 @@ namespace Charlotte.CSSolutions
 			int end = ADM_GetClassEnd(lines);
 
 			if (end == -1)
-				return;
+				throw null; // 想定外
 
 			// ダミーメンバーの生成と挿入
 			{
@@ -729,12 +871,6 @@ namespace Charlotte.CSSolutions
 
 +
 -
-*
-/
-%
-|
-&
-^
 == 0 ? 0 :
 == 0 ? 1 :
 == 1 ? 0 :
@@ -892,11 +1028,9 @@ namespace Charlotte.CSSolutions
 			int start;
 			int end = SMO_GetClassEnd(lines);
 
-			if (end == -1) // ? クラス閉じが見つからない。-> メンバーが無いのかも？終了する。
-			{
-				Console.WriteLine("シャッフル・キャンセル -- クラス閉じが見つからない。");
-				return;
-			}
+			if (end == -1) // ? クラス閉じが見つからない -> 想定外
+				throw null;
+
 			List<SMO_RangeInfo> ranges = new List<SMO_RangeInfo>();
 			bool dllImportFlag = false;
 

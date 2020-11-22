@@ -32,6 +32,7 @@ namespace Charlotte
 
 			CSSolution sol = new CSSolution(workSolutionFile);
 
+			sol.Clean(); // 難読化前にクリーンアップ必要
 			sol.Confuse();
 			sol.Rebuild();
 
