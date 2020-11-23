@@ -423,10 +423,11 @@ namespace Charlotte.CSSolutions
 
 				// ----
 
-				// = から ; までの間に、余計な ; は無いと想定する。
-				// const な string ではないフィールドの初期化だから無いはず...たぶん...
+				// = から ; までの間に、余計な ; は無いと思ったけど
+				// 少なくとも public char SemiColon = ';'; がある。
+				// ; の直後は改行のはずなので、それも検索パターンに入れて回避する。
 				//
-				start = text.IndexOf(';', index);
+				start = text.IndexOf(";" + Consts.CRLF, index);
 
 				if (start == -1)
 					throw null; // 想定外
@@ -434,7 +435,7 @@ namespace Charlotte.CSSolutions
 				// 初期化値の置き換え
 				{
 					midText = text.Substring(index, start - index);
-					midTextNew = SAM_PCVTPSV_初期価値の置き換え(midText);
+					midTextNew = SAM_PCVTPSV_初期化値の置き換え(midText);
 
 					if (midTextNew != null)
 					{
@@ -476,7 +477,7 @@ namespace Charlotte.CSSolutions
 			return end - start;
 		}
 
-		private static string SAM_PCVTPSV_初期価値の置き換え(string initValue) // ret: null == 置き換えナシ
+		private static string SAM_PCVTPSV_初期化値の置き換え(string initValue) // ret: null == 置き換えナシ
 		{
 			initValue = initValue.Trim();
 
