@@ -125,8 +125,8 @@ namespace Charlotte.CSSolutions
 				csFile.SolveNamespace();
 				csFile.RemoveComments();
 				csFile.RemovePreprocessorDirectives();
-				csFile.SolveLiteralStrings(); // SolveAccessModifiers より先に @ 2020.11.22
 				csFile.SolveAccessModifiers();
+				csFile.SolveLiteralStrings();
 				csFile.OpenClosedEmptyClass();
 				csFile.AddDummyMember();
 				csFile.RenameEx(rvf.Filter, rvf.Is予約語クラス名);

@@ -378,12 +378,14 @@ namespace Charlotte.CSSolutions
 				string midText = text.Substring(start, end - start);
 				string midTextNew;
 
-				Console.WriteLine("* " + midText); // test
+				//Console.WriteLine("* " + midText); // test
 
 				string varType;
 				string varName;
 				string varName_INITED = SAM_CreateVarName();
 				string varName_Value = SAM_CreateVarName();
+				string varName_GetValue = SAM_CreateVarName();
+				string varName_GetValue_Ret = SAM_CreateVarName();
 
 				{
 					string[] tokens = SCommon.Tokenize(midText, " ", false, true);
@@ -395,35 +397,60 @@ namespace Charlotte.CSSolutions
 					// [1] const
 					varType = tokens[2]; // 型名
 					varName = tokens[3]; // フィールド名
-
-					midTextNew =
-						"\tpublic static " +
-						varType + " " +
-						varName + " { get { if (!" +
-						varName_INITED + ") { " +
-						varName_INITED + " = true; " +
-						varName_Value + " ";
 				}
+
+				midTextNew =
+					"\tpublic static " +
+					varType + " " +
+					varName + " { get { if (!" +
+					varName_INITED + ") { " +
+					varName_INITED + " = true; " +
+					varName_Value + " = " +
+					varName_GetValue + "(); } return " +
+					varName_Value + "; }}" +
+					Consts.CRLF + indent + "public static " +
+					varType + " " +
+					varName_GetValue + "() { " +
+					varType + " " +
+					varName_GetValue_Ret + " ";
 
 				text = text.Substring(0, start) + midTextNew + text.Substring(end);
 
 				index = end;
+				index++; // Skip '='
 				index -= midText.Length;
 				index += midTextNew.Length;
 
 				// ----
 
+				// = から ; までの間に、余計な ; は無いと想定する。
+				// const な string ではないフィールドの初期化だから無いはず...たぶん...
+				//
 				start = text.IndexOf(';', index);
 
 				if (start == -1)
 					throw null; // 想定外
 
+				// 初期化値の置き換え
+				{
+					midText = text.Substring(index, start - index);
+					midTextNew = SAM_PCVTPSV_初期価値の置き換え(midText);
+
+					if (midTextNew != null)
+					{
+						text = text.Substring(0, index) + midTextNew + text.Substring(start);
+
+						start -= midText.Length;
+						start += midTextNew.Length;
+					}
+				}
+
 				end = start + 1;
 
 				midText = text.Substring(start, end - start);
 				midTextNew =
-					"; } return " +
-					varName_Value + "; }}" +
+					"; return " +
+					varName_GetValue_Ret + "; }" +
 					Consts.CRLF + indent + "public static bool " +
 					varName_INITED + ";" +
 					Consts.CRLF + indent + "public static " +
@@ -447,6 +474,24 @@ namespace Charlotte.CSSolutions
 				start--;
 
 			return end - start;
+		}
+
+		private static string SAM_PCVTPSV_初期価値の置き換え(string initValue) // ret: null == 置き換えナシ
+		{
+			initValue = initValue.Trim();
+
+			if (Regex.IsMatch(initValue, "^[-]?[0-9]{0,10}$"))
+			{
+				long tmp = long.Parse(initValue);
+
+				if (int.MinValue <= tmp && tmp <= int.MaxValue)
+				{
+					// リテラル文字列の難読化を適用させるために、改行が要る。
+					//
+					return "int.Parse(" + Consts.CRLF + "\"" + initValue + "\")";
+				}
+			}
+			return null;
 		}
 
 		private static string SAM_CreateVarName()
