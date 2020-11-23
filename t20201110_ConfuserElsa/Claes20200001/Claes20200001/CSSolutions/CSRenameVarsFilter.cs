@@ -60,9 +60,13 @@ namespace Charlotte.CSSolutions
 		public string CreateNameNew()
 		{
 			string nameNew;
+			int countTry = 0;
 
 			do
 			{
+				if (1000 < ++countTry)
+					throw new Exception("想定外のトライ回数 -- 非常に運が悪いか NameNew を生成し尽くした。");
+
 				nameNew = this.TryCreateNameNew();
 			}
 			while (this.CNN_Names.ContainsKey(nameNew) || this.置き換え禁止ワードのリスト.Contains(nameNew));
