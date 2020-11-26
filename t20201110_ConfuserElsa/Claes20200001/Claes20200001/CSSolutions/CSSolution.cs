@@ -136,7 +136,6 @@ namespace Charlotte.CSSolutions
 			CSProjectFile projFile = new CSProjectFile(this.ProjectFile);
 
 			projFile.ShuffleCompileOrder();
-			projFile.RenameCompiles();
 		}
 	}
 }
