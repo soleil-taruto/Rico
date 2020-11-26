@@ -485,7 +485,7 @@ namespace Charlotte.CSSolutions
 			{
 				long tmp = long.Parse(initValue);
 
-				if (int.MinValue <= tmp && tmp <= int.MaxValue)
+				if ((long)int.MinValue <= tmp && tmp <= (long)int.MaxValue)
 				{
 					// リテラル文字列の難読化を適用させるために、改行が要る。
 					//

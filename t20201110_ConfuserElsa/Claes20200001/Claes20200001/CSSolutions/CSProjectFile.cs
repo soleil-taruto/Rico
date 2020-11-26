@@ -93,42 +93,54 @@ namespace Charlotte.CSSolutions
 				yield return lines[lineIndex++];
 		}
 
-		// ソースファイル名が実行ファイルに入っているかは不明 -- 多分入っていないと思う。
-		// 単純にファイル名を変更するだけではエラーになる。
-		// 現状で必須ではないので、一旦廃止とする。@ 2020.11.25
-#if false // 廃止
 		public void RenameCompiles()
 		{
-			string[] lines = File.ReadAllLines(_file, Encoding.UTF8);
+			RC_RenameCompiles(_file, RC_RenameCSFiles(Path.GetDirectoryName(_file)));
+		}
+
+		private static Dictionary<string, string> RC_RenameCSFiles(string projectDir)
+		{
+			Dictionary<string, string> renamedCSFilePairs = SCommon.CreateDictionaryIgnoreCase<string>();
 
 			string homeDir = Directory.GetCurrentDirectory();
 			try
 			{
-				string projectDir = Path.GetDirectoryName(_file);
-
 				Directory.SetCurrentDirectory(projectDir);
 
-				string[] underCSFiles = RC_GetProjectCSFiles(projectDir).ToArray();
-
-				for (int index = 0; index < lines.Length; index++)
+				foreach (string f_file in Directory.GetFiles(".", "*", SearchOption.AllDirectories))
 				{
-					string[] parts = Common.DivideTag(lines[index], "<Compile Include=\"", "\"");
+					string file = f_file;
 
-					if (parts != null)
+					Console.WriteLine("RC_file: " + file);
+
+					if (!SCommon.EndsWithIgnoreCase(file, ".cs")) // ? .cs ではない -> 除外
+						continue;
+
+					file = SCommon.MakeFullPath(file);
+					file = SCommon.ChangeRoot(file, projectDir);
+
+					if (SCommon.StartsWithIgnoreCase(file, "Properties\\")) // ? Properties フォルダの配下 -> 除外
+						continue;
+
+					string nameOld = file.Substring(0, file.Length - 3); // .cs を除去
+					string nameNew = RC_CreateName();
+
+					Action<string> a_rename = suffix =>
 					{
-						string file = parts[2];
+						string fileOld = nameOld + suffix;
+						string fileNew = nameNew + suffix;
 
-						//Console.WriteLine("RC_file: " + file); // test
+						if (!File.Exists(fileOld))
+							return;
 
-						if (!underCSFiles.Any(v => SCommon.EqualsIgnoreCase(v, file)))
-							throw null; // 想定外
+						File.Move(fileOld, fileNew);
 
-						string fileNew = RC_CreateCSFileNew();
+						renamedCSFilePairs.Add(fileOld, fileNew);
+					};
 
-						File.Move(file, fileNew);
-
-						lines[index] = parts[0] + parts[1] + fileNew + parts[3] + parts[4];
-					}
+					a_rename(".cs");
+					a_rename(".Designer.cs");
+					a_rename(".resx");
 				}
 			}
 			finally
@@ -136,30 +148,47 @@ namespace Charlotte.CSSolutions
 				Directory.SetCurrentDirectory(homeDir);
 			}
 
-			File.WriteAllLines(_file, lines, Encoding.UTF8);
+			return renamedCSFilePairs;
 		}
 
-		private static IEnumerable<string> RC_GetProjectCSFiles(string projectDir)
+		private static string RC_CreateName()
 		{
-			foreach (string f_file in Directory.GetFiles(projectDir, "*", SearchOption.AllDirectories))
-			{
-				string file = f_file;
+			// crand 128 bit -> 重複を想定しない。
 
-				file = SCommon.MakeFullPath(file);
-				file = SCommon.ChangeRoot(file, projectDir);
-
-				yield return file;
-			}
-		}
-
-		private static string RC_CreateCSFileNew()
-		{
 			return
 				"Elsa_" +
-				SCommon.CRandom.GetUInt64().ToString("D20") + "_" +
+				SCommon.CRandom.GetUInt64().ToString("D20") + "_de_" +
 				SCommon.CRandom.GetUInt64().ToString("D20") +
-				".cs";
+				"_Sica";
 		}
-#endif
+
+		private static void RC_RenameCompiles(string projectFile, Dictionary<string, string> renamedCSFilePairs)
+		{
+			string[] lines = File.ReadAllLines(projectFile, Encoding.UTF8);
+
+			for (int index = 0; index < lines.Length; index++)
+			{
+				string line = lines[index];
+				string[] parts = SCommon.ParseEnclosed(line, "<Compile Include=\"", "\"");
+
+				if (parts == null)
+					continue;
+
+				string fileOld = parts[2];
+
+				Console.WriteLine("RC_fileOld: " + fileOld);
+
+				if (!renamedCSFilePairs.ContainsKey(fileOld))
+				{
+					Console.WriteLine("名前を変更していない。");
+					continue;
+				}
+				string fileNew = renamedCSFilePairs[fileOld];
+
+				line = parts[0] + parts[1] + fileNew + parts[3] + parts[4];
+				lines[index] = line;
+			}
+			File.WriteAllLines(projectFile, lines, Encoding.UTF8);
+		}
 	}
 }
