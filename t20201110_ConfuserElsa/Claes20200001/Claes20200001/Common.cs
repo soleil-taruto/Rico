@@ -29,5 +29,44 @@ namespace Charlotte
 				SCommon.HEXADECIMAL.Contains(chr) ||
 				SCommon.hexadecimal.Contains(chr);
 		}
+
+#if false // 不使用
+		public static string[] DivideTag(string text, string startTag, string endTag, int startIndex = 0, bool ignoreCase = false)
+		{
+			int start;
+			int content;
+			int end;
+			int after;
+
+			if (ignoreCase)
+				start = text.ToLower().IndexOf(startTag.ToLower(), startIndex);
+			else
+				start = text.IndexOf(startTag, startIndex);
+
+			if (start == -1)
+				return null;
+
+			content = start + startTag.Length;
+
+			if (ignoreCase)
+				end = text.ToLower().IndexOf(endTag.ToLower(), content);
+			else
+				end = text.IndexOf(endTag, content);
+
+			if (end == -1)
+				return null;
+
+			after = end + endTag.Length;
+
+			return new string[]
+			{
+				text.Substring(0, start),
+				text.Substring(start, content - start),
+				text.Substring(content, end - content),
+				text.Substring(end, after - end),
+				text.Substring(after),
+			};
+		}
+#endif
 	}
 }
