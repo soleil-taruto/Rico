@@ -488,8 +488,9 @@ namespace Charlotte.CSSolutions
 				if ((long)int.MinValue <= tmp && tmp <= (long)int.MaxValue)
 				{
 					// リテラル文字列の難読化を適用させるために、改行が要る。
+					// 直前が = なので、最初に空白を入れる。
 					//
-					return "int.Parse(" + Consts.CRLF + "\"" + initValue + "\")";
+					return " int.Parse(" + Consts.CRLF + "\"" + initValue + "\")";
 				}
 			}
 			return null;
@@ -1289,7 +1290,8 @@ namespace Charlotte.CSSolutions
 				{
 					yield return "\t/// <summary>";
 
-					for (int c = SCommon.CRandom.GetRange(3, 13); 0 < c; c--)
+					//for (int c = SCommon.CRandom.GetRange(3, 13); 0 < c; c--)
+					for (int c = SCommon.CRandom.GetRange(3, 7); 0 < c; c--)
 						yield return "\t/// " + RUI_F_P3_GOL_MakeCommentLine();
 
 					yield return "\t/// </summary>";
@@ -1298,7 +1300,8 @@ namespace Charlotte.CSSolutions
 				{
 					yield return "\t\t/// <summary>";
 
-					for (int c = SCommon.CRandom.GetRange(1, 7); 0 < c; c--)
+					//for (int c = SCommon.CRandom.GetRange(1, 7); 0 < c; c--)
+					for (int c = SCommon.CRandom.GetRange(1, 5); 0 < c; c--)
 						yield return "\t\t/// " + RUI_F_P3_GOL_MakeCommentLine();
 
 					yield return "\t\t/// </summary>";
@@ -1315,7 +1318,8 @@ namespace Charlotte.CSSolutions
 
 		private static string RUI_F_P3_GOL_MakeCommentLine()
 		{
-			string[] tokens = new string[SCommon.CRandom.GetRange(7, 17)];
+			//string[] tokens = new string[SCommon.CRandom.GetRange(7, 17)];
+			string[] tokens = new string[SCommon.CRandom.GetRange(7, 13)];
 
 			for (int index = 0; index < tokens.Length; index++)
 				tokens[index] = SCommon.CRandom.ChooseOne(RUI_F_P3_GOL_MCL_Words);
