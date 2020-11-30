@@ -24,16 +24,21 @@ namespace Charlotte
 			string solutionDir = Path.GetDirectoryName(solutionFile);
 			string workSolutionDir = Path.Combine(workDir, "tmpsol");
 			string workSolutionFile = Path.Combine(workSolutionDir, Path.GetFileName(solutionFile));
+			string workSolutionDir_mid = workSolutionDir + "_mid";
 
 			SCommon.DeletePath(workSolutionDir);
 			SCommon.CopyDir(solutionDir, workSolutionDir);
+			SCommon.DeletePath(workSolutionDir_mid);
 
 			// まかり間違っても masterSol.Confuse() を実行しないように！
 
 			CSSolution sol = new CSSolution(workSolutionFile);
 
 			sol.Clean(); // 難読化前にクリーンアップ必要
-			sol.Confuse();
+			sol.Confuse(() =>
+			{
+				SCommon.CopyDir(workSolutionDir, workSolutionDir_mid);
+			});
 			sol.Rebuild();
 
 			CSSolution masterSol = new CSSolution(solutionFile);

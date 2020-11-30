@@ -109,7 +109,7 @@ namespace Charlotte.CSSolutions
 		/// 難読化する。
 		/// 注意：ソースファイルを書き換える！
 		/// </summary>
-		public void Confuse()
+		public void Confuse(Action a_beforeRemoveUnnecessaryInformations)
 		{
 			CSFile[] csFiles = Directory.GetFiles(this.ProjectDir, "*.cs", SearchOption.AllDirectories)
 				.Where(v => !SCommon.ContainsIgnoreCase(v.Substring(this.ProjectDir.Length), "\\Properties\\"))
@@ -131,12 +131,28 @@ namespace Charlotte.CSSolutions
 				csFile.AddDummyMember();
 				csFile.RenameEx(rvf.Filter, rvf.Is予約語クラス名);
 				csFile.ShuffleMemberOrder();
-				csFile.RemoveUnnecessaryInformations();
+				//csFile.RemoveUnnecessaryInformations(); // moved
 			}
 
 			CSProjectFile projFile = new CSProjectFile(this.ProjectFile);
 
 			projFile.ShuffleCompileOrder();
+			//projFile.RenameCompiles(rvf.CreateNameNew); // moved
+			//projFile.RemoveUnnecessaryInformations(); // moved
+
+			// ----
+
+			a_beforeRemoveUnnecessaryInformations();
+
+			// ----
+
+			foreach (CSFile csFile in csFiles)
+			{
+				Console.WriteLine("file.2: " + csFile.GetFile());
+
+				csFile.RemoveUnnecessaryInformations();
+			}
+
 			projFile.RenameCompiles(rvf.CreateNameNew);
 			projFile.RemoveUnnecessaryInformations();
 		}
