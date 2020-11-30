@@ -786,6 +786,8 @@ namespace Charlotte.CSSolutions
 				yield return SL2_MakeYR(-1);
 #endif
 
+			int divFuncPermil = 100;
+
 			for (int index = 0; index < code.Length; index += 6)
 			{
 				if (
@@ -797,6 +799,25 @@ namespace Charlotte.CSSolutions
 					!Common.IsHexadecimal(code[index + 5])
 					)
 					throw null;
+
+				// メソッド分割
+				{
+					if (SCommon.CRandom.GetInt(1000) < divFuncPermil)
+					{
+						string name = SLS2_CreateVarName();
+
+						yield return "foreach (int " +
+							name + "_Char in " +
+							name + "_Next()) { yield return " +
+							name + "_Char; }}" +
+							Consts.CRLF + "\t\tpublic static IEnumerable<int> " + // メンバーの並びシャッフルのために改行が要る。
+							name + "_Next() {";
+
+						divFuncPermil = 1;
+					}
+					else
+						divFuncPermil++;
+				}
 
 				if (SCommon.CRandom.GetInt(2) == 0) // ランダムにダミー値を差し込む
 					yield return SLS2_MakeYR(-1);
@@ -1185,6 +1206,123 @@ namespace Charlotte.CSSolutions
 				for (int index = range.Start; index < range.End; index++)
 					yield return lines[index];
 			}
+		}
+
+		/// <summary>
+		/// ビルドに不要な情報を除去する。
+		/// -- 万が一出力実行ファイルに情報が含まれていると困るので、念のため実行する。
+		/// ---- 恐らく実行しなくても良い。
+		/// </summary>
+		public void RemoveUnnecessaryInformations()
+		{
+			string[] lines = File.ReadAllLines(_file, Encoding.UTF8);
+
+			lines = lines
+				.Where(line => line != "") // ? 空行ではない。
+				.Where(line => !line.StartsWith("//")) // ? 行頭から始まるC++系コメント行ではない。
+				.ToArray();
+
+			File.WriteAllLines(_file, lines, Encoding.UTF8);
+
+			this.RUI_Formatting();
+		}
+
+		/// <summary>
+		/// ソースコードの整形
+		/// -- 尚更実行しなくても良い処理
+		/// </summary>
+		private void RUI_Formatting()
+		{
+			// P.1
+			{
+				string text = File.ReadAllText(_file, Encoding.UTF8);
+
+				text = text.Replace(" {", Consts.CRLF + "\t\t{");
+				text = text.Replace(" }", Consts.CRLF + "\t\t}");
+				text = text.Replace("{ ", "{" + Consts.CRLF);
+				text = text.Replace("} ", "}" + Consts.CRLF);
+				//text = text.Replace("; ", ";" + Consts.CRLF);
+				text = text.Replace("; yield return ", ";" + Consts.CRLF + "yield return ");
+
+				File.WriteAllText(_file, text, Encoding.UTF8);
+			}
+
+			// P.2
+			{
+				string[] lines = File.ReadAllLines(_file, Encoding.UTF8);
+
+				File.WriteAllLines(_file, RUI_F_P2_GetOutputLines(lines), Encoding.UTF8);
+			}
+
+			// P.3
+			{
+				string[] lines = File.ReadAllLines(_file, Encoding.UTF8);
+
+				File.WriteAllLines(_file, RUI_F_P3_GetOutputLines(lines), Encoding.UTF8);
+			}
+		}
+
+		private static IEnumerable<string> RUI_F_P2_GetOutputLines(string[] lines)
+		{
+			for (int index = 0; index < lines.Length; index++)
+			{
+				if (
+					lines[index].StartsWith("namespace ") ||
+					1 <= index &&
+					lines[index - 1].Trim() != "{" &&
+					(
+						lines[index].Trim().StartsWith("public ") ||
+						lines[index].Trim().StartsWith("protected ") ||
+						lines[index].Trim().StartsWith("private ")
+					))
+					yield return "";
+
+				yield return lines[index];
+			}
+		}
+
+		private static IEnumerable<string> RUI_F_P3_GetOutputLines(string[] lines)
+		{
+			foreach (string line in lines)
+			{
+				if (line.StartsWith("\tpublic ")) // ? クラス || 構造体
+				{
+					yield return "\t/// <summary>";
+
+					for (int c = SCommon.CRandom.GetRange(3, 13); 0 < c; c--)
+						yield return "\t/// " + RUI_F_P3_GOL_MakeCommentLine();
+
+					yield return "\t/// </summary>";
+				}
+				else if (line.StartsWith("\t\tpublic ")) // ? メソッド || フィールド || プロパティ || サブクラス
+				{
+					yield return "\t\t/// <summary>";
+
+					for (int c = SCommon.CRandom.GetRange(1, 7); 0 < c; c--)
+						yield return "\t\t/// " + RUI_F_P3_GOL_MakeCommentLine();
+
+					yield return "\t\t/// </summary>";
+				}
+				yield return line;
+			}
+		}
+
+		private static string[] RUI_F_P3_GOL_MCL_Words = SCommon.TextToLines(CSResources.英単語リスト)
+			.Select(v => v.Trim())
+			.Where(v => v != "" && v[0] != ';') // ? 空行ではない && コメント行ではない
+			.Select(v => v.Substring(0, v.IndexOf('\t'))) // 品詞の部分を除去
+			.ToArray();
+
+		private static string RUI_F_P3_GOL_MakeCommentLine()
+		{
+			string[] tokens = new string[SCommon.CRandom.GetRange(7, 17)];
+
+			for (int index = 0; index < tokens.Length; index++)
+				tokens[index] = SCommon.CRandom.ChooseOne(RUI_F_P3_GOL_MCL_Words);
+
+			string line = string.Join(", ", tokens);
+			line = new string(line.ToCharArray().Where(chr => chr != ',' || SCommon.CRandom.GetInt(10) == 0).ToArray());
+			return line.Substring(0, 1).ToUpper() + line.Substring(1).ToLower() + ".";
 		}
 	}
 }

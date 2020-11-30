@@ -131,11 +131,14 @@ namespace Charlotte.CSSolutions
 				csFile.AddDummyMember();
 				csFile.RenameEx(rvf.Filter, rvf.Is予約語クラス名);
 				csFile.ShuffleMemberOrder();
+				csFile.RemoveUnnecessaryInformations();
 			}
 
 			CSProjectFile projFile = new CSProjectFile(this.ProjectFile);
 
 			projFile.ShuffleCompileOrder();
+			projFile.RenameCompiles(rvf.CreateNameNew);
+			projFile.RemoveUnnecessaryInformations();
 		}
 	}
 }
