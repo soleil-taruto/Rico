@@ -581,7 +581,8 @@ namespace Charlotte.CSSolutions
 					if (chrs[index] != '\'')
 						throw null; // 想定外
 
-					dest.Append("(char)0x" + ((uint)chr).ToString("x4"));
+					dest.Append("((char)" + ((int)chr) + ")");
+					//dest.Append("((char)0x" + ((int)chr).ToString("x4") + ")"); // old
 				}
 				// ? (改行可能な)リテラル文字列
 				else if (
@@ -878,7 +879,7 @@ namespace Charlotte.CSSolutions
 
 				File.WriteAllLines(
 					_file,
-					lines.Take(bracketPos).Concat(new string[] { "\t{", "\t\t// 00_ocec", "\t}" }).Concat(lines.Skip(bracketPos + 1)),
+					lines.Take(bracketPos).Concat(new string[] { "\t{", "\t\t// 00_ocec", "\t}" }).Concat(lines.Skip(bracketPos + 1)), // ucc エラー回避のため --> // not_uuid
 					Encoding.UTF8
 					);
 			}
@@ -1234,7 +1235,6 @@ namespace Charlotte.CSSolutions
 		/// </summary>
 		private void RUI_Formatting()
 		{
-			// P.1
 			{
 				string text = File.ReadAllText(_file, Encoding.UTF8);
 
@@ -1245,25 +1245,41 @@ namespace Charlotte.CSSolutions
 				//text = text.Replace("; ", ";" + Consts.CRLF);
 				text = text.Replace("; yield return ", ";" + Consts.CRLF + "yield return ");
 
+				// "\t\tconst int" を ("const" -> "") の置き換えを実施して "\t\t int" になった場合など
+				//
+				text = text.Replace("\t ", "\t");
+
 				File.WriteAllText(_file, text, Encoding.UTF8);
 			}
 
-			// P.2
 			{
-				string[] lines = File.ReadAllLines(_file, Encoding.UTF8);
+				IEnumerable<string> lines = File.ReadAllLines(_file, Encoding.UTF8);
 
-				File.WriteAllLines(_file, RUI_F_P2_GetOutputLines(lines), Encoding.UTF8);
-			}
+				lines = lines.Select(line =>
+				{
+					if (
+						!line.StartsWith("using ") &&
+						!line.StartsWith("namespace ") &&
+						line != "{" &&
+						line != "}" &&
+						line != "" && // ? 空行ではない。
+						line[0] != '\t' // ? インデント無し
+						)
+						line = "\t\t\t" + line;
 
-			// P.3
-			{
-				string[] lines = File.ReadAllLines(_file, Encoding.UTF8);
+					return line;
+				});
 
-				File.WriteAllLines(_file, RUI_F_P3_GetOutputLines(lines), Encoding.UTF8);
+				lines = RUI_F_P1_GetOutputLines(lines.ToArray());
+				lines = RUI_F_P2A_GetOutputLines(lines.ToArray());
+				lines = RUI_F_P2B_GetOutputLines(lines.ToArray());
+				lines = RUI_F_P3_GetOutputLines(lines);
+
+				File.WriteAllLines(_file, lines, Encoding.UTF8);
 			}
 		}
 
-		private static IEnumerable<string> RUI_F_P2_GetOutputLines(string[] lines)
+		private static IEnumerable<string> RUI_F_P1_GetOutputLines(string[] lines)
 		{
 			for (int index = 0; index < lines.Length; index++)
 			{
@@ -1282,7 +1298,52 @@ namespace Charlotte.CSSolutions
 			}
 		}
 
-		private static IEnumerable<string> RUI_F_P3_GetOutputLines(string[] lines)
+		private static IEnumerable<string> RUI_F_P2A_GetOutputLines(string[] lines)
+		{
+			for (int index = 0; index < lines.Length; index++)
+			{
+				if (
+					1 <= index &&
+					Common.GetIndentDepth(lines[index]) < Common.GetIndentDepth(lines[index - 1]) &&
+					lines[index - 1].Trim() != "" &&
+					lines[index - 0].Trim() != "" &&
+					lines[index - 0].Trim() != "else" &&
+					!lines[index].Trim().StartsWith("else ") &&
+					Common.IsCSWordChar(lines[index - 1].Trim()[0]) &&
+					Common.IsCSWordChar(lines[index - 0].Trim()[0])
+					)
+					yield return "";
+
+				yield return lines[index];
+			}
+		}
+
+		private static IEnumerable<string> RUI_F_P2B_GetOutputLines(string[] lines)
+		{
+			for (int index = 0; index < lines.Length; index++)
+			{
+				if (
+					1 <= index &&
+					Common.GetIndentDepth(lines[index]) == Common.GetIndentDepth(lines[index - 1]) &&
+					lines[index - 1].Trim() != "" &&
+					lines[index - 0].Trim() != "" &&
+					Common.IsCSWordChar(lines[index - 1].Trim()[0]) &&
+					Common.IsCSWordChar(lines[index - 0].Trim()[0]) &&
+					(
+						lines[index].Trim().StartsWith("if (") ||
+						lines[index].Trim().StartsWith("for (") ||
+						lines[index].Trim().StartsWith("foreach (") ||
+						lines[index].Trim().StartsWith("switch (") ||
+						lines[index].Trim().StartsWith("using (") ||
+						lines[index].Trim().StartsWith("while (")
+					))
+					yield return "";
+
+				yield return lines[index];
+			}
+		}
+
+		private static IEnumerable<string> RUI_F_P3_GetOutputLines(IEnumerable<string> lines)
 		{
 			foreach (string line in lines)
 			{

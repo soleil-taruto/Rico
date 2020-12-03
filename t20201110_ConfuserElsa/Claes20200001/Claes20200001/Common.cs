@@ -73,5 +73,16 @@ namespace Charlotte
 				ends[2],
 			};
 		}
+
+		public static int GetIndentDepth(string line)
+		{
+			int index;
+
+			for (index = 0; index < line.Length; index++)
+				if (line[index] != '\t')
+					break;
+
+			return index;
+		}
 	}
 }
