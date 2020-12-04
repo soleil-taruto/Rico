@@ -48,15 +48,24 @@ namespace Charlotte.Tests
 
 		private void TryBuild()
 		{
-			// -- choose one --
+			// -- choose one or more --
 
-			//ElsaConfuser.Perform(@"C:\Dev\Elsa\e20200928_NovelAdv\Elsa20200001\Elsa20200001.sln", @"C:\temp");
-			//ElsaConfuser.Perform(@"C:\Dev\Elsa\e20201008_NovelAdv_Demo\Elsa20200001\Elsa20200001.sln", @"C:\temp");
-			//ElsaConfuser.Perform(@"C:\Dev\Elsa\e20201018_TateShoot_Demo\Elsa20200001\Elsa20200001.sln", @"C:\temp");
-			//ElsaConfuser.Perform(@"C:\Dev\Elsa\e20201027_YokoActTM_Demo\Elsa20200001\Elsa20200001.sln", @"C:\temp");
-			ElsaConfuser.Perform(@"C:\Dev\Elsa\e20201109_YokoActTK_Demo\Elsa20200001\Elsa20200001.sln", @"C:\temp");
+			TryBuild_Main("e20200928_NovelAdv");
+			TryBuild_Main("e20201003_NovelAdv");
+			//TryBuild_Main("e20201008_NovelAdv_Demo");
+			TryBuild_Main("e20201010_TateShoot");
+			TryBuild_Main("e20201018_TateShoot_Demo");
+			TryBuild_Main("e20201020_YokoShoot");
+			//TryBuild_Main("e20201027_YokoActTM_Demo");
+			TryBuild_Main("e20201109_YokoActTK_Demo");
+			TryBuild_Main("e20201115_Dungeon");
 
 			// --
+		}
+
+		private void TryBuild_Main(string projectName)
+		{
+			ElsaConfuser.Perform(@"C:\Dev\Elsa\" + projectName + @"\Elsa20200001\Elsa20200001.sln", @"C:\temp");
 		}
 	}
 }
