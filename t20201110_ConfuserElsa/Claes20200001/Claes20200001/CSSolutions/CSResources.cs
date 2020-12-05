@@ -117,6 +117,7 @@ when
 
 ; ====
 ; 外部シンボル名
+; 注意：これらをリネームしてもビルドは通る。実行時にエラーになる。
 ; ====
 
 AddFontResourceEx
@@ -132,7 +133,6 @@ RemoveFontResourceEx
 
 ; e20201109_YokoActTK
 
-AccessControl
 AccessControlType
 Action
 Add
@@ -143,7 +143,6 @@ AllDirectories
 Alloc
 Allow
 Anchor
-AnchorStyles
 AppDomain
 Append
 Application
@@ -155,9 +154,6 @@ AutoScaleMode
 AutoSize
 Begin
 BeginInvoke
-Bottom
-Button
-CheckBox
 CheckState
 Checked
 Clear
@@ -165,16 +161,10 @@ Click
 ClientSize
 Close
 Collect
-Collections
 Color
 Combine
-ComboBox
-ComboBoxStyle
 Comparison
-ComponentModel
-ComponentResourceManager
 Compress
-Compression
 CompressionMode
 ComputeHash
 Console
@@ -187,21 +177,16 @@ Cos
 Count
 Create
 CreateDirectory
-Cryptography
 Current
 CurrentDomain
-Data
 DateTime
 Decompress
 Delete
 Dequeue
-Diagnostics
 Dictionary
 Directory
 Dispose
 DllImport
-Drawing
-DropDownList
 DropDownStyle
 DxLibDLL
 EnableVisualStyles
@@ -214,8 +199,6 @@ Environment
 Equals
 Error
 EventArgs
-EventHandler
-EventHandler
 Exception
 ExceptionObject
 Exists
@@ -227,18 +210,13 @@ FileStream
 FirstOrDefault
 Flags
 Font
-FontStyle
 Form
 FormClosed
 FormClosedEventArgs
-FormClosedEventHandler
 FormClosing
 FormClosingEventArgs
-FormClosingEventHandler
-FormStartPosition
 Format
 FormattingEnabled
-Forms
 Free
 FromArgb
 FullControl
@@ -247,7 +225,6 @@ GC
 GCHandle
 GCHandleType
 GZipStream
-Generic
 GetByteCount
 GetBytes
 GetCommandLineArgs
@@ -265,36 +242,28 @@ GetObject
 GetRange
 GetString
 GetValues
-GraphicsUnit
-GroupBox
 Guid
 Handle
-IContainer
 IDisposable
 IEnumerable
 IEnumerator
 IEqualityComparer
-IO
 Icon
 Id
 IndexOf
 IntPtr
-InteropServices
 IsNaN
 IsNullOrEmpty
 Items
 Join
 Keys
 LayoutKind
-Left
 Length
 LinkDemand
-Linq
 List
 Load
 Location
 Main
-Manual
 Margin
 Math
 Max
@@ -322,16 +291,12 @@ Now
 OK
 Open
 PI
-Padding
 Parse
 Path
 PerformLayout
-Permissions
 Pinned
-Point
 Position
 Predicate
-Principal
 Process
 Queue
 RNGCryptoServiceProvider
@@ -340,19 +305,14 @@ Range
 Read
 ReadAllBytes
 ReadAllLines
-Reflection
-Regular
 ReleaseMutex
 RemoveAt
 Replace
 ResumeLayout
-Right
 Run
-Runtime
 SHA512
 STAThread
 SearchOption
-Security
 SecurityAction
 SecurityIdentifier
 SecurityPermission
@@ -372,7 +332,6 @@ ShowInTaskbar
 Shown
 Sin
 Size
-SizeF
 SizeGripStyle
 Sleep
 Sort
@@ -398,14 +357,12 @@ Thread
 ThreadException
 ThreadExceptionEventArgs
 ThreadExceptionEventHandler
-Threading
 ToArray
 ToInt64
 ToList
 ToLower
 ToString
 ToUpper
-Top
 TopMost
 Trim
 UInt16
@@ -423,7 +380,6 @@ WaitOne
 WellKnownSidType
 Where
 Win32
-Windows
 WndProc
 WorldSid
 Write
@@ -467,7 +423,6 @@ Convert
 Distinct
 IsMatch
 Regex
-RegularExpressions
 
 
 ; ====
