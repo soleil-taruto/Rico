@@ -424,6 +424,10 @@ Distinct
 IsMatch
 Regex
 
+; 追加 e20201210_Hakonoko
+
+Take
+
 
 ; ====
 ; その他 / 特別扱い

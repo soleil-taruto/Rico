@@ -34,8 +34,9 @@ namespace Charlotte.Tests
 			//ElsaConfuser.Perform(@"C:\Dev\Elsa\e20201103_TopViewAct_Demo\Elsa20200001\Elsa20200001.sln", @"C:\temp");
 			//ElsaConfuser.Perform(@"C:\Dev\Elsa\e20201104_YokoActTK\Elsa20200001\Elsa20200001.sln", @"C:\temp"); // 未対応 @ 2020.11.16
 			//ElsaConfuser.Perform(@"C:\Dev\Elsa\e20201108_YokoActTK\Elsa20200001\Elsa20200001.sln", @"C:\temp"); // 未対応 @ 2020.11.16
-			ElsaConfuser.Perform(@"C:\Dev\Elsa\e20201109_YokoActTK_Demo\Elsa20200001\Elsa20200001.sln", @"C:\temp");
+			//ElsaConfuser.Perform(@"C:\Dev\Elsa\e20201109_YokoActTK_Demo\Elsa20200001\Elsa20200001.sln", @"C:\temp");
 			//ElsaConfuser.Perform(@"C:\Dev\Elsa\e20201115_Dungeon\Elsa20200001\Elsa20200001.sln", @"C:\temp");
+			ElsaConfuser.Perform(@"C:\Dev\Elsa\e20201209_YokoActTK_Demo\Elsa20200001\Elsa20200001.sln", @"C:\temp");
 
 			// --
 		}
