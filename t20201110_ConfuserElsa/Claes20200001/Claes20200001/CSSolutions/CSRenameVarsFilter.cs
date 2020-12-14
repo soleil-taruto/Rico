@@ -65,7 +65,7 @@ namespace Charlotte.CSSolutions
 			do
 			{
 				if (1000 < ++countTry)
-					throw new Exception("想定外のトライ回数 -- 非常に運が悪いか NameNew を生成し尽くした。");
+					throw new Exception("想定外のトライ回数 -- 非常に運が悪いか NameNew をほぼ生成し尽くした。");
 
 				nameNew = this.TryCreateNameNew();
 			}

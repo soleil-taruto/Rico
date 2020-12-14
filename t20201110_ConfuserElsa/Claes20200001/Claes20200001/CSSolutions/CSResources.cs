@@ -427,6 +427,7 @@ Regex
 ; 追加 e20201210_Hakonoko
 
 Take
+MaxDropDownItems
 
 
 ; ====
@@ -1329,6 +1330,8 @@ Grace
 Fontaine
 Sparkle
 Earth
+
+; -- Tropical-Rouge!
 
 ";
 
