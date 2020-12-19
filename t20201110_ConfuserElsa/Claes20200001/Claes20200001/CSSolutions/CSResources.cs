@@ -424,10 +424,22 @@ Distinct
 IsMatch
 Regex
 
-; 追加 e20201210_Hakonoko
+; 追加 e20201211_Hakonoko
 
 Take
 MaxDropDownItems
+
+; 追加 e20201212_DoremyRockman
+
+Blue
+Gray
+ForeColor
+OKCancel
+Information
+DialogResult
+AddRange
+DropDownItems
+MainMenuStrip
 
 
 ; ====
