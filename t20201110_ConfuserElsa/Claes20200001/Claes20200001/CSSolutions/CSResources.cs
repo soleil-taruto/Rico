@@ -429,18 +429,6 @@ Regex
 Take
 MaxDropDownItems
 
-; 追加 e20201212_DoremyRockman
-
-Blue
-Gray
-ForeColor
-OKCancel
-Information
-DialogResult
-AddRange
-DropDownItems
-MainMenuStrip
-
 
 ; ====
 ; その他 / 特別扱い

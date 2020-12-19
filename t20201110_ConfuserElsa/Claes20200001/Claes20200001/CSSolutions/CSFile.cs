@@ -115,12 +115,21 @@ namespace Charlotte.CSSolutions
 					chrs[index + 1] == '/'
 					)
 				{
-					chrs[index + 0] = ' '; // '/' 除去
-					chrs[index + 1] = ' '; // '/' 除去
+					if (Common.IsMatch(chrs, index, CSConsts.KEEP_COMMENT_START_PATTERN.ToArray()))
+					{
+						// C++系コメントの後に改行が必ずあると想定する。
 
-					// C++系コメントの後に改行が必ずあると想定する。
+						index = RC_Skip_EC2(chrs, index + 2, '\r', '\n') + 1;
+					}
+					else
+					{
+						chrs[index + 0] = ' '; // '/' 除去
+						chrs[index + 1] = ' '; // '/' 除去
 
-					index = RC_Mask(chrs, index + 2, '\r', '\n') + 1;
+						// C++系コメントの後に改行が必ずあると想定する。
+
+						index = RC_Mask(chrs, index + 2, '\r', '\n') + 1;
+					}
 				}
 			}
 			File.WriteAllText(_file, new string(chrs), Encoding.UTF8);
@@ -161,6 +170,17 @@ namespace Charlotte.CSSolutions
 				chrs[index + 1] != endChr_2
 				)
 				chrs[index++] = ' ';
+
+			return index; // endChr_1 の位置
+		}
+
+		private static int RC_Skip_EC2(char[] chrs, int index, char endChr_1, char endChr_2)
+		{
+			while (
+				chrs[index + 0] != endChr_1 ||
+				chrs[index + 1] != endChr_2
+				)
+				index++;
 
 			return index; // endChr_1 の位置
 		}
@@ -1000,6 +1020,9 @@ namespace Charlotte.CSSolutions
 			string text_bk = text;
 			bool insideOfLiteralChar = false;
 			bool insideOfLiteralString = false;
+			Dictionary<string, string> escapedLines = SCommon.CreateDictionary<string>();
+
+			text = RX_EscapeNoRenameLines(text, escapedLines);
 
 			// C#の書式上「C#の単語」で終わることは無いはずだが、一応想定する。
 			//
@@ -1060,9 +1083,45 @@ namespace Charlotte.CSSolutions
 			}
 			text = text.Substring(0, text.Length - 1); // 復元 -- 番兵除去
 
+			text = RX_UnescapeNoRenameLines(text, escapedLines);
 			text = RX_Mix(text, text_bk);
 
 			File.WriteAllText(_file, text, Encoding.UTF8);
+		}
+
+		private static string RX_EscapeNoRenameLines(string text, Dictionary<string, string> escapedLines)
+		{
+			string[] lines = SCommon.TextToLines(text);
+
+			lines = lines.Select(line =>
+			{
+				if (line.EndsWith(CSConsts.NO_RENAME_LINE_SUFFIX))
+				{
+					string ident = "9_" + Common.CreateNewIdent(); // 数字で始まるトークンは置き換えない。
+					escapedLines.Add(ident, line);
+					return ident;
+				}
+				return line;
+			})
+			.ToArray();
+
+			return SCommon.LinesToText(lines);
+		}
+
+		private static string RX_UnescapeNoRenameLines(string text, Dictionary<string, string> escapedLines)
+		{
+			string[] lines = SCommon.TextToLines(text);
+
+			lines = lines.Select(line =>
+			{
+				if (escapedLines.ContainsKey(line))
+					return escapedLines[line];
+
+				return line;
+			})
+			.ToArray();
+
+			return SCommon.LinesToText(lines);
 		}
 
 		private static string RX_Mix(string text, string text_bk)
