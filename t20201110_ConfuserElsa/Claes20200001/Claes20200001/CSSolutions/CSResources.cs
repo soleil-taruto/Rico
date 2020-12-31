@@ -424,6 +424,10 @@ Distinct
 IsMatch
 Regex
 
+; 追加 e20201210_YokoActTM
+
+Key
+
 ; 追加 e20201211_Hakonoko
 
 Take
@@ -1332,6 +1336,11 @@ Sparkle
 Earth
 
 ; -- Tropical-Rouge!
+
+Summer
+Coral
+Papaya
+Flamingo
 
 ";
 

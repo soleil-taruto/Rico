@@ -1281,11 +1281,32 @@ namespace Charlotte.CSSolutions
 			lines = lines
 				.Where(line => line != "") // ? 空行ではない。
 				.Where(line => !line.StartsWith("//")) // ? 行頭から始まるC++系コメント行ではない。
+				.Select(line => RUI_RemoveCPPComment(line))
 				.ToArray();
 
 			File.WriteAllLines(_file, lines, Encoding.UTF8);
 
 			this.RUI_Formatting();
+		}
+
+		/// <summary>
+		/// キープされたC++コメントがこの時点まで残っているはず。
+		/// これを除去する。
+		/// </summary>
+		/// <param name="line">行(入力)</param>
+		/// <returns>行(出力)</returns>
+		private static string RUI_RemoveCPPComment(string line)
+		{
+			// プリプロセッサの除去、Cコメントの除去、文字と文字列のエスケープ etc. は完了しているので、単純な検索で良いはず。
+
+			int index = line.IndexOf("//");
+
+			if (index != -1)
+			{
+				line = line.Substring(0, index);
+				line = line.TrimEnd();
+			}
+			return line;
 		}
 
 		/// <summary>
@@ -1332,7 +1353,7 @@ namespace Charlotte.CSSolutions
 				lines = RUI_F_P1_GetOutputLines(lines.ToArray());
 				lines = RUI_F_P2A_GetOutputLines(lines.ToArray());
 				lines = RUI_F_P2B_GetOutputLines(lines.ToArray());
-				lines = RUI_F_P3_GetOutputLines(lines);
+				lines = RUI_F_P3_GetOutputLines(lines); // クラス・メソッド etc. の summary コメント
 
 				File.WriteAllLines(_file, lines, Encoding.UTF8);
 			}
@@ -1402,17 +1423,29 @@ namespace Charlotte.CSSolutions
 			}
 		}
 
+		//private static string RUI_F_P3_GOL_CommentMessage = null;
+
 		private static IEnumerable<string> RUI_F_P3_GetOutputLines(IEnumerable<string> lines)
 		{
+			//if (RUI_F_P3_GOL_CommentMessage == null)
+			//    RUI_F_P3_GOL_CommentMessage = "Confused by ConfuserElsa @ " + DateTime.Now;
+
+			string commentMessage = "Confused by ConfuserElsa";
+			//string commentMessage = RUI_F_P3_GOL_CommentMessage;
+
 			foreach (string line in lines)
 			{
 				if (line.StartsWith("\tpublic ")) // ? クラス || 構造体
 				{
 					yield return "\t/// <summary>";
 
+#if true
+					yield return "\t/// " + commentMessage;
+#else
 					//for (int c = SCommon.CRandom.GetRange(3, 13); 0 < c; c--)
 					for (int c = SCommon.CRandom.GetRange(3, 7); 0 < c; c--)
 						yield return "\t/// " + RUI_F_P3_GOL_MakeCommentLine();
+#endif
 
 					yield return "\t/// </summary>";
 				}
@@ -1420,9 +1453,13 @@ namespace Charlotte.CSSolutions
 				{
 					yield return "\t\t/// <summary>";
 
+#if true
+					yield return "\t\t/// " + commentMessage;
+#else
 					//for (int c = SCommon.CRandom.GetRange(1, 7); 0 < c; c--)
 					for (int c = SCommon.CRandom.GetRange(1, 5); 0 < c; c--)
 						yield return "\t\t/// " + RUI_F_P3_GOL_MakeCommentLine();
+#endif
 
 					yield return "\t\t/// </summary>";
 				}

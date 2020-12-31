@@ -9,7 +9,7 @@ namespace Charlotte.CSSolutions
 	{
 		/// <summary>
 		/// このパターンで始まるC++コメントは除去しない。
-		/// コメント開始の // を含む
+		/// この文字列は、コメント開始の // を含む
 		/// </summary>
 		public const string KEEP_COMMENT_START_PATTERN = "// KeepComment:@^_ConfuserElsa";
 
