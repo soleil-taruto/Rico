@@ -1,5 +1,5 @@
 ----
-キーワードの置き換え抑止
+繧ｭ繝ｼ繝ｯ繝ｼ繝峨�ｮ鄂ｮ縺肴鋤縺域椛豁｢
 
 	foreach (
 		KeyValuePair // KeepComment:@^_ConfuserElsa // NoRename:@^_ConfuserElsa

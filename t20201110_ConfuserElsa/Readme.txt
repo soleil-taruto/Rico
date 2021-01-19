@@ -1,9 +1,9 @@
 ----
-ŠT—v
+æ¦‚è¦
 
-Elsa-ŒnƒvƒƒWƒFƒNƒg‚ð“ï“Ç‰»‚·‚éB
+Elsa-ç³»ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆã‚’é›£èª­åŒ–ã™ã‚‹ã€‚
 
 ----
-ƒRƒ}ƒ“ƒhˆø”
+ã‚³ãƒžãƒ³ãƒ‰å¼•æ•°
 
-ConfuserElsa.exe “ü—Íƒ\ƒŠƒ…[ƒVƒ‡ƒ“ƒtƒ@ƒCƒ‹ ì‹ÆƒtƒHƒ‹ƒ_
+ConfuserElsa.exe å…¥åŠ›ã‚½ãƒªãƒ¥ãƒ¼ã‚·ãƒ§ãƒ³ãƒ•ã‚¡ã‚¤ãƒ« ä½œæ¥­ãƒ•ã‚©ãƒ«ãƒ€

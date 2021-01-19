@@ -1,4 +1,4 @@
 ----
-ƒRƒ}ƒ“ƒhˆø”
+ã‚³ãƒžãƒ³ãƒ‰å¼•æ•°
 
-FilteringDirCopy.exe [/P+ ACCEPT-PATTERN | /P- REJECT-PATTERN]... ƒRƒs[Œ³ƒtƒHƒ‹ƒ_ ƒRƒs[æƒtƒHƒ‹ƒ_
+FilteringDirCopy.exe [/P+ ACCEPT-PATTERN | /P- REJECT-PATTERN]... ã‚³ãƒ”ãƒ¼å…ƒãƒ•ã‚©ãƒ«ãƒ€ ã‚³ãƒ”ãƒ¼å…ˆãƒ•ã‚©ãƒ«ãƒ€
