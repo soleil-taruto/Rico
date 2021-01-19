@@ -50,15 +50,24 @@ namespace Charlotte.Tests
 		{
 			// -- choose one or more --
 
-			TryBuild_Main("e20200928_NovelAdv");
-			TryBuild_Main("e20201003_NovelAdv");
+			//TryBuild_Main("e20200928_NovelAdv");
+			//TryBuild_Main("e20201003_NovelAdv");
 			//TryBuild_Main("e20201008_NovelAdv_Demo");
-			TryBuild_Main("e20201010_TateShoot");
-			TryBuild_Main("e20201018_TateShoot_Demo");
-			TryBuild_Main("e20201020_YokoShoot");
+			//TryBuild_Main("e20201010_TateShoot");
+			//TryBuild_Main("e20201018_TateShoot_Demo");
+			//TryBuild_Main("e20201020_YokoShoot");
 			//TryBuild_Main("e20201027_YokoActTM_Demo");
-			TryBuild_Main("e20201109_YokoActTK_Demo");
-			TryBuild_Main("e20201115_Dungeon");
+			//TryBuild_Main("e20201109_YokoActTK_Demo");
+			//TryBuild_Main("e20201115_Dungeon");
+
+			TryBuild_Main("e20201210_YokoActTM_Demo2");
+			TryBuild_Main("e20201211_Hakonoko");
+			TryBuild_Main("e20201220_DoremyRockman");
+			TryBuild_Main("e20201224_Udongedon");
+			TryBuild_Main("e20201241_NovelAdv_Base2");
+			TryBuild_Main("e20210101_YokoShoot_Demo2");
+			TryBuild_Main("e20210102_TopViewAct_Demo2");
+			TryBuild_Main("e20210103_YokoActTK_Demo2");
 
 			// --
 		}

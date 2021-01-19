@@ -131,8 +131,7 @@ RemoveFontResourceEx
 ; 名前空間 / クラス名 / 型名 / メンバー名
 ; ====
 
-; e20201109_YokoActTK
-
+Abs
 AccessControlType
 Action
 Add
@@ -143,45 +142,44 @@ AllDirectories
 Alloc
 Allow
 Anchor
+Any
 AppDomain
 Append
 Application
 ArgumentException
 Array
+ASCII
 Assembly
 AutoScaleDimensions
 AutoScaleMode
 AutoSize
 Begin
 BeginInvoke
-CheckState
 Checked
+CheckState
 Clear
 Click
 ClientSize
 Close
-Collect
 Color
-Combine
 Comparison
 Compress
 CompressionMode
 ComputeHash
+Concat
 Console
 Contains
 ContainsKey
 Controls
-Copy
+Convert
 CopyTo
 Cos
 Count
 Create
-CreateDirectory
 Current
 CurrentDomain
 DateTime
 Decompress
-Delete
 Dequeue
 Dictionary
 Directory
@@ -201,62 +199,59 @@ Error
 EventArgs
 Exception
 ExceptionObject
-Exists
 Exit
 File
 FileAccess
 FileMode
 FileStream
+First
 FirstOrDefault
 Flags
 Font
 Form
+Format
+FormattingEnabled
 FormClosed
 FormClosedEventArgs
 FormClosing
 FormClosingEventArgs
-Format
-FormattingEnabled
 Free
-FromArgb
 FullControl
 Func
 GC
 GCHandle
 GCHandleType
-GZipStream
 GetByteCount
 GetBytes
 GetCommandLineArgs
-GetCurrentProcess
-GetDirectoryName
 GetEncoding
 GetEntryAssembly
 GetEnumerator
 GetEnvironmentVariable
-GetFileName
-GetFiles
-GetFullPath
 GetHashCode
 GetObject
 GetRange
 GetString
 GetValues
 Guid
+GZipStream
 Handle
+Icon
+Id
 IDisposable
 IEnumerable
 IEnumerator
 IEqualityComparer
-Icon
-Id
 IndexOf
+Insert
 IntPtr
 IsNaN
 IsNullOrEmpty
 Items
 Join
+Key
 Keys
+KeyValuePair
 LayoutKind
 Length
 LinkDemand
@@ -267,8 +262,9 @@ Main
 Margin
 Math
 Max
-MaxValue
+MaxDropDownItems
 MaximizeBox
+MaxValue
 MemoryStream
 Message
 MessageBox
@@ -287,31 +283,28 @@ MutexRights
 MutexSecurity
 Name
 NewGuid
+NotImplementedException
 Now
 OK
 Open
-PI
 Parse
 Path
 PerformLayout
+PI
 Pinned
 Position
 Predicate
 Process
 Queue
-RNGCryptoServiceProvider
 RandomNumberGenerator
-Range
 Read
-ReadAllBytes
-ReadAllLines
 ReleaseMutex
+RemoveAll
 RemoveAt
 Replace
 ResumeLayout
+RNGCryptoServiceProvider
 Run
-SHA512
-STAThread
 SearchOption
 SecurityAction
 SecurityIdentifier
@@ -326,20 +319,21 @@ SessionEnding
 SessionEndingEventArgs
 SessionEndingEventHandler
 SetCompatibleTextRenderingDefault
-SetCurrentDirectory
+SHA512
 Show
 ShowInTaskbar
 Shown
 Sin
 Size
 SizeGripStyle
-Sleep
+Skip
 Sort
 Split
 Sqrt
 Start
 StartPosition
 StartsWith
+STAThread
 Stream
 StreamReader
 StreamWriter
@@ -351,6 +345,7 @@ SuspendLayout
 SystemEvents
 TabIndex
 TabStop
+Take
 Tan
 Text
 Thread
@@ -361,77 +356,36 @@ ToArray
 ToInt64
 ToList
 ToLower
+TopMost
 ToString
 ToUpper
-TopMost
 Trim
 UInt16
 UInt64
-UTF8
 UnhandledException
 UnhandledExceptionEventArgs
 UnhandledExceptionEventHandler
 UnmanagedCode
 UseVisualStyleBackColor
+UTF8
 Value
 Visible
-WParam
 WaitOne
 WellKnownSidType
 Where
 Win32
 WndProc
 WorldSid
+WParam
 Write
-WriteAllBytes
 WriteByte
 WriteLine
 Zero
 
-; 追加 e20200928_NovelAdv
+; 追加
 
-Cast
-Concat
-GetFileNameWithoutExtension
 HashSet
-Insert
-Skip
-
-; 追加 e20201003_NovelAdv
-
-Any
-First
-GetNames
-RemoveAll
-
-; 追加 e20201010_TateShoot
-
-Abs
-Repeat
-
-; 追加 e20201018_TateShoot
-
-NotImplementedException
-
-; 追加 e20201020_YokoShoot
-
-ASCII
-Convert
-
-; 追加 e20201115_Dungeon -- discontinued
-
 Distinct
-IsMatch
-Regex
-
-; 追加 e20201210_YokoActTM
-
-Key
-
-; 追加 e20201211_Hakonoko
-
-Take
-MaxDropDownItems
 
 
 ; ====
@@ -453,11 +407,24 @@ Charlotte
 		/// <summary>
 		/// ここに含まれる単語は置き換えない。
 		/// (この単語).(後続の単語).(後続の単語).(後続の単語) ... の「後続の単語」についても置き換えない。
+		/// 名前空間も差し支えないので含める。
+		/// -- System
 		/// </summary>
 		public static string 予約語クラス名リスト = @"
 
 DX
 System
+File
+Directory
+Path
+Process
+Thread
+GC
+Array
+Enumerable
+Color
+Console
+Regex
 
 ";
 

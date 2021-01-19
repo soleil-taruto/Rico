@@ -1,0 +1,6 @@
+----
+キーワードの置き換え抑止
+
+	foreach (
+		KeyValuePair // KeepComment:@^_ConfuserElsa // NoRename:@^_ConfuserElsa
+			<string, string> pair in def_dic)

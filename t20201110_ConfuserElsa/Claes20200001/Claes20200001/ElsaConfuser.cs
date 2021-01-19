@@ -48,6 +48,20 @@ namespace Charlotte
 			if (File.Exists(sol.GetOutputExeFile())) // ? ビルド成功
 			{
 				SCommon.CopyDir(sol.GetBinDir(), masterSol.GetBinDir());
+
+				// リネームする -- "<Project>.exe" -> "<Project>.exe-confused"
+				{
+					string exeFile = masterSol.GetOutputExeFile();
+					string exeFileNew = exeFile + "-confused";
+
+					if (!File.Exists(exeFile)) throw new Exception();
+					if (File.Exists(exeFileNew)) throw new Exception();
+
+					File.Move(exeFile, exeFileNew);
+
+					if (File.Exists(exeFile)) throw new Exception();
+					if (!File.Exists(exeFileNew)) throw new Exception();
+				}
 			}
 			else // ? ビルド失敗
 			{
