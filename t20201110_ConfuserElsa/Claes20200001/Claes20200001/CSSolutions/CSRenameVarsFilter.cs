@@ -132,5 +132,10 @@ namespace Charlotte.CSSolutions
 		{
 			return 予約語クラス名リスト.Contains(name);
 		}
+
+		public IEnumerable<KeyValuePair<string, string>> Get変換テーブル()
+		{
+			return this.変換テーブル;
+		}
 	}
 }

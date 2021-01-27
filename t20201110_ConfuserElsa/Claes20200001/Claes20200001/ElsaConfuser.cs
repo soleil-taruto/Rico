@@ -33,12 +33,15 @@ namespace Charlotte
 			// まかり間違っても masterSol.Confuse() を実行しないように！
 
 			CSSolution sol = new CSSolution(workSolutionFile);
+			CSRenameVarsFilter rvf = new CSRenameVarsFilter();
 
 			sol.Clean(); // 難読化前にクリーンアップ必要
 			sol.Confuse(() =>
 			{
 				SCommon.CopyDir(workSolutionDir, workSolutionDir_mid);
-			});
+			},
+			rvf
+			);
 			sol.Rebuild();
 
 			CSSolution masterSol = new CSSolution(solutionFile);
@@ -61,6 +64,18 @@ namespace Charlotte
 
 					if (File.Exists(exeFile)) throw new Exception();
 					if (!File.Exists(exeFileNew)) throw new Exception();
+				}
+
+				{
+					string[] lines = rvf.Get変換テーブル().Select(pair => pair.Key + "\t" + pair.Value).ToArray();
+
+					Array.Sort(lines, SCommon.Comp);
+
+					string text = SCommon.LinesToText(lines);
+					byte[] bText = Encoding.UTF8.GetBytes(text);
+					byte[] gzBText = SCommon.Compress(bText);
+
+					File.WriteAllBytes(masterSol.GetOutputExeFile() + "-confused-rename-table.txt.gz", gzBText);
 				}
 			}
 			else // ? ビルド失敗

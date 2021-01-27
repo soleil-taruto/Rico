@@ -109,14 +109,14 @@ namespace Charlotte.CSSolutions
 		/// 難読化する。
 		/// 注意：ソースファイルを書き換える！
 		/// </summary>
-		public void Confuse(Action a_beforeRemoveUnnecessaryInformations)
+		public void Confuse(Action a_beforeRemoveUnnecessaryInformations, CSRenameVarsFilter rvf)
 		{
 			CSFile[] csFiles = Directory.GetFiles(this.ProjectDir, "*.cs", SearchOption.AllDirectories)
 				.Where(v => !SCommon.ContainsIgnoreCase(v.Substring(this.ProjectDir.Length), "\\Properties\\"))
 				.Select(v => new CSFile(v))
 				.ToArray();
 
-			CSRenameVarsFilter rvf = new CSRenameVarsFilter();
+			//CSRenameVarsFilter rvf = new CSRenameVarsFilter(); // moved
 
 			foreach (CSFile csFile in csFiles)
 			{
