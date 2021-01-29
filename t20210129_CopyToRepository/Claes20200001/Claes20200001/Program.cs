@@ -109,15 +109,25 @@ namespace Charlotte
 			}
 		}
 
-		private void CopyToRepository(string rDir, string wDir)
+		public void CopyToRepository(string rDir, string wDir)
 		{
+			Predicate<string> approveFile = file =>
+			{
+				return
+					!SCommon.EqualsIgnoreCase(Path.GetExtension(file), ".exe") &&
+					!SCommon.EqualsIgnoreCase(Path.GetExtension(file), ".obj");
+			};
+
 			foreach (string dir in Directory.GetDirectories(rDir))
 			{
-				SCommon.CopyDir(dir, Path.Combine(wDir, Path.GetFileName(dir)));
+				SCommon.CopyDir(dir, Path.Combine(wDir, Path.GetFileName(dir)), approveFile);
 			}
 			foreach (string file in Directory.GetFiles(rDir))
 			{
-				File.Copy(file, Path.Combine(wDir, Path.GetFileName(file)));
+				if (approveFile(file))
+				{
+					File.Copy(file, Path.Combine(wDir, Path.GetFileName(file)));
+				}
 			}
 		}
 	}

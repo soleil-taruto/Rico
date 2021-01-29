@@ -73,6 +73,9 @@ namespace Charlotte.Commons
 
 		public static int Comp(byte a, byte b)
 		{
+#if true
+			return (int)a - (int)b;
+#else
 			if (a < b)
 				return -1;
 
@@ -80,6 +83,7 @@ namespace Charlotte.Commons
 				return 1;
 
 			return 0;
+#endif
 		}
 
 		public static int Comp(byte[] a, byte[] b)
@@ -316,18 +320,8 @@ namespace Charlotte.Commons
 			return ret;
 		}
 
-		//private const int IO_RETRY_MAX = 100;
-		//private const int IO_RETRY_MAX = 30;
-		private const int IO_RETRY_MAX = 10;
-
 		public static void DeletePath(string path)
 		{
-			// アプリ固有 >
-
-			ProcMain.WriteLog("! " + path); // cout
-
-			// < アプリ固有
-
 			if (string.IsNullOrEmpty(path))
 				throw new Exception("削除しようとしたパスは null 又は空文字列です。");
 
@@ -346,11 +340,11 @@ namespace Charlotte.Commons
 					if (!File.Exists(path))
 						break;
 
-					if (IO_RETRY_MAX < c)
+					if (10 < c)
 						throw new Exception("ファイルの削除に失敗しました。" + path);
 
 					ProcMain.WriteLog("ファイルの削除をリトライします。" + path);
-					Thread.Sleep(Math.Min(2000, c * 100));
+					Thread.Sleep(c * 100);
 				}
 			}
 			else if (Directory.Exists(path))
@@ -368,11 +362,11 @@ namespace Charlotte.Commons
 					if (!Directory.Exists(path))
 						break;
 
-					if (IO_RETRY_MAX < c)
+					if (10 < c)
 						throw new Exception("ディレクトリの削除に失敗しました。" + path);
 
 					ProcMain.WriteLog("ディレクトリの削除をリトライします。" + path);
-					Thread.Sleep(Math.Min(2000, c * 100));
+					Thread.Sleep(c * 100);
 				}
 			}
 		}
@@ -395,36 +389,12 @@ namespace Charlotte.Commons
 				if (Directory.Exists(dir))
 					break;
 
-				if (IO_RETRY_MAX < c)
+				if (10 < c)
 					throw new Exception("ディレクトリを作成出来ません。" + dir);
 
 				ProcMain.WriteLog("ディレクトリの作成をリトライします。" + dir);
-				Thread.Sleep(Math.Min(2000, c * 100));
+				Thread.Sleep(c * 100);
 			}
-		}
-
-		public static void CopyDir(string rDir, string wDir)
-		{
-			CopyDir(rDir, wDir, file => true);
-		}
-
-		public static void CopyDir(string rDir, string wDir, Predicate<string> approveFile)
-		{
-			// アプリ固有 >
-
-			ProcMain.WriteLog("< " + rDir); // cout
-			ProcMain.WriteLog("> " + wDir); // cout
-
-			// < アプリ固有
-
-			CreateDir(wDir);
-
-			foreach (string dir in Directory.GetDirectories(rDir))
-				CopyDir(dir, Path.Combine(wDir, Path.GetFileName(dir)));
-
-			foreach (string file in Directory.GetFiles(rDir))
-				if (approveFile(file))
-					File.Copy(file, Path.Combine(wDir, Path.GetFileName(file)));
 		}
 
 		public static string ChangeRoot(string path, string oldRoot)
@@ -1222,7 +1192,7 @@ namespace Charlotte.Commons
 				StartProcess("cmd", "/c " + callBatFile, workingDir, winStyle).WaitForExit();
 
 				// batFile 終了待ち
-				// -- どうやら MSBuild が終わる前に WaitForExit() が制御を返しているっぽい。@ 2020.11.10
+				// -- どうやら MSBuild が終わる前に WaitForExit() が制御を返しているっぽい。@ 2020.11.10 -- t20201110_ConfuserElsa
 				{
 					//int millis = 0;
 					int millis = 100;
