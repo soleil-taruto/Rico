@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using System.Threading;
 using System.Windows.Forms;
 using Charlotte.Commons;
 using Charlotte.Tests;
-using System.Threading;
+using System.Diagnostics;
 
 namespace Charlotte
 {
@@ -43,10 +44,16 @@ namespace Charlotte
 			Console.ReadLine();
 		}
 
+		private static bool IgnoreSubDirFlag = false;
+
 		private static void ProductMain(ArgsReader ar)
 		{
 			try
 			{
+				if (ar.ArgIs("/-S"))
+				{
+					IgnoreSubDirFlag = true;
+				}
 				Snapshot(ar.NextArg());
 			}
 			catch (Exception ex)
@@ -65,6 +72,19 @@ namespace Charlotte
 
 			targetPath = SCommon.MakeFullPath(targetPath);
 
+			try
+			{
+				TrySnapshot(targetPath);
+			}
+			catch (BadDestPath_Exception)
+			{
+				ShortDestDirFlag = true;
+				TrySnapshot(targetPath);
+			}
+		}
+
+		private static void TrySnapshot(string targetPath)
+		{
 			if (File.Exists(targetPath))
 			{
 				Snapshot_File(targetPath);
@@ -77,6 +97,22 @@ namespace Charlotte
 			{
 				throw new Exception("targetPath is not file or directory");
 			}
+
+			if (ShortDestDirFlag)
+			{
+				string tipsFile = Path.Combine(LastDestDir, Consts.TIPS_LOCAL_FILE);
+
+				File.WriteAllLines(
+					tipsFile,
+					new string[]
+					{
+						"targetPath=" + targetPath,
+					},
+					Encoding.UTF8
+					);
+			}
+
+			SCommon.Batch(new string[] { "START \"\" \"" + LastDestDir + "\"" });
 		}
 
 		private static void Snapshot_File(string targetFile)
@@ -93,16 +129,26 @@ namespace Charlotte
 		private static void Snapshot_Dir(string targetDir)
 		{
 			string destDir = GetDestDir(DateTime.Now, targetDir);
-			string[] rPaths = Enumerable.Concat(
-				Directory.GetDirectories(targetDir, "*", SearchOption.AllDirectories),
-				Directory.GetFiles(targetDir, "*", SearchOption.AllDirectories)
-				)
-				.ToArray();
+			string[] rPaths;
+
+			if (IgnoreSubDirFlag)
+			{
+				rPaths = Directory.GetFiles(targetDir);
+			}
+			else
+			{
+				rPaths = Enumerable.Concat(
+					Directory.GetDirectories(targetDir, "*", SearchOption.AllDirectories),
+					Directory.GetFiles(targetDir, "*", SearchOption.AllDirectories)
+					)
+					.ToArray();
+			}
 			Array.Sort(rPaths, SCommon.CompIgnoreCase);
 			string[] wPaths = rPaths.Select(path => SCommon.ChangeRoot(path, targetDir, destDir)).ToArray();
 
 			// rPaths, wPaths の並びの対応を維持すること。
 
+			// 今のところ長さしかチェックしていないので、最も長いパスのみ CheckDestPath に渡す。
 			{
 				int longestWPathLen = wPaths.Select(path => path.Length).Max();
 				string longestWPath = wPaths.First(path => path.Length == longestWPathLen);
@@ -135,17 +181,31 @@ namespace Charlotte
 			}
 		}
 
+		private static bool ShortDestDirFlag = false;
+		private static string LastDestDir = null;
+
 		private static string GetDestDir(DateTime dt, string targetPath)
 		{
-			string destDir = Path.Combine(Consts.SNAPSHOT_DIR, dt.ToString("yyyyMMddHHmmss") + " " + targetPath.Replace(':', '$').Replace('\\', '$'));
+			string destLocalDir;
+
+			if (ShortDestDirFlag)
+				destLocalDir = dt.ToString("yyyyMMddHHmmss");
+			else
+				destLocalDir = dt.ToString("yyyyMMddHHmmss") + " " + targetPath.Replace(':', '$').Replace('\\', '$');
+
+			string destDir = Path.Combine(Consts.SNAPSHOT_DIR, destLocalDir);
 
 			Console.WriteLine("destDir: " + destDir); // cout
 
 			if (Directory.Exists(destDir))
 				throw new Exception("already exists destDir"); // 恐らく不運な衝突 -- やり直せば良いはず。
 
+			LastDestDir = destDir;
 			return destDir;
 		}
+
+		private class BadDestPath_Exception : Exception
+		{ }
 
 		private static void CheckDestPath(string destPath)
 		{
