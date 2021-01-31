@@ -386,6 +386,9 @@ Zero
 
 HashSet
 Distinct
+Enter
+CheckedChanged
+SelectedIndexChanged
 
 
 ; ====
