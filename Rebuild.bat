@@ -1,6 +1,6 @@
 C:\Factory\Tools\RDMD.exe /RM C:\app\Rico
 
 CALL qq
-cx **
+C:\Factory\Rico\CxBuiltBatOnly.exe
 
 DIR C:\app\Rico
