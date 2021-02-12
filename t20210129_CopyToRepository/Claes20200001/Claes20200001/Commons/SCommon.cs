@@ -420,7 +420,7 @@ namespace Charlotte.Commons
 			CreateDir(wDir);
 
 			foreach (string dir in Directory.GetDirectories(rDir))
-				CopyDir(dir, Path.Combine(wDir, Path.GetFileName(dir)));
+				CopyDir(dir, Path.Combine(wDir, Path.GetFileName(dir)), approveFile);
 
 			foreach (string file in Directory.GetFiles(rDir))
 				if (approveFile(file))

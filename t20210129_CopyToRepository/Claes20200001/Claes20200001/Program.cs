@@ -113,9 +113,11 @@ namespace Charlotte
 		{
 			Predicate<string> approveFile = file =>
 			{
+				string ext = Path.GetExtension(file);
+
 				return
-					!SCommon.EqualsIgnoreCase(Path.GetExtension(file), ".exe") &&
-					!SCommon.EqualsIgnoreCase(Path.GetExtension(file), ".obj");
+					!SCommon.EqualsIgnoreCase(ext, ".exe") &&
+					!SCommon.EqualsIgnoreCase(ext, ".obj");
 			};
 
 			foreach (string dir in Directory.GetDirectories(rDir))
