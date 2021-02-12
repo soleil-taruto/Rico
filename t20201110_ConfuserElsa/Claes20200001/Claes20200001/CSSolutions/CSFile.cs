@@ -188,7 +188,7 @@ namespace Charlotte.CSSolutions
 		public void RemovePreprocessorDirectives()
 		{
 			// #if の入れ子に対応していない。
-			// #if, #elif の条件式は true, false, !true, !false, DEBUG のみ想定する。
+			// #if, #elif の条件式は true, !true, false, !false, DEBUG, !DEBUG のみ想定する。
 			// -- DEBUG は false として扱う。
 
 			string[] lines = File.ReadAllLines(_file, Encoding.UTF8);
@@ -199,7 +199,8 @@ namespace Charlotte.CSSolutions
 
 				if (
 					line == "#if true" ||
-					line == "#if !false"
+					line == "#if !false" ||
+					line == "#if !DEBUG"
 					)
 				{
 					lines[index] = "";
@@ -235,7 +236,8 @@ namespace Charlotte.CSSolutions
 				if (
 					line == "#else" ||
 					line == "#elif true" ||
-					line == "#elif !false"
+					line == "#elif !false" ||
+					line == "#elif !DEBUG"
 					)
 				{
 					lines[index] = "";
@@ -276,7 +278,8 @@ namespace Charlotte.CSSolutions
 					line == "#elif !false" ||
 					line == "#elif !true" ||
 					line == "#elif false" ||
-					line == "#elif DEBUG"
+					line == "#elif DEBUG" ||
+					line == "#elif !DEBUG"
 					)
 				{
 					lines[index] = "";
