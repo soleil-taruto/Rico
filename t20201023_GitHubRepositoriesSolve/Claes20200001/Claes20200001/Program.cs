@@ -18,7 +18,7 @@ namespace Charlotte
 
 		private void Main2(ArgsReader ar)
 		{
-			if (ar.ArgIs("//D"))
+			if (ProcMain.DEBUG)
 			{
 				TestMain(); // テスト
 			}
