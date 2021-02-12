@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using System.Threading;
+using System.Diagnostics;
 using System.Windows.Forms;
 using Charlotte.Commons;
 using Charlotte.Tests;
-using System.Diagnostics;
 
 namespace Charlotte
 {
@@ -44,12 +44,17 @@ namespace Charlotte
 			Console.ReadLine();
 		}
 
+		private static bool ManualCopyMode = false;
 		private static bool IgnoreSubDirFlag = false;
 
 		private static void ProductMain(ArgsReader ar)
 		{
 			try
 			{
+				if (ar.ArgIs("/M"))
+				{
+					ManualCopyMode = true;
+				}
 				if (ar.ArgIs("/-S"))
 				{
 					IgnoreSubDirFlag = true;
@@ -131,7 +136,11 @@ namespace Charlotte
 			string destDir = GetDestDir(DateTime.Now, targetDir);
 			string[] rPaths;
 
-			if (IgnoreSubDirFlag)
+			if (ManualCopyMode)
+			{
+				rPaths = new string[0];
+			}
+			else if (IgnoreSubDirFlag)
 			{
 				rPaths = Directory.GetFiles(targetDir);
 			}
@@ -149,6 +158,7 @@ namespace Charlotte
 			// rPaths, wPaths の並びの対応を維持すること。
 
 			// 今のところ長さしかチェックしていないので、最も長いパスのみ CheckDestPath に渡す。
+			if (1 <= wPaths.Length)
 			{
 				int longestWPathLen = wPaths.Select(path => path.Length).Max();
 				string longestWPath = wPaths.First(path => path.Length == longestWPathLen);

@@ -1,4 +1,4 @@
 ﻿----
 コマンド引数
 
-Snapshot.exe 対象パス
+Snapshot.exe [/M | /-S] 対象パス
