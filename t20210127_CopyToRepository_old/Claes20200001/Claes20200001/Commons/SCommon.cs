@@ -329,9 +329,9 @@ namespace Charlotte.Commons
 					{
 						File.Delete(path);
 					}
-					catch (Exception e)
+					catch //(Exception e)
 					{
-						ProcMain.WriteLog(e + " <---- 例外ここまで、処理を続行します。");
+						//ProcMain.WriteLog(e + " <---- 例外ここまで、処理を続行します。");
 					}
 					if (!File.Exists(path))
 						break;
@@ -351,9 +351,9 @@ namespace Charlotte.Commons
 					{
 						Directory.Delete(path, true);
 					}
-					catch (Exception e)
+					catch //(Exception e)
 					{
-						ProcMain.WriteLog(e + " <---- 例外ここまで、処理を続行します。");
+						//ProcMain.WriteLog(e + " <---- 例外ここまで、処理を続行します。");
 					}
 					if (!Directory.Exists(path))
 						break;
@@ -378,9 +378,9 @@ namespace Charlotte.Commons
 				{
 					Directory.CreateDirectory(dir); // ディレクトリが存在するときは何もしない。
 				}
-				catch (Exception e)
+				catch //(Exception e)
 				{
-					ProcMain.WriteLog(e + " <---- 例外ここまで、処理を続行します。");
+					//ProcMain.WriteLog(e + " <---- 例外ここまで、処理を続行します。");
 				}
 				if (Directory.Exists(dir))
 					break;
