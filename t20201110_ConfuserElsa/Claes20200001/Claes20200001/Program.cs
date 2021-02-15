@@ -52,6 +52,10 @@ namespace Charlotte
 				Console.WriteLine("難読化の処理中に例外を投げました。");
 				Console.WriteLine("以下を確認して下さい。");
 				Console.WriteLine("-- 予約語リスト");
+				Console.WriteLine("予約語リストの確認方法");
+				Console.WriteLine("-- 失敗したプロジェクトの tmp\\tmpsol_mid をリビルドする。");
+				Console.WriteLine("-- ビルドエラーの原因となったワードを以下に追加する。");
+				Console.WriteLine("---- CSResources -- 予約語リスト -- ★★★ 追加 ★★★");
 				Console.WriteLine("★★★");
 
 				Console.WriteLine("エンターキーを押して下さい。");

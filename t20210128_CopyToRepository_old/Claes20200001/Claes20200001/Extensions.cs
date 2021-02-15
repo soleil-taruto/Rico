@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Charlotte
 {
-	public static class SExtensions
+	public static class Extensions
 	{
 		public static IEnumerable<T> ProgressBar<T>(this List<T> list, string prompt = null)
 		{

@@ -114,10 +114,12 @@ namespace Charlotte
 			Predicate<string> approveFile = file =>
 			{
 				string ext = Path.GetExtension(file);
+				string localFile = Path.GetFileName(file);
 
 				return
 					!SCommon.EqualsIgnoreCase(ext, ".exe") &&
-					!SCommon.EqualsIgnoreCase(ext, ".obj");
+					!SCommon.EqualsIgnoreCase(ext, ".obj") &&
+					!SCommon.EqualsIgnoreCase(localFile, "desktop.ini"); // フォルダのアイコンを変更していることがある。
 			};
 
 			foreach (string dir in Directory.GetDirectories(rDir))

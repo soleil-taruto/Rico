@@ -12,6 +12,7 @@ namespace Charlotte.Tests
 		public void Test01()
 		{
 			Test01_a(@"C:\Factory", @"C:\temp\Test0001_Factory");
+			Test01_a(@"C:\Dev\wb", @"C:\temp\Test0001_wb");
 		}
 
 		private void Test01_a(string rDir, string wDir)

@@ -382,7 +382,7 @@ WriteByte
 WriteLine
 Zero
 
-; 追加
+; ★★★ 追加 ★★★
 
 HashSet
 Distinct
@@ -489,7 +489,7 @@ Amalthea
 ; 4
 Thebe
 ; 5
-					;Io
+Io
 ; 6
 Europa
 ; 7
@@ -1306,7 +1306,6 @@ Sparkle
 Earth
 
 ; -- Tropical-Rouge!
-
 Summer
 Coral
 Papaya
