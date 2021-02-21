@@ -520,6 +520,23 @@ namespace Charlotte.CSSolutions
 					return " int.Parse(" + Consts.CRLF + "\"" + initValue + "\")";
 				}
 			}
+			// else -- ng!
+			if (Regex.IsMatch(initValue, "^[-]?[0-9]{0,19}[Ll]?$"))
+			{
+				string sVal = Regex.Match(initValue, "[-]?[0-9]+").Value;
+				long tmp;
+
+				if (long.TryParse(sVal, out tmp))
+				{
+					if (sVal != "" + tmp) // パース出来たなら一致するはず
+						throw null; // 想定外
+
+					// リテラル文字列の難読化を適用させるために、改行が要る。
+					// 直前が = なので、最初に空白を入れる。
+					//
+					return " long.Parse(" + Consts.CRLF + "\"" + sVal + "\")";
+				}
+			}
 			return null;
 		}
 
