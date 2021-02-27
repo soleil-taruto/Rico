@@ -51,6 +51,10 @@ namespace Charlotte
 		{
 			try
 			{
+				if (ar.ArgIs("/D"))
+				{
+					Ground.SnapshotDir = ar.NextArg();
+				}
 				if (ar.ArgIs("/M"))
 				{
 					ManualCopyMode = true;
@@ -72,8 +76,10 @@ namespace Charlotte
 
 		private static void Snapshot(string targetPath)
 		{
-			if (!Directory.Exists(Consts.SNAPSHOT_DIR))
-				throw new Exception("no SNAPSHOT_DIR");
+			Ground.SnapshotDir = SCommon.MakeFullPath(Ground.SnapshotDir);
+
+			if (!Directory.Exists(Ground.SnapshotDir))
+				throw new Exception("no Ground.SnapshotDir");
 
 			targetPath = SCommon.MakeFullPath(targetPath);
 
@@ -203,7 +209,7 @@ namespace Charlotte
 			else
 				destLocalDir = dt.ToString("yyyyMMddHHmmss") + " " + targetPath.Replace(':', '$').Replace('\\', '$');
 
-			string destDir = Path.Combine(Consts.SNAPSHOT_DIR, destLocalDir);
+			string destDir = Path.Combine(Ground.SnapshotDir, destLocalDir);
 
 			Console.WriteLine("destDir: " + destDir); // cout
 
