@@ -512,7 +512,7 @@ namespace Charlotte.Commons
 
 			if (1 <= lines.Length && lines[lines.Length - 1] == "")
 			{
-				lines = new List<string>(lines).GetRange(0, lines.Length - 1).ToArray();
+				lines = lines.Take(lines.Length - 1).ToArray();
 			}
 			return lines;
 		}
