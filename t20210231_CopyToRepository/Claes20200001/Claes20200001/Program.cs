@@ -102,6 +102,10 @@ namespace Charlotte
 				{
 					// Skip
 				}
+				else if (SCommon.EqualsIgnoreCase(Path.GetFileName(file), Consts.LICENSE_LOCAL_FILE))
+				{
+					// Skip
+				}
 				else
 				{
 					SCommon.DeletePath(file);

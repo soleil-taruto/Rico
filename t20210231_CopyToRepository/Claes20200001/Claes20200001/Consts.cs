@@ -9,5 +9,6 @@ namespace Charlotte
 	{
 		public const string GIT_LOCAL_DIR = ".git";
 		public const string GIT_ATTRIBUTES_LOCAL_FILE = ".gitattributes";
+		public const string LICENSE_LOCAL_FILE = "LICENSE";
 	}
 }

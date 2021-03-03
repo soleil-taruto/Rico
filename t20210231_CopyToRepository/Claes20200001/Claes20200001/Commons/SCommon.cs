@@ -410,6 +410,13 @@ namespace Charlotte.Commons
 
 		public static void CopyDir(string rDir, string wDir, Func<string, string, bool> accepter)
 		{
+			// アプリ固有 >
+
+			ProcMain.WriteLog("< " + rDir); // cout
+			ProcMain.WriteLog("> " + wDir); // cout
+
+			// < アプリ固有
+
 			if (!accepter(rDir, wDir))
 				return;
 
