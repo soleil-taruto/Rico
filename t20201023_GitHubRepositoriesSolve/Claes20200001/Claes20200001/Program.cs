@@ -206,8 +206,8 @@ namespace Charlotte
 			foreach (string file in Common.GetRepositoryFiles(dir))
 			{
 				if (
-					SCommon.ContainsIgnoreCase(file, "\\dat\\") ||
-					SCommon.ContainsIgnoreCase(file, "\\res\\") ||
+					//SCommon.ContainsIgnoreCase(file, "\\dat\\") || // res は dat 配下へ移動し、dat 配下はコピーしない。@ 2021.3.3
+					//SCommon.ContainsIgnoreCase(file, "\\res\\") ||
 					SCommon.ContainsIgnoreCase(file, ".rum\\files\\") // .rum には dat, res 配下のファイルも収録されている。
 					)
 					SGR_Mask(file);
