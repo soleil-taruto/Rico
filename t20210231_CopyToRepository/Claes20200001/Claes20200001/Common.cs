@@ -7,6 +7,13 @@ namespace Charlotte
 {
 	public static class Common
 	{
-		// none
+		public static string LZPad(string str, int minlen = 1, string padding = "0")
+		{
+			while (str.Length < minlen)
+			{
+				str = padding + str;
+			}
+			return str;
+		}
 	}
 }

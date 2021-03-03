@@ -168,7 +168,7 @@ namespace Charlotte
 				" | ",
 				new SCommon.SimpleDateTime(createTime),
 				new SCommon.SimpleDateTime(updateTime),
-				size == -1L ? "---------" : size.ToString("D9"),
+				size == -1L ? "---------" : Common.LZPad("" + size, 9, " "),
 				path
 				);
 		}
