@@ -111,28 +111,66 @@ namespace Charlotte
 
 		public void CopyToRepository(string rDir, string wDir)
 		{
-			Predicate<string> approveFile = file =>
+			Func<string, string, bool> accepter = (rPath, wPath) =>
 			{
-				string ext = Path.GetExtension(file);
-				string localFile = Path.GetFileName(file);
+				string rLocalPath = Path.GetFileName(rPath);
+
+				if (SCommon.EqualsIgnoreCase(rLocalPath, "dat") && Directory.Exists(rPath))
+				{
+					SCommon.CreateDir(wPath);
+					File.WriteAllLines(Path.Combine(wPath, "____files.txt"), GetFileInfoLines(rPath), Encoding.UTF8);
+					return false;
+				}
+				string rExt = Path.GetExtension(rPath);
 
 				return
-					!SCommon.EqualsIgnoreCase(ext, ".exe") &&
-					!SCommon.EqualsIgnoreCase(ext, ".obj") &&
-					!SCommon.EqualsIgnoreCase(localFile, "desktop.ini"); // フォルダのアイコンを変更していることがある。
+					!SCommon.EqualsIgnoreCase(rExt, ".exe") &&
+					!SCommon.EqualsIgnoreCase(rExt, ".obj") &&
+					!SCommon.EqualsIgnoreCase(rLocalPath, "desktop.ini"); // フォルダのアイコンを変更していることがある。
 			};
 
-			foreach (string dir in Directory.GetDirectories(rDir))
+			foreach (string rSubDir in Directory.GetDirectories(rDir))
 			{
-				SCommon.CopyDir(dir, Path.Combine(wDir, Path.GetFileName(dir)), approveFile);
+				SCommon.CopyDir(rSubDir, Path.Combine(wDir, Path.GetFileName(rSubDir)), accepter);
 			}
-			foreach (string file in Directory.GetFiles(rDir))
+			foreach (string rFile in Directory.GetFiles(rDir))
 			{
-				if (approveFile(file))
-				{
-					File.Copy(file, Path.Combine(wDir, Path.GetFileName(file)));
-				}
+				string wFile = Path.Combine(wDir, Path.GetFileName(rFile));
+
+				if (accepter(rFile, wFile))
+					File.Copy(rFile, wFile);
 			}
+		}
+
+		private static IEnumerable<string> GetFileInfoLines(string targDir)
+		{
+			yield return "CREATE TIME              | UPDATE TIME              | SIZE      | PATH";
+			yield return "-------------------------+--------------------------+-----------+-----------------------------------";
+
+			foreach (string dir in Directory.GetDirectories(targDir, "*", SearchOption.AllDirectories).Sort(SCommon.CompIgnoreCase))
+			{
+				DirectoryInfo info = new DirectoryInfo(dir);
+
+				yield return GetFileInfoLine(SCommon.ChangeRoot(dir, targDir), info.CreationTime, info.LastWriteTime, -1L);
+			}
+			foreach (string file in Directory.GetFiles(targDir, "*", SearchOption.AllDirectories).Sort(SCommon.CompIgnoreCase))
+			{
+				FileInfo info = new FileInfo(file);
+
+				yield return GetFileInfoLine(SCommon.ChangeRoot(file, targDir), info.CreationTime, info.LastWriteTime, info.Length);
+			}
+			yield return "-------------------------+--------------------------+-----------+-----------------------------------";
+		}
+
+		private static string GetFileInfoLine(string path, DateTime createTime, DateTime updateTime, long size)
+		{
+			return string.Join(
+				" | ",
+				new SCommon.SimpleDateTime(createTime),
+				new SCommon.SimpleDateTime(updateTime),
+				size == -1L ? "---------" : size.ToString("D9"),
+				path
+				);
 		}
 	}
 }
