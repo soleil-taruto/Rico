@@ -83,8 +83,7 @@ namespace Charlotte
 					Common.GetGitExeFile() + " commit -m \"Backup " + DateTime.Now.ToString("yyyyMMddHHmmss") + "\"",
 					//Common.GetGitExeFile() + " push",
 				},
-				repoDir,
-				SCommon.StartProcessWindowStyle_e.MINIMIZED
+				repoDir
 				);
 
 			ProcMain.WriteLog("Commit.2"); // cout

@@ -81,15 +81,19 @@ namespace Charlotte.CSSolutions
 		{
 			using (WorkingDir wd = new WorkingDir())
 			{
-				string[] outLines = SCommon.Batch(new string[]
-				{
-					@"CALL ""C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\Tools\VsDevCmd.bat""",
-					//@"CALL ""C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\vcvarsall.bat""",
-					"MSBuild /property:configuration=Release " + Path.GetFileName(this.SolutionFile),
-				},
-				this.SolutionDir,
-				SCommon.StartProcessWindowStyle_e.MINIMIZED
-				);
+				Console.WriteLine("MSBuild.1");
+
+				string[] outLines = SCommon.Batch(
+					new string[]
+					{
+						@"CALL ""C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\Tools\VsDevCmd.bat""",
+						//@"CALL ""C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\vcvarsall.bat""",
+						"MSBuild /property:configuration=Release " + Path.GetFileName(this.SolutionFile),
+					},
+					this.SolutionDir
+					);
+
+				Console.WriteLine("MSBuild.2");
 
 				foreach (string line in outLines)
 					Console.WriteLine(line);
