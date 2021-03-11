@@ -129,8 +129,8 @@ namespace Charlotte
 
 				return
 					!SCommon.EqualsIgnoreCase(rExt, ".exe") &&
-					!SCommon.EqualsIgnoreCase(rExt, ".obj") &&
-					!SCommon.EqualsIgnoreCase(rLocalPath, "desktop.ini"); // フォルダのアイコンを変更していることがある。
+					!SCommon.EqualsIgnoreCase(rExt, ".obj"); //&&
+				//!SCommon.EqualsIgnoreCase(rLocalPath, "desktop.ini"); // フォルダのアイコンを変更していることがある。
 			};
 
 			foreach (string rSubDir in Directory.GetDirectories(rDir))
