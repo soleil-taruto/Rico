@@ -86,5 +86,29 @@ namespace Charlotte
 				if (list.Take(index).Any(element => comp(element, list[index]) == 0))
 					list.RemoveAt(index);
 		}
+
+		/// <summary>
+		/// 始点から終点までの間の指定レートの位置の値を返す。
+		/// </summary>
+		/// <param name="a">始点</param>
+		/// <param name="b">終点</param>
+		/// <param name="rate">レート</param>
+		/// <returns>レートの値</returns>
+		public static double AToBRate(double a, double b, double rate)
+		{
+			return a + (b - a) * rate;
+		}
+
+		/// <summary>
+		/// 始点から終点までの間の位置をレートに変換する。
+		/// </summary>
+		/// <param name="a">始点</param>
+		/// <param name="b">終点</param>
+		/// <param name="value">位置</param>
+		/// <returns>レート</returns>
+		public static double RateAToB(double a, double b, double value)
+		{
+			return (value - a) / (b - a);
+		}
 	}
 }

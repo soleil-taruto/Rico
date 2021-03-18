@@ -74,13 +74,26 @@ namespace Charlotte
 
 		private void Commit(string repoDir)
 		{
+			string commitComment;
+
+			try
+			{
+				commitComment = "Voyager 1 is " +
+					new VoyagerDistance().Sun_Voyager_1.GetKm(SCommon.SimpleDateTime.Now()).ToString("F3") +
+					" kilometers away from the Sun.";
+			}
+			catch
+			{
+				commitComment = "Backup " + DateTime.Now.ToString("yyyyMMddHHmmss");
+			}
+
 			ProcMain.WriteLog("Commit.1 " + repoDir); // cout
 
 			string[] lines = SCommon.Batch(
 				new string[]
 				{
 					Common.GetGitExeFile() + " add *",
-					Common.GetGitExeFile() + " commit -m \"Backup " + DateTime.Now.ToString("yyyyMMddHHmmss") + "\"",
+					Common.GetGitExeFile() + " commit -m \"" + commitComment + "\"",
 					//Common.GetGitExeFile() + " push",
 				},
 				repoDir
