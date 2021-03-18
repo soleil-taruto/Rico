@@ -82,8 +82,10 @@ namespace Charlotte
 					new VoyagerDistance().Sun_Voyager_1.GetKm(SCommon.SimpleDateTime.Now()).ToString("F3") +
 					" kilometers away from the Sun.";
 			}
-			catch
+			catch (Exception ex)
 			{
+				ProcMain.WriteLog(ex);
+
 				commitComment = "Backup " + DateTime.Now.ToString("yyyyMMddHHmmss");
 			}
 
