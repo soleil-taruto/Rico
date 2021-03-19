@@ -84,7 +84,7 @@ namespace Charlotte
 			}
 			catch (Exception ex)
 			{
-				ProcMain.WriteLog(ex);
+				ProcMain.WriteLog("VoyagerDistance FAILED: " + ex);
 
 				commitComment = "Backup " + DateTime.Now.ToString("yyyyMMddHHmmss");
 			}
