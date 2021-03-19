@@ -18,7 +18,7 @@ namespace Charlotte.CSSolutions
 ; C#の予約語
 ; ====
 
-; --https://ufcpp.net/study/csharp/ap_reserved.html
+; https://ufcpp.net/study/csharp/ap_reserved.html
 
 ; キーワード
 abstract
@@ -1321,7 +1321,7 @@ Flamingo
 
 		public const string 英単語リスト = @"
 
-; --https://progeigo.org/learning/essential-words-600-plus/
+; https://progeigo.org/learning/essential-words-600-plus/
 
 ; A
 
