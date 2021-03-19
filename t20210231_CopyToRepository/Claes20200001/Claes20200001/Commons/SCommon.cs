@@ -1623,6 +1623,8 @@ namespace Charlotte.Commons
 
 		// < sync
 
+		// sync > @ Batch
+
 		public static string[] Batch(string[] commands, string workingDir = "", StartProcessWindowStyle_e winStyle = StartProcessWindowStyle_e.INVISIBLE)
 		{
 			using (WorkingDir wd = new WorkingDir())
@@ -1665,6 +1667,8 @@ namespace Charlotte.Commons
 				return File.ReadAllLines(outFile, ENCODING_SJIS);
 			}
 		}
+
+		// < sync
 
 		public enum StartProcessWindowStyle_e
 		{
