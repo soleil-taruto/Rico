@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Charlotte.Commons;
 using System.IO;
+using System.Threading;
+using Charlotte.Commons;
 
 // ^ sync @ VoyagerDistance
 
@@ -19,6 +20,23 @@ namespace Charlotte
 		{
 			public SCommon.SimpleDateTime DateTime;
 			public double Km;
+
+			public string Serialize()
+			{
+				return this.DateTime.ToSec() + ":" + this.Km.ToString("F9");
+			}
+
+			public void Deserialize(string serializedString)
+			{
+				string[] lines = serializedString.Split(':');
+				int c = 0;
+
+				this.DateTime = new SCommon.SimpleDateTime(long.Parse(lines[c++]));
+				this.Km = double.Parse(lines[c++]);
+
+				if (c != lines.Length)
+					throw new Exception("Bad serializedString");
+			}
 		}
 
 		public class DistancePairInfo
@@ -32,6 +50,26 @@ namespace Charlotte
 				double km = Common.AToBRate(this.A.Km, this.B.Km, rateOfDateTime);
 				return km;
 			}
+
+			public string Serialize()
+			{
+				return this.A.Serialize() + "/" + this.B.Serialize();
+			}
+
+			public void Deserialize(string serializedString)
+			{
+				string[] lines = serializedString.Split('/');
+				int c = 0;
+
+				this.A = new DistanceInfo();
+				this.B = new DistanceInfo();
+
+				this.A.Deserialize(lines[c++]);
+				this.B.Deserialize(lines[c++]);
+
+				if (c != lines.Length)
+					throw new Exception("Bad serializedString");
+			}
 		}
 
 		public DistancePairInfo Earth_Voyager_1;
@@ -43,22 +81,33 @@ namespace Charlotte
 		{
 			try
 			{
-				this.LoadNasaData();
+				this.GetNasaData();
 			}
 			catch
 			{
 				try
 				{
-					this.LoadNasaData(); // リトライ_1回目
+					this.GetNasaData(); // リトライ_1回目
 				}
 				catch
 				{
-					this.LoadNasaData(); // リトライ_2回目
+					try
+					{
+						this.GetNasaData(); // リトライ_2回目
+					}
+					catch (Exception ex)
+					{
+						ProcMain.WriteLog("VoyagerDistance.GetNasaData() FAILED: " + ex);
+
+						this.LoadFromFile();
+						return;
+					}
 				}
 			}
+			this.SaveToFile();
 		}
 
-		private void LoadNasaData()
+		private void GetNasaData()
 		{
 			using (WorkingDir wd = new WorkingDir())
 			{
@@ -67,20 +116,20 @@ namespace Charlotte
 				string[] lines = File.ReadAllLines(wd.GetPath("out.txt"), Encoding.ASCII);
 				int c = 0;
 
-				long epoch_0 = long.Parse(ParseValue(lines[c++]));
-				long epoch_1 = long.Parse(ParseValue(lines[c++]));
-				c++;
-				double dist_0_v1 = double.Parse(ParseValue(lines[c++]));
-				double dist_1_v1 = double.Parse(ParseValue(lines[c++]));
-				c++;
-				double dist_0_v2 = double.Parse(ParseValue(lines[c++]));
-				double dist_1_v2 = double.Parse(ParseValue(lines[c++]));
-				c++;
-				double dist_0_v1s = double.Parse(ParseValue(lines[c++]));
-				double dist_1_v1s = double.Parse(ParseValue(lines[c++]));
-				c++;
-				double dist_0_v2s = double.Parse(ParseValue(lines[c++]));
-				double dist_1_v2s = double.Parse(ParseValue(lines[c++]));
+				long epoch_0 = long.Parse(ParseValue(lines[c++], "let epoch_0 = ", ";"));
+				long epoch_1 = long.Parse(ParseValue(lines[c++], "let epoch_1 = ", ";"));
+				CheckEmpty(lines[c++]);
+				double dist_0_v1 = double.Parse(ParseValue(lines[c++], "let dist_0_v1 = ", ";"));
+				double dist_1_v1 = double.Parse(ParseValue(lines[c++], "let dist_1_v1 = ", ";"));
+				CheckEmpty(lines[c++]);
+				double dist_0_v2 = double.Parse(ParseValue(lines[c++], "let dist_0_v2 = ", ";"));
+				double dist_1_v2 = double.Parse(ParseValue(lines[c++], "let dist_1_v2 = ", ";"));
+				CheckEmpty(lines[c++]);
+				double dist_0_v1s = double.Parse(ParseValue(lines[c++], "let dist_0_v1s = ", ";"));
+				double dist_1_v1s = double.Parse(ParseValue(lines[c++], "let dist_1_v1s = ", ";"));
+				CheckEmpty(lines[c++]);
+				double dist_0_v2s = double.Parse(ParseValue(lines[c++], "let dist_0_v2s = ", ";"));
+				double dist_1_v2s = double.Parse(ParseValue(lines[c++], "let dist_1_v2s = ", ";"));
 
 				if (c != lines.Length)
 					throw new Exception("FORMAT_ERROR");
@@ -113,22 +162,70 @@ namespace Charlotte
 			}
 		}
 
-		private string ParseValue(string line)
+		private static string ParseValue(string line, string leader, string trailer)
 		{
-			int p = line.IndexOf('=');
-
-			if (p == -1)
+			if (!line.StartsWith(leader))
 				throw new Exception("FORMAT_ERROR");
 
-			line = line.Substring(p + 1);
-			p = line.IndexOf(';');
+			line = line.Substring(leader.Length);
 
-			if (p == -1)
+			if (!line.EndsWith(trailer))
 				throw new Exception("FORMAT_ERROR");
 
-			line = line.Substring(0, p);
+			line = line.Substring(0, line.Length - trailer.Length);
 			line = line.Trim();
 			return line;
+		}
+
+		private static void CheckEmpty(string line)
+		{
+			if (line != "")
+				throw new Exception("FORMAT_ERROR");
+		}
+
+		private string[] Serialize()
+		{
+			return new string[]
+			{
+				this.Earth_Voyager_1.Serialize(),
+				this.Earth_Voyager_2.Serialize(),
+				this.Sun_Voyager_1.Serialize(),
+				this.Sun_Voyager_2.Serialize(),
+			};
+		}
+
+		private void Deserialize(string[] serializedLines)
+		{
+			string[] lines = serializedLines;
+			int c = 0;
+
+			this.Earth_Voyager_1 = new DistancePairInfo();
+			this.Earth_Voyager_2 = new DistancePairInfo();
+			this.Sun_Voyager_1 = new DistancePairInfo();
+			this.Sun_Voyager_2 = new DistancePairInfo();
+
+			this.Earth_Voyager_1.Deserialize(lines[c++]);
+			this.Earth_Voyager_2.Deserialize(lines[c++]);
+			this.Sun_Voyager_1.Deserialize(lines[c++]);
+			this.Sun_Voyager_2.Deserialize(lines[c++]);
+
+			if (c != lines.Length)
+				throw new Exception("Bad serializedLines");
+		}
+
+		private const string NASA_DATA_FILE = @"C:\appdata\VoyagerDistance.txt"; // zantei
+
+		private void SaveToFile()
+		{
+			File.WriteAllLines(NASA_DATA_FILE, this.Serialize(), Encoding.ASCII);
+		}
+
+		private void LoadFromFile()
+		{
+			if (!File.Exists(NASA_DATA_FILE))
+				throw new Exception("NO_DATA_FILE");
+
+			this.Deserialize(File.ReadAllLines(NASA_DATA_FILE, Encoding.ASCII));
 		}
 	}
 
