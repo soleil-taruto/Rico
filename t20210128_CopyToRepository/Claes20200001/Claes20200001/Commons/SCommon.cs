@@ -1201,7 +1201,7 @@ namespace Charlotte.Commons
 				StartProcess("cmd", "/c " + callBatFile, workingDir, winStyle).WaitForExit();
 
 				// batFile 終了待ち
-				// -- どうやら MSBuild が終わる前に WaitForExit() が制御を返しているっぽい。@ 2020.11.10
+				// -- どうやら MSBuild が終わる前に WaitForExit() が制御を返しているっぽい。@ 2020.11.10 -- t20201110_ConfuserElsa
 				{
 					//int millis = 0;
 					int millis = 100;
