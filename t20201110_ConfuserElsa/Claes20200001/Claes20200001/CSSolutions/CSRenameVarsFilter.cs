@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Charlotte.Commons;
+using System.Text.RegularExpressions;
 
 namespace Charlotte.CSSolutions
 {
@@ -78,6 +79,7 @@ namespace Charlotte.CSSolutions
 		private string[] ランダムな単語リスト = SCommon.TextToLines(CSResources.ランダムな単語リスト)
 			.Select(v => v.Trim())
 			.Where(v => v != "" && v[0] != ';') // ? 空行ではない && コメント行ではない
+			//.Select(v => { if (!Regex.IsMatch(v, "^[A-Z][a-z]*$")) throw new Exception(v); return v; }) // チェック
 			.ToArray();
 
 		private string[] 英単語リスト_前置詞 = Get英単語リスト("前置詞");

@@ -1568,7 +1568,7 @@ Thulite
 
 		#region 英単語リスト
 
-		public const string 英単語リスト = @"
+		public static string 英単語リスト = @"
 
 ; https://progeigo.org/learning/essential-words-600-plus/
 
