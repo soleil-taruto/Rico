@@ -70,7 +70,7 @@ namespace Charlotte
 		{
 			Console.WriteLine("dir: " + dir); // cout
 			Console.WriteLine("*1"); // cout
-			SolveForVS2019(dir);
+			//SolveForVS2019(dir); // del @ 2021.3.23
 			Console.WriteLine("*2"); // cout
 			SolveForFactory(dir);
 			Console.WriteLine("*3"); // cout
@@ -84,6 +84,7 @@ namespace Charlotte
 			Console.WriteLine("*7"); // cout
 		}
 
+#if false // del @ 2021.3.23
 		private void SolveForVS2019(string dir)
 		{
 			foreach (string file in Common.GetRepositoryFiles(dir))
@@ -94,6 +95,7 @@ namespace Charlotte
 				}
 			}
 		}
+#endif
 
 		private void SFVS2019_Mask(string file)
 		{
