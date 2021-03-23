@@ -77,38 +77,35 @@ namespace Charlotte
 		public DistancePairInfo Sun_Voyager_1;
 		public DistancePairInfo Sun_Voyager_2;
 
+		public SCommon.SimpleDateTime データ取得日時;
+
 		public VoyagerDistance()
 		{
-			try
-			{
-				this.GetNasaData();
-			}
-			catch
+			if (!this.LoadFromFile()) // ? データ読み込み失敗 || キャッシュ期限切れ
 			{
 				try
 				{
-					this.GetNasaData(); // リトライ_1回目
+					this.GetNasaData();
 				}
 				catch
 				{
 					try
 					{
+						this.GetNasaData(); // リトライ_1回目
+					}
+					catch
+					{
 						this.GetNasaData(); // リトライ_2回目
 					}
-					catch (Exception ex)
-					{
-						ProcMain.WriteLog("VoyagerDistance.GetNasaData() FAILED: " + ex);
-
-						this.LoadFromFile();
-						return;
-					}
 				}
+				this.SaveToFile();
 			}
-			this.SaveToFile();
 		}
 
 		private void GetNasaData()
 		{
+			ProcMain.WriteLog("[VD]データ(再)取得");
+
 			using (WorkingDir wd = new WorkingDir())
 			{
 				SCommon.Batch(new string[] { "curl -o out.txt " + NASA_DISTANCE_DATA_URL }, wd.GetPath("."));
@@ -159,6 +156,8 @@ namespace Charlotte
 					A = new DistanceInfo() { DateTime = dateTime_0, Km = dist_0_v2s },
 					B = new DistanceInfo() { DateTime = dateTime_1, Km = dist_1_v2s },
 				};
+
+				this.データ取得日時 = SCommon.SimpleDateTime.Now();
 			}
 		}
 
@@ -187,6 +186,7 @@ namespace Charlotte
 		{
 			return new string[]
 			{
+				"" + this.データ取得日時.ToSec(),
 				this.Earth_Voyager_1.Serialize(),
 				this.Earth_Voyager_2.Serialize(),
 				this.Sun_Voyager_1.Serialize(),
@@ -198,6 +198,8 @@ namespace Charlotte
 		{
 			string[] lines = serializedLines;
 			int c = 0;
+
+			this.データ取得日時 = new SCommon.SimpleDateTime(long.Parse(lines[c++]));
 
 			this.Earth_Voyager_1 = new DistancePairInfo();
 			this.Earth_Voyager_2 = new DistancePairInfo();
@@ -220,12 +222,32 @@ namespace Charlotte
 			File.WriteAllLines(NASA_DATA_FILE, this.Serialize(), Encoding.ASCII);
 		}
 
-		private void LoadFromFile()
+		private const long CACHE_TIMEOUT_SEC = 60;
+
+		private bool LoadFromFile()
 		{
 			if (!File.Exists(NASA_DATA_FILE))
-				throw new Exception("NO_DATA_FILE");
+			{
+				ProcMain.WriteLog("[VD]データファイル無し");
+				return false;
+			}
 
-			this.Deserialize(File.ReadAllLines(NASA_DATA_FILE, Encoding.ASCII));
+			try
+			{
+				this.Deserialize(File.ReadAllLines(NASA_DATA_FILE, Encoding.ASCII));
+			}
+			catch (Exception ex)
+			{
+				ProcMain.WriteLog("[VD]データファイル破損 : " + ex + " (処理続行)");
+				return false;
+			}
+
+			if (this.データ取得日時.ToSec() + CACHE_TIMEOUT_SEC <= SCommon.SimpleDateTime.Now().ToSec())
+			{
+				ProcMain.WriteLog("[VD]キャッシュ期限切れ");
+				return false;
+			}
+			return true;
 		}
 	}
 
