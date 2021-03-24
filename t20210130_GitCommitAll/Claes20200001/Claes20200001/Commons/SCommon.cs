@@ -907,7 +907,7 @@ namespace Charlotte.Commons
 			}
 		}
 
-		public static string[] EMPRY_STRINGS = new string[0];
+		public static string[] EMPTY_STRINGS = new string[0];
 
 		public static Encoding ENCODING_SJIS = Encoding.GetEncoding(932);
 
