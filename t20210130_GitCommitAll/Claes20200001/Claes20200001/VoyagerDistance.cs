@@ -81,6 +81,8 @@ namespace Charlotte
 
 		public VoyagerDistance()
 		{
+			ProcMain.WriteLog("[VD].1");
+
 			if (!this.LoadFromFile()) // ? データ読み込み失敗 || キャッシュ期限切れ
 			{
 				try
@@ -100,6 +102,7 @@ namespace Charlotte
 				}
 				this.SaveToFile();
 			}
+			ProcMain.WriteLog("[VD].2");
 		}
 
 		private void GetNasaData()
