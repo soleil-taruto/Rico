@@ -148,30 +148,31 @@ namespace Charlotte
 
 		private static IEnumerable<string> GetFileInfoLines(string targDir)
 		{
-			yield return "CREATE TIME              | UPDATE TIME              | SIZE      | PATH";
-			yield return "-------------------------+--------------------------+-----------+-----------------------------------";
+			yield return "CREATE TIME              | UPDATE TIME              | HASH (MD5)                       | SIZE      | PATH";
+			yield return "-------------------------+--------------------------+----------------------------------+-----------+----------------------------------------";
 
 			foreach (string dir in Directory.GetDirectories(targDir, "*", SearchOption.AllDirectories).Sort(SCommon.CompIgnoreCase))
 			{
 				DirectoryInfo info = new DirectoryInfo(dir);
 
-				yield return GetFileInfoLine(SCommon.ChangeRoot(dir, targDir), info.CreationTime, info.LastWriteTime, -1L);
+				yield return GetFileInfoLine(SCommon.ChangeRoot(dir, targDir), info.CreationTime, info.LastWriteTime, null, -1L);
 			}
 			foreach (string file in Directory.GetFiles(targDir, "*", SearchOption.AllDirectories).Sort(SCommon.CompIgnoreCase))
 			{
 				FileInfo info = new FileInfo(file);
 
-				yield return GetFileInfoLine(SCommon.ChangeRoot(file, targDir), info.CreationTime, info.LastWriteTime, info.Length);
+				yield return GetFileInfoLine(SCommon.ChangeRoot(file, targDir), info.CreationTime, info.LastWriteTime, Common.GetHash(file), info.Length);
 			}
-			yield return "-------------------------+--------------------------+-----------+-----------------------------------";
+			yield return "-------------------------+--------------------------+----------------------------------+-----------+----------------------------------------";
 		}
 
-		private static string GetFileInfoLine(string path, DateTime createTime, DateTime updateTime, long size)
+		private static string GetFileInfoLine(string path, DateTime createTime, DateTime updateTime, string hash, long size)
 		{
 			return string.Join(
 				" | ",
 				new SCommon.SimpleDateTime(createTime),
 				new SCommon.SimpleDateTime(updateTime),
+				hash == null ? "--------------------------------" : hash,
 				size == -1L ? "---------" : Common.LZPad("" + size, 9, " "),
 				path
 				);
