@@ -35,7 +35,7 @@ namespace Charlotte
 				this.Km = double.Parse(lines[c++]);
 
 				if (c != lines.Length)
-					throw new Exception("Bad serializedString");
+					throw new Exception("[VD]データ破損");
 			}
 		}
 
@@ -68,7 +68,7 @@ namespace Charlotte
 				this.B.Deserialize(lines[c++]);
 
 				if (c != lines.Length)
-					throw new Exception("Bad serializedString");
+					throw new Exception("[VD]データ破損");
 			}
 		}
 
@@ -129,7 +129,7 @@ namespace Charlotte
 				double dist_1_v2s = double.Parse(ParseValue(lines[c++], "let dist_1_v2s = ", ";"));
 
 				if (c != lines.Length)
-					throw new Exception("FORMAT_ERROR");
+					throw new Exception("[VD]FORMAT_ERROR");
 
 				long GMT_TO_JST = 9 * 3600;
 
@@ -164,12 +164,12 @@ namespace Charlotte
 		private static string ParseValue(string line, string leader, string trailer)
 		{
 			if (!line.StartsWith(leader))
-				throw new Exception("FORMAT_ERROR");
+				throw new Exception("[VD]FORMAT_ERROR");
 
 			line = line.Substring(leader.Length);
 
 			if (!line.EndsWith(trailer))
-				throw new Exception("FORMAT_ERROR");
+				throw new Exception("[VD]FORMAT_ERROR");
 
 			line = line.Substring(0, line.Length - trailer.Length);
 			line = line.Trim();
@@ -179,7 +179,7 @@ namespace Charlotte
 		private static void CheckEmpty(string line)
 		{
 			if (line != "")
-				throw new Exception("FORMAT_ERROR");
+				throw new Exception("[VD]FORMAT_ERROR");
 		}
 
 		private string[] Serialize()
@@ -212,7 +212,7 @@ namespace Charlotte
 			this.Sun_Voyager_2.Deserialize(lines[c++]);
 
 			if (c != lines.Length)
-				throw new Exception("Bad serializedLines");
+				throw new Exception("[VD]データ破損");
 		}
 
 		private const string NASA_DATA_FILE = @"C:\appdata\VoyagerDistance.txt"; // zantei
