@@ -430,6 +430,7 @@ Enumerable
 Color
 Console
 Regex
+string
 
 ";
 
