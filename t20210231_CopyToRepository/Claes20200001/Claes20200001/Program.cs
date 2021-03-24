@@ -170,9 +170,19 @@ namespace Charlotte
 
 			Array.Sort(files, SCommon.CompIgnoreCase);
 
-			ProcMain.WriteLog("GetHashes.1"); // cout
-			string[] hashes = Common.GetHashes(files);
-			ProcMain.WriteLog("GetHashes.2"); // cout
+			string[] hashes;
+			try
+			{
+				ProcMain.WriteLog("GetHashes.1"); // cout
+				hashes = Common.GetHashes(files);
+				ProcMain.WriteLog("GetHashes.2"); // cout
+			}
+			catch (Exception ex)
+			{
+				ProcMain.WriteLog("ex: " + ex + " (処理続行)"); // cout
+				hashes = files.Select(file => (string)null).ToArray(); // 代替ハッシュリスト == 全部 null
+				ProcMain.WriteLog("GetHashes.3"); // cout
+			}
 
 			for (int index = 0; index < files.Length; index++)
 			{
