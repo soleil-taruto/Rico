@@ -151,17 +151,37 @@ namespace Charlotte
 			yield return "CREATE TIME              | UPDATE TIME              | HASH (MD5)                       | SIZE      | PATH";
 			yield return "-------------------------+--------------------------+----------------------------------+-----------+----------------------------------------";
 
-			foreach (string dir in Directory.GetDirectories(targDir, "*", SearchOption.AllDirectories).Sort(SCommon.CompIgnoreCase))
+			string[] dirs = Directory.GetDirectories(targDir, "*", SearchOption.AllDirectories)
+				.Select(dir => SCommon.MakeFullPath(dir))
+				.ToArray();
+
+			Array.Sort(dirs, SCommon.CompIgnoreCase);
+
+			foreach (string dir in dirs)
 			{
 				DirectoryInfo info = new DirectoryInfo(dir);
 
 				yield return GetFileInfoLine(SCommon.ChangeRoot(dir, targDir), info.CreationTime, info.LastWriteTime, null, -1L);
 			}
-			foreach (string file in Directory.GetFiles(targDir, "*", SearchOption.AllDirectories).Sort(SCommon.CompIgnoreCase))
+
+			string[] files = Directory.GetFiles(targDir, "*", SearchOption.AllDirectories)
+				.Select(file => SCommon.MakeFullPath(file))
+				.ToArray();
+
+			Array.Sort(files, SCommon.CompIgnoreCase);
+
+			ProcMain.WriteLog("GetHashes.1"); // cout
+			string[] hashes = Common.GetHashes(files);
+			ProcMain.WriteLog("GetHashes.2"); // cout
+
+			for (int index = 0; index < files.Length; index++)
 			{
+				string file = files[index];
+				string hash = hashes[index];
+
 				FileInfo info = new FileInfo(file);
 
-				yield return GetFileInfoLine(SCommon.ChangeRoot(file, targDir), info.CreationTime, info.LastWriteTime, Common.GetHash(file), info.Length);
+				yield return GetFileInfoLine(SCommon.ChangeRoot(file, targDir), info.CreationTime, info.LastWriteTime, hash, info.Length);
 			}
 			yield return "-------------------------+--------------------------+----------------------------------+-----------+----------------------------------------";
 		}

@@ -19,22 +19,32 @@ namespace Charlotte
 			return str;
 		}
 
-		public static string GetHash(string file)
+		public static string[] GetHashes(string[] files)
 		{
-			file = SCommon.MakeFullPath(file);
-
 			using (WorkingDir wd = new WorkingDir())
 			{
-				SCommon.Batch(new string[] { string.Format(@"C:\Factory\Petra\SimpleMD5.exe ""{0}"" > out.txt", file) }, wd.GetPath("."));
+				string fileListFile = wd.MakePath();
+				string hashesFile = wd.MakePath();
 
-				string hash = File.ReadAllText(wd.GetPath("out.txt"), Encoding.ASCII);
-				hash = hash.Trim();
-				hash = hash.ToLower();
+				File.WriteAllLines(fileListFile, files, SCommon.ENCODING_SJIS);
 
-				if (!Regex.IsMatch(hash, "^[0-9a-f]{32}$"))
-					throw new Exception("Bad hash");
+				SCommon.Batch(new string[]
+				{
+					string.Format(@"C:\Factory\Petra\FileList2MD5List.exe ""{0}"" ""{1}""", fileListFile, hashesFile),
+				});
 
-				return hash;
+				string[] hashes = File.ReadAllLines(hashesFile, Encoding.ASCII)
+					.Select(hash => hash.ToLower()) // 2bs
+					.ToArray();
+
+				if (files.Length != hashes.Length)
+					throw new Exception("Bad hashes");
+
+				foreach (string hash in hashes)
+					if (!Regex.IsMatch(hash, "^[0-9a-f]{32}$"))
+						throw new Exception("Bad hash");
+
+				return hashes;
 			}
 		}
 	}
