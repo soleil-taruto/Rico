@@ -15,6 +15,7 @@ namespace Charlotte
 	public class VoyagerDistance
 	{
 		private const string NASA_DISTANCE_DATA_URL = "https://voyager.jpl.nasa.gov/assets/javascripts/distance_data.js";
+		//private const string NASA_DISTANCE_DATA_URL = "http://stackprobe.ccsp.mydns.jp/index.html"; // test test test test test
 
 		public class DistanceInfo
 		{
@@ -83,26 +84,39 @@ namespace Charlotte
 		{
 			ProcMain.WriteLog("[VD].1");
 
-			if (!this.LoadFromFile()) // ? データ読み込み失敗 || キャッシュ期限切れ
+			if (!this.LoadFromFile(false)) // ? データ読み込み失敗 || キャッシュ期限切れ
 			{
 				try
 				{
-					this.GetNasaData();
+					U_LoopTry(this.GetNasaData, 3);
+					this.SaveToFile();
 				}
 				catch
 				{
-					try
-					{
-						this.GetNasaData(); // リトライ_1回目
-					}
-					catch
-					{
-						this.GetNasaData(); // リトライ_2回目
-					}
+					if (!this.LoadFromFile(true))
+						throw new Exception("[VD]データ読み込み失敗");
 				}
-				this.SaveToFile();
 			}
 			ProcMain.WriteLog("[VD].2");
+		}
+
+		private static void U_LoopTry(Action action, int tryCountMax)
+		{
+			for (int tryCount = 1; ; tryCount++)
+			{
+				try
+				{
+					action();
+					return;
+				}
+				catch (Exception ex)
+				{
+					ProcMain.WriteLog("ex: " + ex + " (処理続行)");
+
+					if (tryCountMax <= tryCount)
+						throw;
+				}
+			}
 		}
 
 		private void GetNasaData()
@@ -227,7 +241,7 @@ namespace Charlotte
 
 		private const long CACHE_TIMEOUT_SEC = 60;
 
-		private bool LoadFromFile()
+		private bool LoadFromFile(bool allowTimeout)
 		{
 			if (!File.Exists(NASA_DATA_FILE))
 			{
@@ -247,8 +261,15 @@ namespace Charlotte
 
 			if (this.データ取得日時.ToSec() + CACHE_TIMEOUT_SEC <= SCommon.SimpleDateTime.Now().ToSec())
 			{
-				ProcMain.WriteLog("[VD]キャッシュ期限切れ");
-				return false;
+				if (allowTimeout)
+				{
+					ProcMain.WriteLog("[VD]キャッシュ期限切れ -> 無視");
+				}
+				else
+				{
+					ProcMain.WriteLog("[VD]キャッシュ期限切れ");
+					return false;
+				}
 			}
 			return true;
 		}
