@@ -83,7 +83,7 @@ namespace Charlotte
 
 			// ----
 
-			using (Mutex serverProcMutex = new Mutex(false, Consts.SERVER_PROCESS_MUTEX_NAME))
+			using (Mutex serverProcMutex = new Mutex(false, Consts.OWN_PROCESS_MUTEX_NAME))
 			{
 				Console.WriteLine("前回のプロセスの終了を待っています。");
 
