@@ -32,11 +32,11 @@ namespace Charlotte
 
 		public const string HTTDIR_STOP_EVENT_NAME = "{8bf2b6c0-0a08-48ae-98f3-b875ce5736d6}"; // shared_uuid@ign
 
-		public static string OWN_PROCESS_MUTEX_NAME
+		public static string PROCESS_MUTEX_NAME
 		{
 			get
 			{
-				return ProcMain.APP_IDENT + "_OWN_PROCESS_MUTEX";
+				return ProcMain.APP_IDENT + "_PROCESS_MUTEX";
 			}
 		}
 	}
