@@ -47,8 +47,8 @@ namespace Charlotte
 
 			public double GetKm(SCommon.SimpleDateTime dt)
 			{
-				double rateOfDateTime = Common.RateAToB(this.A.DateTime.ToSec(), this.B.DateTime.ToSec(), dt.ToSec());
-				double km = Common.AToBRate(this.A.Km, this.B.Km, rateOfDateTime);
+				double rateOfDateTime = P_RateAToB(this.A.DateTime.ToSec(), this.B.DateTime.ToSec(), dt.ToSec());
+				double km = P_AToBRate(this.A.Km, this.B.Km, rateOfDateTime);
 				return km;
 			}
 
@@ -88,7 +88,7 @@ namespace Charlotte
 			{
 				try
 				{
-					U_LoopTry(this.GetNasaData, 3);
+					P_LoopTry(this.GetNasaData, 3);
 					this.SaveToFile();
 				}
 				catch
@@ -100,7 +100,7 @@ namespace Charlotte
 			ProcMain.WriteLog("[VD].2");
 		}
 
-		private static void U_LoopTry(Action action, int tryCountMax)
+		private static void P_LoopTry(Action action, int tryCountMax)
 		{
 			for (int tryCount = 1; ; tryCount++)
 			{
@@ -272,6 +272,30 @@ namespace Charlotte
 				}
 			}
 			return true;
+		}
+
+		/// <summary>
+		/// 始点から終点までの間の指定レートの位置の値を返す。
+		/// </summary>
+		/// <param name="a">始点</param>
+		/// <param name="b">終点</param>
+		/// <param name="rate">レート</param>
+		/// <returns>レートの値</returns>
+		private static double P_AToBRate(double a, double b, double rate)
+		{
+			return a + (b - a) * rate;
+		}
+
+		/// <summary>
+		/// 始点から終点までの間の位置をレートに変換する。
+		/// </summary>
+		/// <param name="a">始点</param>
+		/// <param name="b">終点</param>
+		/// <param name="value">位置</param>
+		/// <returns>レート</returns>
+		private static double P_RateAToB(double a, double b, double value)
+		{
+			return (value - a) / (b - a);
 		}
 	}
 
