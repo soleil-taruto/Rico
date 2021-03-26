@@ -82,8 +82,29 @@ namespace Charlotte
 
 		public VoyagerDistance()
 		{
+			const string MUTEX_NAME = "{ae070e1c-b84b-4f52-a157-a2911666e97b}"; // shared_uuid@g
+
 			ProcMain.WriteLog("[VD].1");
 
+			using (Mutex mutex = new Mutex(false, MUTEX_NAME))
+			{
+				mutex.WaitOne();
+				try
+				{
+					ProcMain.WriteLog("[VD].2");
+					this.Load();
+					ProcMain.WriteLog("[VD].3");
+				}
+				finally
+				{
+					mutex.ReleaseMutex();
+				}
+			}
+			ProcMain.WriteLog("[VD].4");
+		}
+
+		private void Load()
+		{
 			if (!this.LoadFromFile(false)) // ? データ読み込み失敗 || キャッシュ期限切れ
 			{
 				try
@@ -97,7 +118,6 @@ namespace Charlotte
 						throw new Exception("[VD]データ読み込み失敗");
 				}
 			}
-			ProcMain.WriteLog("[VD].2");
 		}
 
 		private static void P_LoopTry(Action action, int tryCountMax)
