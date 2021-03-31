@@ -46,20 +46,20 @@ namespace Charlotte
 			}
 			catch (Exception e)
 			{
-				Console.WriteLine(e);
+				Console.WriteLine("難読化失敗_e: " + e);
 
-				Console.WriteLine("★★★ 警告 ★★★");
-				Console.WriteLine("難読化の処理中に例外を投げました。");
-				Console.WriteLine("以下を確認して下さい。");
-				Console.WriteLine("-- 予約語リスト");
-				Console.WriteLine("予約語リストの確認方法");
-				Console.WriteLine("-- 失敗したプロジェクトの tmp\\tmpsol_mid をリビルドする。");
-				Console.WriteLine("-- ビルドエラーの原因となったワードを以下に追加する。");
-				Console.WriteLine("---- CSResources -- 予約語リスト -- ★★★ 追加 ★★★");
-				Console.WriteLine("★★★");
-
-				Console.WriteLine("エンターキーを押して下さい。");
-				Console.ReadLine();
+				MessageBox.Show(
+					@"難読化の処理中に例外を投げました。
+以下を確認して下さい。
+-- 予約語リスト
+予約語リストの確認方法
+-- 失敗したプロジェクトの tmp\tmpsol_mid をリビルドする。
+-- ビルドエラーの原因となったワードを以下に追加する。
+---- CSResources -- 予約語リスト -- ★★★ 追加 ★★★",
+					"警告",
+					MessageBoxButtons.OK,
+					MessageBoxIcon.Error
+					);
 			}
 		}
 	}
