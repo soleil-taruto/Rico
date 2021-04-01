@@ -43,7 +43,7 @@ namespace Charlotte
 
 			// --
 
-			//Common.Pause();
+			Common.Pause();
 		}
 
 		private void Main4()
@@ -66,44 +66,44 @@ namespace Charlotte
 					if (enclosed == null)
 						break;
 
-					ProcMain.WriteLog("enclosed.Inner: " + enclosed.Inner);
-
 					string path = enclosed.Inner;
-					string[] pathTokens = path.Split('/');
 
-					//if (pathTokens.Length != 3)
-					if (pathTokens.Length < 2)
-						throw new Exception("Bad pathTokens");
+					if (Regex.IsMatch(path, "^[/._0-9A-Za-z]+$"))
+					{
+						Console.WriteLine("P.< " + path); // cout
 
-					foreach (string pathToken in pathTokens)
-						if (!Regex.IsMatch(pathToken, "^[._0-9A-Za-z]+$"))
+						string[] pathTokens = path.Split('/');
+
+						//if (pathTokens.Length != 3)
+						if (pathTokens.Length < 2)
+							throw new Exception("Bad pathTokens");
+
+						foreach (string pathToken in pathTokens)
+							if (!Regex.IsMatch(pathToken, "^[._0-9A-Za-z]+$"))
+								throw new Exception("Bad pathToken");
+
+						if (!SCommon.EndsWithIgnoreCase(pathTokens[pathTokens.Length - 1], ".zip"))
 							throw new Exception("Bad pathToken");
 
-					if (!SCommon.EndsWithIgnoreCase(pathTokens[pathTokens.Length - 1], ".zip"))
-						throw new Exception("Bad pathToken");
+						string relDir = Path.Combine(pathTokens.Take(pathTokens.Length - 1).ToArray());
+						string dir = Path.Combine(Consts.DOC_ROOT_DIR, relDir);
 
-					string relDir = Path.Combine(pathTokens.Take(pathTokens.Length - 1).ToArray());
-					string dir = Path.Combine(Consts.DOC_ROOT_DIR, relDir);
+						if (Directory.Exists(dir))
+						{
+							string[] files = Directory.GetFiles(dir, "*.zip");
 
-					if (Directory.Exists(dir))
-					{
-						string[] files = Directory.GetFiles(dir, "*.zip");
+							Array.Sort(files, SCommon.CompIgnoreCase);
 
-						Array.Sort(files, SCommon.CompIgnoreCase);
+							string file = files[files.Length - 1];
+							string relFile = SCommon.ChangeRoot(file, Consts.DOC_ROOT_DIR);
+							string pathNew = relFile.Replace('\\', '/');
 
-						string file = files[files.Length - 1];
-						string relFile = SCommon.ChangeRoot(file, Consts.DOC_ROOT_DIR);
-						string pathNew = relFile.Replace('\\', '/');
+							Console.WriteLine("P.> " + pathNew); // cout
 
-						ProcMain.WriteLog("pathNew: " + pathNew);
-
-						html = enclosed.Left + pathNew + enclosed.Right;
-						startIndex = enclosed.Left.Length + pathNew.Length + enclosed.CloseTag.Length;
+							html = enclosed.Left + pathNew + enclosed.Right;
+						}
 					}
-					else
-					{
-						startIndex = enclosed.Left.Length + enclosed.Inner.Length + enclosed.CloseTag.Length;
-					}
+					startIndex = html.Length - enclosed.AfterCloseTag.Length;
 				}
 				File.WriteAllText(htmlFile, html, Consts.HTML_ENCODING);
 			}
