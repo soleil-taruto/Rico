@@ -19,6 +19,13 @@ namespace Charlotte
 
 		public static IEnumerable<T> Sort<T>(this IEnumerable<T> src, Comparison<T> comp)
 		{
+#if true
+			{
+				List<T> list = src.ToList();
+				list.Sort(comp);
+				src = list;
+			}
+#else // src自体をソートしても良い場合
 			if (src is T[])
 			{
 				Array.Sort((T[])src, comp);
@@ -33,6 +40,7 @@ namespace Charlotte
 				list.Sort(comp);
 				src = list;
 			}
+#endif
 			return src;
 		}
 
