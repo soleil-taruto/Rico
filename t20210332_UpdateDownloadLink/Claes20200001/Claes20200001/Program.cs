@@ -56,6 +56,8 @@ namespace Charlotte
 
 			foreach (string htmlFile in Directory.GetFiles(Consts.SPEC_ROOT_DIR, "*.html", SearchOption.AllDirectories).Sort(SCommon.Comp))
 			{
+				Console.WriteLine("* " + htmlFile); // cout
+
 				string html = File.ReadAllText(htmlFile, Consts.HTML_ENCODING);
 				int startIndex = 0;
 
@@ -68,7 +70,10 @@ namespace Charlotte
 
 					string path = enclosed.Inner;
 
-					if (Regex.IsMatch(path, "^[/._0-9A-Za-z]+$"))
+					if (
+						Regex.IsMatch(path, "^[/._0-9A-Za-z]+$") &&
+						SCommon.EndsWithIgnoreCase(path, ".zip")
+						)
 					{
 						Console.WriteLine("P.< " + path); // cout
 
