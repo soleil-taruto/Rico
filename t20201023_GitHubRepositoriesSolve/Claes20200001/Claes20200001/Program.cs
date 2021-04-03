@@ -207,6 +207,12 @@ namespace Charlotte
 		{
 			foreach (string file in Common.GetRepositoryFiles(dir))
 			{
+				if (
+					SCommon.ContainsIgnoreCase(file, "\\Games\\") &&
+					SCommon.EndsWithIgnoreCase(file, ".cs")
+					)
+					SGR_MaskLiteralString(file);
+
 #if false // del @ 2021.4.3
 				if (
 					//SCommon.ContainsIgnoreCase(file, "\\dat\\") || // res は dat 配下へ移動し、dat 配下はコピーしない。@ 2021.3.3
@@ -217,6 +223,26 @@ namespace Charlotte
 					SGR_Mask(file);
 #endif
 			}
+		}
+
+		private void SGR_MaskLiteralString(string file)
+		{
+			string[] lines = File.ReadAllLines(file, Encoding.UTF8);
+			bool modified = false;
+
+			for (int index = 0; index < lines.Length; index++)
+			{
+				string line = lines[index];
+
+				if (!line.Trim().StartsWith("//") && line.Contains('"')) // ? not コメント行 && リテラル文字列 // 判定_雑
+				{
+					line = string.Join("", line.Select(chr => chr < 0x100 ? "" + chr : "\\u" + ((int)chr).ToString("x4")));
+					lines[index] = line;
+					modified = true;
+				}
+			}
+			if (modified)
+				File.WriteAllLines(file, lines, Encoding.UTF8);
 		}
 
 #if false // del @ 2021.4.3
