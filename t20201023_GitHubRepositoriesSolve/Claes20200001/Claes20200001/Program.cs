@@ -209,7 +209,6 @@ namespace Charlotte
 			foreach (string file in Common.GetRepositoryFiles(dir))
 			{
 				if (
-					20210228 < PathToProjectTimeStamp(file) &&
 					SCommon.ContainsIgnoreCase(file, "\\Games\\") && // ? 名前空間 Games の配下
 					SCommon.EndsWithIgnoreCase(file, ".cs")
 					)
@@ -227,36 +226,26 @@ namespace Charlotte
 			}
 		}
 
-		private int PathToProjectTimeStamp(string path, int defval = -1)
-		{
-			foreach (string pathToken in path.Split('\\'))
-			{
-				if (Regex.IsMatch(pathToken, "^[A-Za-z][0-9]{8}_[_0-9A-Za-z]+$")) // ? "t20201126_Tests" etc.
-				{
-					return int.Parse(pathToken.Substring(1, 8));
-				}
-			}
-			return defval;
-		}
-
 		private void SGR_MaskLiteralString(string file)
 		{
+			const string PTN_INCLUDE_RESOURCE = "_#Include_Resource";
+
 			string[] lines = File.ReadAllLines(file, Encoding.UTF8);
-			bool modified = false;
 
-			for (int index = 0; index < lines.Length; index++)
+			if (lines.Any(line => line.Contains(PTN_INCLUDE_RESOURCE)))
 			{
-				string line = lines[index];
-
-				if (!line.Trim().StartsWith("//") && line.Contains('"')) // ? not コメント行 && リテラル文字列 // HACK: 判定_雑
+				for (int index = 0; index < lines.Length; index++)
 				{
-					line = string.Join("", line.Select(chr => chr < 0x100 ? "" + chr : "\\u" + ((int)chr).ToString("x4")));
-					lines[index] = line;
-					modified = true;
+					string line = lines[index];
+
+					if (!line.Trim().StartsWith("//") && line.Contains('"')) // ? not コメント行 && リテラル文字列 // HACK: 判定_雑
+					{
+						line = string.Join("", line.Select(chr => chr < 0x100 ? "" + chr : "\\u" + ((int)chr).ToString("x4")));
+						lines[index] = line;
+					}
 				}
-			}
-			if (modified)
 				File.WriteAllLines(file, lines, Encoding.UTF8);
+			}
 		}
 
 #if false // del @ 2021.4.3
