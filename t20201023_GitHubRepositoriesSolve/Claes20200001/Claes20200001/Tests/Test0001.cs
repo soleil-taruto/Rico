@@ -17,7 +17,7 @@ namespace Charlotte.Tests
 
 		private void Test01_a(string file)
 		{
-			Console.WriteLine(new Program().IsLikeASourceFile_C(file) ? "IS-C" : "IS-NOT-C");
+			//Console.WriteLine(new Program().IsLikeASourceFile_C(file) ? "IS-C" : "IS-NOT-C"); // IsLikeASourceFile_C 廃止 @ 2021.4.3
 		}
 	}
 }
