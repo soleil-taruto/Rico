@@ -6,6 +6,7 @@ using System.IO;
 using System.Windows.Forms;
 using Charlotte.Commons;
 using Charlotte.Tests;
+using System.Text.RegularExpressions;
 
 namespace Charlotte
 {
@@ -208,7 +209,8 @@ namespace Charlotte
 			foreach (string file in Common.GetRepositoryFiles(dir))
 			{
 				if (
-					SCommon.ContainsIgnoreCase(file, "\\Games\\") &&
+					20210228 < PathToProjectTimeStamp(file) &&
+					SCommon.ContainsIgnoreCase(file, "\\Games\\") && // ? 名前空間 Games の配下
 					SCommon.EndsWithIgnoreCase(file, ".cs")
 					)
 					SGR_MaskLiteralString(file);
@@ -225,6 +227,18 @@ namespace Charlotte
 			}
 		}
 
+		private int PathToProjectTimeStamp(string path, int defval = -1)
+		{
+			foreach (string pathToken in path.Split('\\'))
+			{
+				if (Regex.IsMatch(pathToken, "^[A-Za-z][0-9]{8}_[_0-9A-Za-z]+$")) // ? "t20201126_Tests" etc.
+				{
+					return int.Parse(pathToken.Substring(1, 8));
+				}
+			}
+			return defval;
+		}
+
 		private void SGR_MaskLiteralString(string file)
 		{
 			string[] lines = File.ReadAllLines(file, Encoding.UTF8);
@@ -234,7 +248,7 @@ namespace Charlotte
 			{
 				string line = lines[index];
 
-				if (!line.Trim().StartsWith("//") && line.Contains('"')) // ? not コメント行 && リテラル文字列 // 判定_雑
+				if (!line.Trim().StartsWith("//") && line.Contains('"')) // ? not コメント行 && リテラル文字列 // HACK: 判定_雑
 				{
 					line = string.Join("", line.Select(chr => chr < 0x100 ? "" + chr : "\\u" + ((int)chr).ToString("x4")));
 					lines[index] = line;
