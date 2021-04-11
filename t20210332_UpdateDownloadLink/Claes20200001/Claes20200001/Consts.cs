@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Charlotte.Commons;
 
 namespace Charlotte
 {
@@ -30,6 +31,6 @@ namespace Charlotte
 		/// <summary>
 		/// HTMLファイルのエンコーディング
 		/// </summary>
-		public static readonly Encoding HTML_ENCODING = Encoding.UTF8;
+		public static readonly Encoding HTML_ENCODING = SCommon.ENCODING_SJIS;
 	}
 }
