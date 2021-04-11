@@ -51,66 +51,36 @@ namespace Charlotte
 			if (!Directory.Exists(Consts.SPEC_ROOT_DIR))
 				throw new Exception("no SPEC_ROOT_DIR");
 
-			if (!Directory.Exists(Consts.DOC_ROOT_DIR))
-				throw new Exception("no DOC_ROOT_DIR");
-
-			foreach (string htmlFile in Directory.GetFiles(Consts.SPEC_ROOT_DIR, "*.html", SearchOption.AllDirectories).Sort(SCommon.Comp))
+			foreach (string dataJSFile in Directory.GetFiles(Consts.SPEC_ROOT_DIR, Consts.DATA_JS_LOCAL_NAME, SearchOption.AllDirectories).Sort(SCommon.Comp))
 			{
-				Console.WriteLine("* " + htmlFile); // cout
+				Console.WriteLine("* " + dataJSFile); // cout
 
-				string html = File.ReadAllText(htmlFile, Consts.HTML_ENCODING);
-				int startIndex = 0;
+				string[] lines = File.ReadAllLines(dataJSFile, Consts.DATA_JS_ENCODING);
 
-				for (; ; )
+				string urlPrefix = lines[1];
+				string downloadFilesDir = lines[2];
+
+				if (string.IsNullOrEmpty(urlPrefix))
+					throw new Exception("Bad urlPrefix");
+
+				if (string.IsNullOrEmpty(downloadFilesDir) && !Directory.Exists(downloadFilesDir))
+					throw new Exception("Bad downloadFilesDir");
+
+				string downloadFile = Directory.GetFiles(downloadFilesDir)
+					.Where(file => SCommon.EndsWithIgnoreCase(file, Consts.DOWNLOAD_FILE_SUFFIX))
+					.Sort(SCommon.CompIgnoreCase)
+					.Last(file => true);
+
+				lines = new string[]
 				{
-					Common.Enclosed enclosed = Common.GetEnclosed(html, Consts.LINK_START, Consts.LINK_END, startIndex);
+					"/*",
+					urlPrefix,
+					downloadFilesDir,
+					"*/",
+					"let ccsp_download_link = \"" + urlPrefix + Path.GetFileName(downloadFile) + "\";",
+				};
 
-					if (enclosed == null)
-						break;
-
-					string path = enclosed.Inner;
-
-					if (
-						Regex.IsMatch(path, "^[/._0-9A-Za-z]+$") &&
-						SCommon.EndsWithIgnoreCase(path, ".zip")
-						)
-					{
-						Console.WriteLine("P.< " + path); // cout
-
-						string[] pathTokens = path.Split('/');
-
-						//if (pathTokens.Length != 3)
-						if (pathTokens.Length < 2)
-							throw new Exception("Bad pathTokens");
-
-						foreach (string pathToken in pathTokens)
-							if (!Regex.IsMatch(pathToken, "^[._0-9A-Za-z]+$"))
-								throw new Exception("Bad pathToken");
-
-						if (!SCommon.EndsWithIgnoreCase(pathTokens[pathTokens.Length - 1], ".zip"))
-							throw new Exception("Bad pathToken");
-
-						string relDir = Path.Combine(pathTokens.Take(pathTokens.Length - 1).ToArray());
-						string dir = Path.Combine(Consts.DOC_ROOT_DIR, relDir);
-
-						if (Directory.Exists(dir))
-						{
-							string[] files = Directory.GetFiles(dir, "*.zip");
-
-							Array.Sort(files, SCommon.CompIgnoreCase);
-
-							string file = files[files.Length - 1];
-							string relFile = SCommon.ChangeRoot(file, Consts.DOC_ROOT_DIR);
-							string pathNew = relFile.Replace('\\', '/');
-
-							Console.WriteLine("P.> " + pathNew); // cout
-
-							html = enclosed.Left + pathNew + enclosed.Right;
-						}
-					}
-					startIndex = html.Length - enclosed.AfterCloseTag.Length;
-				}
-				File.WriteAllText(htmlFile, html, Consts.HTML_ENCODING);
+				File.WriteAllLines(dataJSFile, lines, Consts.DATA_JS_ENCODING);
 			}
 		}
 	}

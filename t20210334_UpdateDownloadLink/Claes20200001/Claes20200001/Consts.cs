@@ -14,23 +14,18 @@ namespace Charlotte
 		public const string SPEC_ROOT_DIR = @"C:\be\Web\SpecRoot";
 
 		/// <summary>
-		/// ダウンロード先のルートDIR
+		/// データJSのローカルファイル名
 		/// </summary>
-		public const string DOC_ROOT_DIR = @"C:\be\Web\DocRoot";
+		public const string DATA_JS_LOCAL_NAME = "ccsp-data.js";
 
 		/// <summary>
-		/// ダウンロードリンクの開始パターン
+		/// データJSのエンコーディング
 		/// </summary>
-		public const string LINK_START = "href=\"http://ornithopter.ccsp.mydns.jp:58946/anemoscope/";
+		public static readonly Encoding DATA_JS_ENCODING = Encoding.ASCII;
 
 		/// <summary>
-		/// ダウンロードリンクの終了パターン
+		/// ダウンロード対象ファイルのサフィックス
 		/// </summary>
-		public const string LINK_END = "\"";
-
-		/// <summary>
-		/// HTMLファイルのエンコーディング
-		/// </summary>
-		public static readonly Encoding HTML_ENCODING = SCommon.ENCODING_SJIS;
+		public const string DOWNLOAD_FILE_SUFFIX = ".zip";
 	}
 }
