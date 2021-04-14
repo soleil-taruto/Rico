@@ -17,7 +17,7 @@ namespace Charlotte
 			return src;
 		}
 
-		public static IEnumerable<T> Sort<T>(this IEnumerable<T> src, Comparison<T> comp)
+		public static IEnumerable<T> OrderBy<T>(this IEnumerable<T> src, Comparison<T> comp)
 		{
 #if true
 			{
@@ -44,7 +44,7 @@ namespace Charlotte
 			return src;
 		}
 
-		public static IEnumerable<T> SortedDistinct<T>(this IEnumerable<T> src, Func<T, T, bool> match)
+		public static IEnumerable<T> OrderedDistinct<T>(this IEnumerable<T> src, Func<T, T, bool> match)
 		{
 			IEnumerator<T> reader = src.GetEnumerator();
 
