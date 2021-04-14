@@ -44,6 +44,27 @@ namespace Charlotte
 			return src;
 		}
 
+		public static IEnumerable<T> SortedDistinct<T>(this IEnumerable<T> src, Func<T, T, bool> match)
+		{
+			IEnumerator<T> reader = src.GetEnumerator();
+
+			if (reader.MoveNext())
+			{
+				T last = reader.Current;
+
+				yield return last;
+
+				while (reader.MoveNext())
+				{
+					if (!match(reader.Current, last))
+					{
+						last = reader.Current;
+						yield return last;
+					}
+				}
+			}
+		}
+
 		// < sync
 	}
 }
