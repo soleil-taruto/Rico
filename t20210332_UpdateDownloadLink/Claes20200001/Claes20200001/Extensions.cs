@@ -7,7 +7,7 @@ namespace Charlotte
 {
 	public static class Extensions
 	{
-		// sync > @ ForEach_Sort
+		// sync > @ ForEach_OrderBy
 
 		public static IEnumerable<T> ForEach<T>(this IEnumerable<T> src, Action<T> action)
 		{
