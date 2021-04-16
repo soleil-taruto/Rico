@@ -1617,6 +1617,26 @@ namespace Charlotte.Commons
 			{
 				return a.ToSec() - b.ToSec();
 			}
+
+			public static bool operator ==(SimpleDateTime a, SimpleDateTime b)
+			{
+				return a.ToTimeStamp() == b.ToTimeStamp();
+			}
+
+			public static bool operator !=(SimpleDateTime a, SimpleDateTime b)
+			{
+				return !(a == b);
+			}
+
+			public override bool Equals(object other)
+			{
+				return other is SimpleDateTime && this == (SimpleDateTime)other;
+			}
+
+			public override int GetHashCode()
+			{
+				return this.ToTimeStamp().GetHashCode();
+			}
 		}
 
 		#endregion
