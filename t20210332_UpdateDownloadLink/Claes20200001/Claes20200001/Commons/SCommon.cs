@@ -1738,14 +1738,19 @@ namespace Charlotte.Commons
 				return a.ToSec() - b.ToSec();
 			}
 
+			private long GetValueForCompare()
+			{
+				return this.ToTimeStamp();
+			}
+
 			public static bool operator ==(SimpleDateTime a, SimpleDateTime b)
 			{
-				return a.ToTimeStamp() == b.ToTimeStamp();
+				return a.GetValueForCompare() == b.GetValueForCompare();
 			}
 
 			public static bool operator !=(SimpleDateTime a, SimpleDateTime b)
 			{
-				return !(a == b);
+				return a.GetValueForCompare() != b.GetValueForCompare();
 			}
 
 			public override bool Equals(object other)
@@ -1755,7 +1760,27 @@ namespace Charlotte.Commons
 
 			public override int GetHashCode()
 			{
-				return this.ToTimeStamp().GetHashCode();
+				return this.GetValueForCompare().GetHashCode();
+			}
+
+			public static bool operator <(SimpleDateTime a, SimpleDateTime b)
+			{
+				return a.GetValueForCompare() < b.GetValueForCompare();
+			}
+
+			public static bool operator >(SimpleDateTime a, SimpleDateTime b)
+			{
+				return a.GetValueForCompare() > b.GetValueForCompare();
+			}
+
+			public static bool operator <=(SimpleDateTime a, SimpleDateTime b)
+			{
+				return a.GetValueForCompare() <= b.GetValueForCompare();
+			}
+
+			public static bool operator >=(SimpleDateTime a, SimpleDateTime b)
+			{
+				return a.GetValueForCompare() >= b.GetValueForCompare();
 			}
 		}
 
