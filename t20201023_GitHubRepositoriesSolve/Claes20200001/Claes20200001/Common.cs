@@ -128,5 +128,29 @@ namespace Charlotte
 			}
 			return bText;
 		}
+
+		public static bool Contains(byte[] bText, byte[] bPtn)
+		{
+			if (bPtn.Length < 2)
+				throw new ArgumentException();
+
+			int end = bText.Length - bPtn.Length;
+
+			for (int index = 0; index < end; index++)
+			{
+				if (bText[index] == bPtn[0] && bText[index + 1] == bPtn[1])
+				{
+					for (int ndx = 2; ; ndx++)
+					{
+						if (bPtn.Length <= ndx)
+							return true;
+
+						if (bText[index + ndx] != bPtn[ndx])
+							break;
+					}
+				}
+			}
+			return false;
+		}
 	}
 }

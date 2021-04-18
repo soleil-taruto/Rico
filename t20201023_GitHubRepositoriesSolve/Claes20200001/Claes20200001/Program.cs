@@ -231,7 +231,7 @@ namespace Charlotte
 		{
 			const string PTN_INCLUDE_RESOURCE = "_#Include_Resource";
 
-			if (File.ReadAllText(file, Encoding.ASCII).Contains(PTN_INCLUDE_RESOURCE)) // PTN_INCLUDE_RESOURCE は ASCII のみを想定
+			if (Common.Contains(File.ReadAllBytes(file), Encoding.UTF8.GetBytes(PTN_INCLUDE_RESOURCE)))
 			{
 				string[] lines = File.ReadAllLines(file, Encoding.UTF8);
 
