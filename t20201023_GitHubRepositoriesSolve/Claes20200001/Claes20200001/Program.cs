@@ -226,6 +226,29 @@ namespace Charlotte
 			}
 		}
 
+#if true
+		private void SGR_MaskLiteralString(string file)
+		{
+			const string PTN_INCLUDE_RESOURCE = "_#Include_Resource";
+
+			if (File.ReadAllText(file, Encoding.ASCII).Contains(PTN_INCLUDE_RESOURCE)) // PTN_INCLUDE_RESOURCE は ASCII のみを想定
+			{
+				string[] lines = File.ReadAllLines(file, Encoding.UTF8);
+
+				for (int index = 0; index < lines.Length; index++)
+				{
+					string line = lines[index];
+
+					if (!line.Trim().StartsWith("//") && line.Contains('"')) // ? not \u30b3\u30e1\u30f3\u30c8\u884c && \u30ea\u30c6\u30e9\u30eb\u6587\u5b57\u5217 // HACK: \u5224\u5b9a_\u96d1
+					{
+						line = string.Join("", line.Select(chr => chr < 0x100 ? "" + chr : "\\u" + ((int)chr).ToString("x4")));
+						lines[index] = line;
+					}
+				}
+				File.WriteAllLines(file, lines, Encoding.UTF8);
+			}
+		}
+#else
 		private void SGR_MaskLiteralString(string file)
 		{
 			const string PTN_INCLUDE_RESOURCE = "_#Include_Resource";
@@ -247,6 +270,7 @@ namespace Charlotte
 				File.WriteAllLines(file, lines, Encoding.UTF8);
 			}
 		}
+#endif
 
 #if false // del @ 2021.4.3
 		private void SGR_Mask(string file)
