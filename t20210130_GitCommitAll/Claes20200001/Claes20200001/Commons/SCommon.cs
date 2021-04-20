@@ -1262,8 +1262,6 @@ namespace Charlotte.Commons
 			return Process.Start(psi);
 		}
 
-		// sync > @ Base64_TimeStamp
-
 		#region Base64
 
 		public class Base64
@@ -1712,7 +1710,5 @@ namespace Charlotte.Commons
 		}
 
 		#endregion
-
-		// < sync
 	}
 }
