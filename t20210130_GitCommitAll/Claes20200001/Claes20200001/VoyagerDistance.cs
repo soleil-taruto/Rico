@@ -8,8 +8,6 @@ using Charlotte.Commons;
 
 namespace Charlotte
 {
-	// sync > @ VoyagerDistance
-
 	public class VoyagerDistance
 	{
 		private const string NASA_DISTANCE_DATA_URL = "https://voyager.jpl.nasa.gov/assets/javascripts/distance_data.js";
@@ -316,6 +314,4 @@ namespace Charlotte
 			return (value - a) / (b - a);
 		}
 	}
-
-	// < sync
 }
