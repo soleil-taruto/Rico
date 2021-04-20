@@ -357,8 +357,6 @@ namespace Charlotte.Commons
 			return ret;
 		}
 
-		// sync > @ DeletePath_CreateDir
-
 		private const int IO_TRY_MAX = 10;
 
 		public static void DeletePath(string path)
@@ -440,8 +438,6 @@ namespace Charlotte.Commons
 				Thread.Sleep(trycnt * 100);
 			}
 		}
-
-		// < sync
 
 		public static string EraseExt(string path)
 		{
