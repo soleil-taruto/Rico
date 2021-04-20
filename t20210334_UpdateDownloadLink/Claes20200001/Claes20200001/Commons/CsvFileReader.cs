@@ -4,8 +4,6 @@ using System.Linq;
 using System.Text;
 using System.IO;
 
-// ^ sync @ CsvFileReader
-
 namespace Charlotte.Commons
 {
 	// sync > @ CsvFileReader

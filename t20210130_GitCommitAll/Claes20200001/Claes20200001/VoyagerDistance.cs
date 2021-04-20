@@ -6,8 +6,6 @@ using System.IO;
 using System.Threading;
 using Charlotte.Commons;
 
-// ^ sync @ VoyagerDistance
-
 namespace Charlotte
 {
 	// sync > @ VoyagerDistance
