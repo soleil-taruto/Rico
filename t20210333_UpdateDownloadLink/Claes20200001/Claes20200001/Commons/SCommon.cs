@@ -39,8 +39,6 @@ namespace Charlotte.Commons
 			return new S_AnonyDisposable(routine);
 		}
 
-		// sync > @ 20210323_Comp_etc
-
 		public static int Comp<T>(IList<T> a, IList<T> b, Comparison<T> comp)
 		{
 			int minlen = Math.Min(a.Count, b.Count);
@@ -70,8 +68,6 @@ namespace Charlotte.Commons
 			list[a] = list[b];
 			list[b] = tmp;
 		}
-
-		// < sync
 
 		public static void Swap<T>(ref T a, ref T b)
 		{
