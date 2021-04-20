@@ -7,8 +7,6 @@ namespace Charlotte
 {
 	public static class Extensions
 	{
-		// sync > @ ForEach_OrderBy
-
 		public static IEnumerable<T> ForEach<T>(this IEnumerable<T> src, Action<T> action)
 		{
 			foreach (T element in src)
@@ -64,7 +62,5 @@ namespace Charlotte
 				}
 			}
 		}
-
-		// < sync
 	}
 }
