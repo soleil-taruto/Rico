@@ -6,8 +6,6 @@ using System.Security.Cryptography;
 
 namespace Charlotte.Commons
 {
-	// sync > @ RandomUnit
-
 	public class RandomUnit : IDisposable
 	{
 		public interface IRandomNumberGenerator : IDisposable
@@ -146,6 +144,4 @@ namespace Charlotte.Commons
 			}
 		}
 	}
-
-	// < sync
 }
