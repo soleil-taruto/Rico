@@ -51,7 +51,7 @@ namespace Charlotte
 			if (!Directory.Exists(Consts.SPEC_ROOT_DIR))
 				throw new Exception("no SPEC_ROOT_DIR");
 
-			foreach (string dataJSFile in Directory.GetFiles(Consts.SPEC_ROOT_DIR, Consts.DATA_JS_LOCAL_NAME, SearchOption.AllDirectories).Sort(SCommon.Comp))
+			foreach (string dataJSFile in Directory.GetFiles(Consts.SPEC_ROOT_DIR, Consts.DATA_JS_LOCAL_NAME, SearchOption.AllDirectories).OrderBy(SCommon.Comp))
 			{
 				Console.WriteLine("* " + dataJSFile); // cout
 
@@ -68,7 +68,7 @@ namespace Charlotte
 
 				string downloadFile = Directory.GetFiles(downloadFilesDir)
 					.Where(file => SCommon.EndsWithIgnoreCase(file, Consts.DOWNLOAD_FILE_SUFFIX))
-					.Sort(SCommon.CompIgnoreCase)
+					.OrderBy(SCommon.CompIgnoreCase)
 					.Last(file => true);
 
 				lines = new string[]
