@@ -57,7 +57,7 @@ namespace Charlotte
 			if (!Directory.Exists(Consts.DEVENV_ROOT_DIR))
 				throw new Exception("no DEVENV_ROOT_DIR");
 
-			foreach (string htmlFile in Directory.GetFiles(Consts.SPEC_ROOT_DIR, "*.html", SearchOption.AllDirectories).Sort(SCommon.Comp))
+			foreach (string htmlFile in Directory.GetFiles(Consts.SPEC_ROOT_DIR, "*.html", SearchOption.AllDirectories).OrderBy(SCommon.Comp))
 			{
 				Console.WriteLine("* " + htmlFile); // cout
 
