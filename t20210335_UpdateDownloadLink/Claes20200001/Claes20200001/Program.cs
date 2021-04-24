@@ -51,36 +51,81 @@ namespace Charlotte
 			if (!Directory.Exists(Consts.SPEC_ROOT_DIR))
 				throw new Exception("no SPEC_ROOT_DIR");
 
+			if (!Directory.Exists(Consts.DOWNLOAD_ROOT_DIR))
+				throw new Exception("no DOWNLOAD_ROOT_DIR");
+
+			if (!Directory.Exists(Consts.DEV_ROOT_DIR))
+				throw new Exception("no DEV_ROOT_DIR");
+
 			foreach (string dataJSFile in Directory.GetFiles(Consts.SPEC_ROOT_DIR, Consts.DATA_JS_LOCAL_NAME, SearchOption.AllDirectories).OrderBy(SCommon.Comp))
 			{
 				Console.WriteLine("* " + dataJSFile); // cout
 
 				string[] lines = File.ReadAllLines(dataJSFile, Consts.DATA_JS_ENCODING);
 
-				string urlPrefix = lines[1];
-				string downloadFilesDir = lines[2];
+				string signature = lines[1];
+				string relDir = lines[2];
+				string wildCard = lines[3];
 
-				if (string.IsNullOrEmpty(urlPrefix))
-					throw new Exception("Bad urlPrefix");
+				if (signature != Consts.DATA_JS_SIGNATURE)
+					continue;
 
-				if (string.IsNullOrEmpty(downloadFilesDir) && !Directory.Exists(downloadFilesDir))
-					throw new Exception("Bad downloadFilesDir");
+				if (string.IsNullOrEmpty(relDir))
+					throw new Exception("Bad relDir");
 
-				string downloadFile = Directory.GetFiles(downloadFilesDir)
+				if (string.IsNullOrEmpty(wildCard))
+					throw new Exception("Bad wildCard");
+
+				string downloadParentDir = Path.Combine(Consts.DOWNLOAD_ROOT_DIR, relDir);
+				string projectParentDir = Path.Combine(Consts.DEV_ROOT_DIR, relDir);
+
+				if (!Directory.Exists(downloadParentDir))
+					throw new Exception("no downloadParentDir");
+
+				if (!Directory.Exists(projectParentDir))
+					throw new Exception("no projectParentDir");
+
+				string[] projectDirs = Directory.GetDirectories(projectParentDir, wildCard).ToArray();
+
+				if (projectDirs.Length < 1)
+					throw new Exception("no projectDirs");
+
+				projectDirs = projectDirs
+					.Where(v => File.Exists(Path.Combine(v, "desktop.ini"))) // アクティブなプロジェクトは(フォルダに)アイコンが設定されているはず
+					.ToArray();
+
+				if (projectDirs.Length != 1)
+					throw new Exception("プロジェクトを絞り込めない。");
+
+				string projectDir = projectDirs[0];
+				string projectLocalDir = Path.GetFileName(projectDir);
+				string downloadDir = Path.Combine(downloadParentDir, projectLocalDir);
+
+				if (!Directory.Exists(downloadDir))
+					throw new Exception("no downloadDir");
+
+				string downloadFile = Directory.GetFiles(downloadDir)
 					.Where(file => SCommon.EndsWithIgnoreCase(file, Consts.DOWNLOAD_FILE_SUFFIX))
 					.OrderBy(SCommon.CompIgnoreCase)
 					.Last(file => true);
 
+				string downloadRelFile = SCommon.ChangeRoot(downloadFile, Consts.DOWNLOAD_ROOT_DIR);
+				string downloadUrlRelPath = downloadRelFile.Replace('\\', '/');
+				string downloadUrl = Consts.DOWNLOAD_URL_PREFIX + downloadUrlRelPath;
+
 				lines = new string[]
 				{
 					"/*",
-					urlPrefix,
-					downloadFilesDir,
+					signature,
+					relDir,
+					wildCard,
 					"*/",
-					"let ccsp_download_link = \"" + urlPrefix + Path.GetFileName(downloadFile) + "\";",
+					"let ccsp_download_link = \"" + downloadUrl + "\";",
 				};
 
 				File.WriteAllLines(dataJSFile, lines, Consts.DATA_JS_ENCODING);
+
+				Console.WriteLine("更新しました。"); // cout
 			}
 		}
 	}
