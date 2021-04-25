@@ -33,7 +33,8 @@ namespace Charlotte
 		{
 			// -- choose one --
 
-			new Test0001().Test01();
+			ProductMain();
+			//new Test0001().Test01();
 			//new Test0001().Test02();
 			//new Test0001().Test03();
 
@@ -46,7 +47,7 @@ namespace Charlotte
 		private void ProductMain()
 		{
 			if (!Directory.Exists(Consts.REPOSITORIES_ROOT_DIR))
-				throw new Exception("\u30ea\u30dd\u30b8\u30c8\u30ea\u306e\u30eb\u30fc\u30c8\u30fb\u30c7\u30a3\u30ec\u30af\u30c8\u30ea\u304c\u898b\u3064\u304b\u308a\u307e\u305b\u3093\u3002");
+				throw new Exception("リポジトリのルート・ディレクトリが見つかりません。");
 
 			foreach (string dir in Directory.GetDirectories(Consts.REPOSITORIES_ROOT_DIR))
 				Solve(dir);
@@ -56,7 +57,7 @@ namespace Charlotte
 
 		private void CompactRRD()
 		{
-			Console.WriteLine("\u5727\u7e2e\u3057\u3066\u3044\u307e\u3059...");
+			Console.WriteLine("圧縮しています...");
 			SCommon.Batch(new string[]
 			{
 				"Compact.exe /C /S:\"" + Consts.REPOSITORIES_ROOT_DIR + "\"",
@@ -64,7 +65,7 @@ namespace Charlotte
 			"",
 			SCommon.StartProcessWindowStyle_e.MINIMIZED
 			);
-			Console.WriteLine("\u5727\u7e2e\u5b8c\u4e86");
+			Console.WriteLine("圧縮完了");
 		}
 
 		private void Solve(string dir)
@@ -136,7 +137,7 @@ namespace Charlotte
 				string pathNew = Path.Combine(Path.GetDirectoryName(path), localPathNew);
 
 				if (File.Exists(pathNew) || Directory.Exists(pathNew))
-					throw new Exception("\u5909\u66f4\u5f8c\u306e\u30d1\u30b9\u540d\u306f\u65e2\u306b\u5b58\u5728\u3057\u307e\u3059\u3002");
+					throw new Exception("変更後のパス名は既に存在します。");
 
 				if (File.Exists(path))
 					File.Move(path, pathNew);
@@ -209,7 +210,7 @@ namespace Charlotte
 			foreach (string file in Common.GetRepositoryFiles(dir))
 			{
 				if (
-					//SCommon.ContainsIgnoreCase(file, "\\Games\\") && // ? 名前空間 Games の配下
+					SCommon.ContainsIgnoreCase(file, "\\Games\\") && // ? 名前空間 Games の配下
 					SCommon.EndsWithIgnoreCase(file, ".cs")
 					)
 					SGR_MaskLiteralString(file);
@@ -239,7 +240,7 @@ namespace Charlotte
 				{
 					string line = lines[index];
 
-					if (!line.Trim().StartsWith("//") && line.Contains('"')) // ? not \u30b3\u30e1\u30f3\u30c8\u884c && \u30ea\u30c6\u30e9\u30eb\u6587\u5b57\u5217 // HACK: \u5224\u5b9a_\u96d1
+					if (!line.Trim().StartsWith("//") && line.Contains('"')) // ? not コメント行 && リテラル文字列 // HACK: 判定_雑
 					{
 						line = string.Join("", line.Select(chr => chr < 0x100 ? "" + chr : "\\u" + ((int)chr).ToString("x4")));
 						lines[index] = line;
@@ -261,7 +262,7 @@ namespace Charlotte
 				{
 					string line = lines[index];
 
-					if (!line.Trim().StartsWith("//") && line.Contains('"')) // ? not \u30b3\u30e1\u30f3\u30c8\u884c && \u30ea\u30c6\u30e9\u30eb\u6587\u5b57\u5217 // HACK: \u5224\u5b9a_\u96d1
+					if (!line.Trim().StartsWith("//") && line.Contains('"')) // ? not コメント行 && リテラル文字列 // HACK: 判定_雑
 					{
 						line = string.Join("", line.Select(chr => chr < 0x100 ? "" + chr : "\\u" + ((int)chr).ToString("x4")));
 						lines[index] = line;
