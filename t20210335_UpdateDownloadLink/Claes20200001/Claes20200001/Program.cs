@@ -123,9 +123,29 @@ namespace Charlotte
 					"let ccsp_download_link = \"" + downloadUrl + "\";",
 				};
 
+#if true
+				using (WorkingDir wd = new WorkingDir())
+				{
+					string testOutFile = wd.MakePath();
+
+					File.WriteAllLines(testOutFile, lines, Consts.DATA_JS_ENCODING);
+
+					if (SCommon.Comp(File.ReadAllBytes(testOutFile), File.ReadAllBytes(dataJSFile)) == 0) // ? 同じ内容
+					{
+						Console.WriteLine("同じ内容なので更新しませんでした。"); // cout
+					}
+					else
+					{
+						File.Copy(testOutFile, dataJSFile, true);
+
+						Console.WriteLine("更新しました。"); // cout
+					}
+				}
+#else
 				File.WriteAllLines(dataJSFile, lines, Consts.DATA_JS_ENCODING);
 
 				Console.WriteLine("更新しました。"); // cout
+#endif
 			}
 		}
 	}
