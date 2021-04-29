@@ -72,14 +72,23 @@ namespace Charlotte
 				File.Exists(gitAttributesFile);
 		}
 
+		private SCommon.SimpleDateTime NextCommitTime = new SCommon.SimpleDateTime(0);
+
 		private void Commit(string repoDir)
 		{
+			SCommon.SimpleDateTime commitTime = SCommon.SimpleDateTime.Now();
+
+			if (commitTime < NextCommitTime)
+				commitTime = NextCommitTime;
+
+			NextCommitTime = commitTime + 1;
+
 			string commitComment;
 
 			try
 			{
 				commitComment = "Voyager 1 is " +
-					new VoyagerDistance().Sun_Voyager_1.GetKm(SCommon.SimpleDateTime.Now()).ToString("F3") +
+					new VoyagerDistance().Sun_Voyager_1.GetKm(commitTime).ToString("F3") +
 					" kilometers away from the Sun.";
 			}
 			catch (Exception ex)
