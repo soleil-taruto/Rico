@@ -54,9 +54,6 @@ namespace Charlotte
 			if (!Directory.Exists(Consts.DOWNLOAD_ROOT_DIR))
 				throw new Exception("no DOWNLOAD_ROOT_DIR");
 
-			if (!Directory.Exists(Consts.DEV_ROOT_DIR))
-				throw new Exception("no DEV_ROOT_DIR");
-
 			foreach (string dataJSFile in Directory.GetFiles(Consts.SPEC_ROOT_DIR, Consts.DATA_JS_LOCAL_NAME, SearchOption.AllDirectories).OrderBy(SCommon.Comp))
 			{
 				Console.WriteLine("* " + dataJSFile); // cout
@@ -77,32 +74,18 @@ namespace Charlotte
 					throw new Exception("Bad wildCard");
 
 				string downloadParentDir = Path.Combine(Consts.DOWNLOAD_ROOT_DIR, relDir);
-				string projectParentDir = Path.Combine(Consts.DEV_ROOT_DIR, relDir);
 
 				if (!Directory.Exists(downloadParentDir))
 					throw new Exception("no downloadParentDir");
 
-				if (!Directory.Exists(projectParentDir))
-					throw new Exception("no projectParentDir");
+				string[] downloadDirs = Directory.GetDirectories(downloadParentDir, wildCard).ToArray();
 
-				string[] projectDirs = Directory.GetDirectories(projectParentDir, wildCard).ToArray();
+				if (downloadDirs.Length < 1)
+					throw new Exception("no downloadDirs");
 
-				if (projectDirs.Length < 1)
-					throw new Exception("no projectDirs");
-
-				projectDirs = projectDirs
-					.Where(v => File.Exists(Path.Combine(v, "desktop.ini"))) // アクティブなプロジェクトは(フォルダに)アイコンが設定されているはず
-					.ToArray();
-
-				if (projectDirs.Length != 1)
-					throw new Exception("プロジェクトを絞り込めない。");
-
-				string projectDir = projectDirs[0];
-				string projectLocalDir = Path.GetFileName(projectDir);
-				string downloadDir = Path.Combine(downloadParentDir, projectLocalDir);
-
-				if (!Directory.Exists(downloadDir))
-					throw new Exception("no downloadDir");
+				string downloadDir = downloadDirs
+					.OrderBy(SCommon.CompIgnoreCase)
+					.Last(dir => true);
 
 				string downloadFile = Directory.GetFiles(downloadDir)
 					.Where(file => SCommon.EndsWithIgnoreCase(file, Consts.DOWNLOAD_FILE_SUFFIX))
@@ -123,7 +106,6 @@ namespace Charlotte
 					"let ccsp_download_link = \"" + downloadUrl + "\";",
 				};
 
-#if true
 				using (WorkingDir wd = new WorkingDir())
 				{
 					string testOutFile = wd.MakePath();
@@ -141,11 +123,6 @@ namespace Charlotte
 						Console.WriteLine("更新しました。"); // cout
 					}
 				}
-#else
-				File.WriteAllLines(dataJSFile, lines, Consts.DATA_JS_ENCODING);
-
-				Console.WriteLine("更新しました。"); // cout
-#endif
 			}
 		}
 	}

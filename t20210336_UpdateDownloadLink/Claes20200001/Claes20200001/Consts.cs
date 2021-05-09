@@ -19,11 +19,6 @@ namespace Charlotte
 		public const string DOWNLOAD_ROOT_DIR = @"C:\be\Web\DocRoot";
 
 		/// <summary>
-		/// 開発環境のルートDIR
-		/// </summary>
-		public const string DEV_ROOT_DIR = @"C:\Dev";
-
-		/// <summary>
 		/// データJSシグネチャ
 		/// これに一致しない場合は処理しない。
 		/// </summary>
