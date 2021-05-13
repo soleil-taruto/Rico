@@ -260,7 +260,6 @@ Load
 Location
 Main
 Margin
-Math
 Max
 MaxDropDownItems
 MaximizeBox
@@ -431,6 +430,7 @@ Color
 Console
 Regex
 string
+Math
 
 ";
 
