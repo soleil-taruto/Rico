@@ -105,13 +105,19 @@ namespace Charlotte
 			{
 				try
 				{
-					P_LoopTry(this.GetNasaData, 3);
+					P_LoopTry(this.GetNasaData, 2);
 					this.SaveToFile();
 				}
 				catch
 				{
 					if (!this.LoadFromFile(true))
 						throw new Exception("[VD]データ読み込み失敗");
+
+					// 今しがた取得失敗したなら、傍近でも失敗するだろう。--> 古いデータのまま、キャッシュ期限を延ばしてしまおう...
+					{
+						this.データ取得日時 = SCommon.SimpleDateTime.Now();
+						this.SaveToFile();
+					}
 				}
 			}
 		}
