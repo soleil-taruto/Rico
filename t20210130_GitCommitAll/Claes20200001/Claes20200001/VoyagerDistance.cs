@@ -8,8 +8,6 @@ using Charlotte.Commons;
 
 namespace Charlotte
 {
-	// ★注意：他プログラムとデータファイル共有の可能性あり。要連携_必要に応じてコード同期
-
 	public class VoyagerDistance
 	{
 		private const string NASA_DISTANCE_DATA_URL = "https://voyager.jpl.nasa.gov/assets/javascripts/distance_data.js";
@@ -80,13 +78,13 @@ namespace Charlotte
 
 		public VoyagerDistance()
 		{
-			const string MUTEX_NAME = "{ae070e1c-b84b-4f52-a157-a2911666e97b}"; // shared_uuid@g
+			//const string MUTEX_NAME = ProcMain.APP_IDENT + "_VoyagerDistance_Mutex";
 
 			ProcMain.WriteLog("[VD].1");
 
-			using (Mutex mutex = new Mutex(false, MUTEX_NAME))
+			//using (Mutex mutex = new Mutex(false, MUTEX_NAME))
 			{
-				mutex.WaitOne();
+				//mutex.WaitOne();
 				try
 				{
 					ProcMain.WriteLog("[VD].2");
@@ -95,7 +93,7 @@ namespace Charlotte
 				}
 				finally
 				{
-					mutex.ReleaseMutex();
+					//mutex.ReleaseMutex();
 				}
 			}
 			ProcMain.WriteLog("[VD].4");
@@ -250,7 +248,7 @@ namespace Charlotte
 				throw new Exception("[VD]データ破損");
 		}
 
-		private const string NASA_DATA_FILE = @"C:\appdata\VoyagerDistance.txt"; // zantei
+		private static readonly string NASA_DATA_FILE = string.Format(@"C:\tmp\VoyagerDistance_{0}.txt", ProcMain.APP_IDENT);
 
 		private void SaveToFile()
 		{
