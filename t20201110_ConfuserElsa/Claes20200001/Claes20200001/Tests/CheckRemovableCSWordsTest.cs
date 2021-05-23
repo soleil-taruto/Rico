@@ -60,21 +60,28 @@ namespace Charlotte.Tests
 			//TryBuild_Main("e20201109_YokoActTK_Demo");
 			//TryBuild_Main("e20201115_Dungeon");
 
-			TryBuild_Main("e20201210_YokoActTM_Demo2");
-			TryBuild_Main("e20201211_Hakonoko");
-			TryBuild_Main("e20201220_DoremyRockman");
-			TryBuild_Main("e20201224_Udongedon");
-			TryBuild_Main("e20201241_NovelAdv_Base2");
-			TryBuild_Main("e20210101_YokoShoot_Demo2");
-			TryBuild_Main("e20210102_TopViewAct_Demo2");
-			TryBuild_Main("e20210103_YokoActTK_Demo2");
+			//TryBuild_Main("e20201210_YokoActTM_Demo2");
+			//TryBuild_Main("e20201211_Hakonoko");
+			//TryBuild_Main("e20201220_DoremyRockman");
+			//TryBuild_Main("e20201224_Udongedon");
+			//TryBuild_Main("e20201241_NovelAdv_Base2");
+			//TryBuild_Main("e20210101_YokoShoot_Demo2");
+			//TryBuild_Main("e20210102_TopViewAct_Demo2");
+			//TryBuild_Main("e20210103_YokoActTK_Demo2");
+
+			TryBuild_Main("e20210601_DoremyRockman");
+			TryBuild_Main("e20210611_SSAGame");
+			TryBuild_Main("e20210621_MSSAGame");
+			TryBuild_Main("e20210631_ShootGame");
+			TryBuild_Main("e20210641_TVAGame");
+			TryBuild_Main("e20210651_TSS");
 
 			// --
 		}
 
 		private void TryBuild_Main(string projectName)
 		{
-			ElsaConfuser.Perform(@"C:\Dev\Elsa\" + projectName + @"\Elsa20200001\Elsa20200001.sln", @"C:\temp");
+			ElsaConfuser.Perform(@"C:\Dev\Elsa3\" + projectName + @"\Elsa20200001\Elsa20200001.sln", @"C:\temp");
 		}
 	}
 }
