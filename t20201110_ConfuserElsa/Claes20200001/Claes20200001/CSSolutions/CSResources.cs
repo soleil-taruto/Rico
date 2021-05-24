@@ -131,7 +131,7 @@ RemoveFontResourceEx
 ; 名前空間 / クラス名 / 型名 / メンバー名
 ; ====
 
-Abs
+ASCII
 AccessControlType
 Action
 Add
@@ -148,15 +148,15 @@ Append
 Application
 ArgumentException
 Array
-ASCII
 Assembly
 AutoScaleDimensions
 AutoScaleMode
 AutoSize
 Begin
 BeginInvoke
-Checked
 CheckState
+Checked
+CheckedChanged
 Clear
 Click
 ClientSize
@@ -173,7 +173,6 @@ ContainsKey
 Controls
 Convert
 CopyTo
-Cos
 Count
 Create
 Current
@@ -191,6 +190,7 @@ EnableVisualStyles
 Encoding
 EndsWith
 Enqueue
+Enter
 Enum
 Enumerable
 Environment
@@ -209,18 +209,18 @@ FirstOrDefault
 Flags
 Font
 Form
-Format
-FormattingEnabled
 FormClosed
 FormClosedEventArgs
 FormClosing
 FormClosingEventArgs
+FormattingEnabled
 Free
 FullControl
 Func
 GC
 GCHandle
 GCHandleType
+GZipStream
 GetByteCount
 GetBytes
 GetCommandLineArgs
@@ -230,28 +230,25 @@ GetEnumerator
 GetEnvironmentVariable
 GetHashCode
 GetObject
-GetRange
 GetString
 GetValues
 Guid
-GZipStream
 Handle
-Icon
-Id
+HashSet
 IDisposable
 IEnumerable
 IEnumerator
 IEqualityComparer
+IList
+Icon
+Id
 IndexOf
-Insert
 IntPtr
 IsNaN
-IsNullOrEmpty
 Items
-Join
 Key
-Keys
 KeyValuePair
+Keys
 LayoutKind
 Length
 LinkDemand
@@ -260,10 +257,9 @@ Load
 Location
 Main
 Margin
-Max
 MaxDropDownItems
-MaximizeBox
 MaxValue
+MaximizeBox
 MemoryStream
 Message
 MessageBox
@@ -271,7 +267,6 @@ MessageBoxButtons
 MessageBoxIcon
 MethodInvoker
 Microsoft
-Min
 MinimizeBox
 MinimumSize
 MoveNext
@@ -282,19 +277,18 @@ MutexRights
 MutexSecurity
 Name
 NewGuid
-NotImplementedException
 Now
 OK
 Open
 Parse
 Path
 PerformLayout
-PI
 Pinned
 Position
 Predicate
 Process
 Queue
+RNGCryptoServiceProvider
 RandomNumberGenerator
 Read
 ReleaseMutex
@@ -302,8 +296,10 @@ RemoveAll
 RemoveAt
 Replace
 ResumeLayout
-RNGCryptoServiceProvider
+Reverse
 Run
+SHA512
+STAThread
 SearchOption
 SecurityAction
 SecurityIdentifier
@@ -313,26 +309,22 @@ Seek
 SeekOrigin
 Select
 SelectedIndex
+SelectedIndexChanged
 Sequential
 SessionEnding
 SessionEndingEventArgs
 SessionEndingEventHandler
 SetCompatibleTextRenderingDefault
-SHA512
 Show
 ShowInTaskbar
 Shown
-Sin
 Size
 SizeGripStyle
 Skip
-Sort
 Split
-Sqrt
 Start
 StartPosition
 StartsWith
-STAThread
 Stream
 StreamReader
 StreamWriter
@@ -345,7 +337,6 @@ SystemEvents
 TabIndex
 TabStop
 Take
-Tan
 Text
 Thread
 ThreadException
@@ -355,27 +346,27 @@ ToArray
 ToInt64
 ToList
 ToLower
-TopMost
 ToString
 ToUpper
+TopMost
 Trim
 UInt16
 UInt64
+UTF8
 UnhandledException
 UnhandledExceptionEventArgs
 UnhandledExceptionEventHandler
 UnmanagedCode
 UseVisualStyleBackColor
-UTF8
 Value
 Visible
+WParam
 WaitOne
 WellKnownSidType
 Where
 Win32
 WndProc
 WorldSid
-WParam
 Write
 WriteByte
 WriteLine
@@ -383,13 +374,7 @@ Zero
 
 ; ★★★ 追加 ★★★
 
-HashSet
-Distinct
-Enter
-CheckedChanged
-SelectedIndexChanged
-Reverse
-IList
+; ここへ追加する。
 
 
 ; ====
