@@ -131,7 +131,6 @@ RemoveFontResourceEx
 ; 名前空間 / クラス名 / 型名 / メンバー名
 ; ====
 
-ASCII
 AccessControlType
 Action
 Add
@@ -224,7 +223,6 @@ GZipStream
 GetByteCount
 GetBytes
 GetCommandLineArgs
-GetEncoding
 GetEntryAssembly
 GetEnumerator
 GetEnvironmentVariable
@@ -352,7 +350,6 @@ TopMost
 Trim
 UInt16
 UInt64
-UTF8
 UnhandledException
 UnhandledExceptionEventArgs
 UnhandledExceptionEventHandler
@@ -419,6 +416,7 @@ Console
 Regex
 string
 Math
+Encoding
 
 ";
 
