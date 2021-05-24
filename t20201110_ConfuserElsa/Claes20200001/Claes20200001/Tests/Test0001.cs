@@ -42,12 +42,12 @@ namespace Charlotte.Tests
 
 			// ここまでリタイア
 
-			ElsaConfuser.Perform(@"C:\Dev\Elsa3\e20210601_DoremyRockman\Elsa20200001\Elsa20200001.sln", @"C:\temp");
+			//ElsaConfuser.Perform(@"C:\Dev\Elsa3\e20210601_DoremyRockman\Elsa20200001\Elsa20200001.sln", @"C:\temp");
 			//ElsaConfuser.Perform(@"C:\Dev\Elsa3\e20210611_SSAGame\Elsa20200001\Elsa20200001.sln", @"C:\temp");
 			//ElsaConfuser.Perform(@"C:\Dev\Elsa3\e20210621_MSSAGame\Elsa20200001\Elsa20200001.sln", @"C:\temp");
 			//ElsaConfuser.Perform(@"C:\Dev\Elsa3\e20210631_ShootGame\Elsa20200001\Elsa20200001.sln", @"C:\temp");
 			//ElsaConfuser.Perform(@"C:\Dev\Elsa3\e20210641_TVAGame\Elsa20200001\Elsa20200001.sln", @"C:\temp");
-			//ElsaConfuser.Perform(@"C:\Dev\Elsa3\e20210651_TSS\Elsa20200001\Elsa20200001.sln", @"C:\temp");
+			ElsaConfuser.Perform(@"C:\Dev\Elsa3\e20210651_TSS\Elsa20200001\Elsa20200001.sln", @"C:\temp");
 
 			// --
 		}
