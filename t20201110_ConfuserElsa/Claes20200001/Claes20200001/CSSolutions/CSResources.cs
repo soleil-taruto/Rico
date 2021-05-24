@@ -387,6 +387,9 @@ Charlotte
 ; デザイナで自動生成されるメソッド
 ;InitializeComponent
 
+; 何処にも無い場合もあるけど使うこともあるやつ
+NotImplementedException
+
 ";
 
 		#endregion
