@@ -40,14 +40,15 @@ namespace Charlotte.Tests
 			//ElsaConfuser.Perform(@"C:\Dev\Elsa\e20201212_DoremyRockman_old\Elsa20200001\Elsa20200001.sln", @"C:\temp");
 			//ElsaConfuser.Perform(@"C:\Dev\Elsa2\e20201301_NovelAdv_Base\Elsa20200001\Elsa20200001.sln", @"C:\temp");
 
-			// ここまでリタイア
+			// ここまでリタイアしたプロジェクト
 
+			ElsaConfuser.Perform(@"C:\Dev\Elsa3\e20210501_Hakonoko\Elsa20200001\Elsa20200001.sln", @"C:\temp");
 			//ElsaConfuser.Perform(@"C:\Dev\Elsa3\e20210601_DoremyRockman\Elsa20200001\Elsa20200001.sln", @"C:\temp");
 			//ElsaConfuser.Perform(@"C:\Dev\Elsa3\e20210611_SSAGame\Elsa20200001\Elsa20200001.sln", @"C:\temp");
 			//ElsaConfuser.Perform(@"C:\Dev\Elsa3\e20210621_MSSAGame\Elsa20200001\Elsa20200001.sln", @"C:\temp");
 			//ElsaConfuser.Perform(@"C:\Dev\Elsa3\e20210631_ShootGame\Elsa20200001\Elsa20200001.sln", @"C:\temp");
 			//ElsaConfuser.Perform(@"C:\Dev\Elsa3\e20210641_TVAGame\Elsa20200001\Elsa20200001.sln", @"C:\temp");
-			ElsaConfuser.Perform(@"C:\Dev\Elsa3\e20210651_TSS\Elsa20200001\Elsa20200001.sln", @"C:\temp");
+			//ElsaConfuser.Perform(@"C:\Dev\Elsa3\e20210651_TSS\Elsa20200001\Elsa20200001.sln", @"C:\temp");
 
 			// --
 		}
