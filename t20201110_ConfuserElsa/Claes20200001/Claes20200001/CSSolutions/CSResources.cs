@@ -116,18 +116,6 @@ when
 
 
 ; ====
-; 外部シンボル名
-; 注意：これらをリネームしてもビルドは通る。実行時にエラーになる。
-; ====
-
-AddFontResourceEx
-ClientToScreen
-EnumWindows
-GetWindowText
-RemoveFontResourceEx
-
-
-; ====
 ; 名前空間 / クラス名 / 型名 / メンバー名
 ; ====
 
