@@ -130,7 +130,7 @@ namespace Charlotte
 					{
 						bool updated = fum.IsUpdated(rSubDir);
 
-						Console.WriteLine(wSubDir + " is" + (updated ? "" : " not") + " updated."); // cout
+						Console.WriteLine(rSubDir + " is" + (updated ? "" : " not") + " updated."); // cout
 
 						if (wSubDir == null)
 						{
@@ -153,11 +153,11 @@ namespace Charlotte
 
 				if (rFile == null)
 				{
-					if (SCommon.EqualsIgnoreCase(Path.GetFileName(rFile), Consts.GIT_ATTRIBUTES_LOCAL_FILE))
+					if (SCommon.EqualsIgnoreCase(Path.GetFileName(wFile), Consts.GIT_ATTRIBUTES_LOCAL_FILE))
 					{
 						// Skip
 					}
-					else if (SCommon.EqualsIgnoreCase(Path.GetFileName(rFile), Consts.LICENSE_LOCAL_FILE))
+					else if (SCommon.EqualsIgnoreCase(Path.GetFileName(wFile), Consts.LICENSE_LOCAL_FILE))
 					{
 						// Skip
 					}
