@@ -17,6 +17,8 @@ namespace Charlotte
 			}
 		}
 
+		private const char SAVE_DATA_DELIMITER = '\t'; // 区切り文字でパス名に無い文字として水平タブにした。
+
 		private class FolderInfo
 		{
 			public string Dir;
@@ -31,12 +33,12 @@ namespace Charlotte
 			{
 				this.Folders = File.ReadAllLines(SaveDataFile, Encoding.UTF8).Select(line =>
 				{
-					string[] tokens = line.Split('\t');
+					string[] tokens = line.Split(SAVE_DATA_DELIMITER);
 
 					return new FolderInfo
 					{
-						Dir = tokens[0],
-						Hash = tokens[1],
+						Dir = tokens[1],
+						Hash = tokens[0],
 					};
 				})
 				.ToList();
@@ -108,7 +110,7 @@ namespace Charlotte
 		{
 			if (this.Folders != null)
 			{
-				File.WriteAllLines(SaveDataFile, this.Folders.Select(folder => folder.Dir + "\t" + folder.Hash), Encoding.UTF8);
+				File.WriteAllLines(SaveDataFile, this.Folders.Select(folder => folder.Hash + SAVE_DATA_DELIMITER + folder.Dir), Encoding.UTF8);
 				this.Folders = null;
 			}
 		}
