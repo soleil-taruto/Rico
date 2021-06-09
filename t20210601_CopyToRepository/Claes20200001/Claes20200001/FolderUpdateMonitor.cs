@@ -76,26 +76,27 @@ namespace Charlotte
 		{
 			StringBuilder buff = new StringBuilder();
 
-			Action<string> a_addDir = dir =>
-			{
-				DirectoryInfo dirInfo = new DirectoryInfo(dir);
-
-				buff.Append(dir);
-				buff.Append('\t');
-				buff.Append(dirInfo.CreationTime);
-				buff.Append('\t');
-				buff.Append(dirInfo.LastWriteTime);
-				buff.Append('\r');
-				buff.Append('\n');
-			};
-
-			a_addDir(rootDir);
-
 			foreach (string dir in Directory.GetDirectories(rootDir, "*", SearchOption.AllDirectories).OrderBy(SCommon.Comp))
-				a_addDir(dir);
+			{
+				buff.Append('D');
+				buff.Append(dir);
+				buff.Append('*');
+			}
+
+			foreach (string file in Directory.GetFiles(rootDir, "*", SearchOption.AllDirectories).OrderBy(SCommon.Comp))
+			{
+				FileInfo fileInfo = new FileInfo(file);
+
+				buff.Append('F');
+				buff.Append(file);
+				buff.Append('*');
+				buff.Append(fileInfo.CreationTime);
+				buff.Append('*');
+				buff.Append(fileInfo.LastWriteTime);
+				buff.Append('*');
+			}
 
 			string str = buff.ToString();
-			if (rootDir.Contains("Doremy")) Console.WriteLine(str); // test test test test test
 			byte[] bStr = Encoding.UTF8.GetBytes(str);
 			byte[] bHash_512 = SCommon.GetSHA512(bStr);
 			byte[] bHash_128 = SCommon.GetSubBytes(bHash_512, 0, 16);
