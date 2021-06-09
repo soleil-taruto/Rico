@@ -12,15 +12,15 @@ namespace Charlotte.Tests
 		public void Test01()
 		{
 			Test01_a(@"C:\Factory", "Factory");
-			Test01_a(@"C:\Dev\Elsa2", "Elsa2");
-			Test01_a(@"C:\Dev\wb", "wb");
+			Test01_a(@"C:\Dev\Elsa3", "Elsa3");
+			Test01_a(@"C:\Dev\wb2", "wb2");
 		}
 
 		private void Test01_a(string rDir, string wLocalDir)
 		{
 			string wDir = Path.Combine(@"C:\temp\CopyToRepository_Test", wLocalDir);
 
-			SCommon.DeletePath(wDir);
+			//SCommon.DeletePath(wDir);
 			SCommon.CreateDir(wDir);
 
 			new Program().CopyToRepository(rDir, wDir);

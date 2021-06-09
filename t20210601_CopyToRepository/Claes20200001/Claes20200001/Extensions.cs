@@ -7,6 +7,11 @@ namespace Charlotte
 {
 	public static class Extensions
 	{
-		// none
+		public static IEnumerable<T> OrderBy<T>(this IEnumerable<T> src, Comparison<T> comp)
+		{
+			List<T> list = src.ToList();
+			list.Sort(comp);
+			return list;
+		}
 	}
 }

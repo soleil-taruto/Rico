@@ -57,7 +57,6 @@ namespace Charlotte
 			if (!this.IsRepository(wDir))
 				throw new Exception("wDir is not repository");
 
-			this.ClearRepository(wDir);
 			this.CopyToRepository(rDir, wDir);
 
 			Console.WriteLine("OK!"); // cout
@@ -83,38 +82,15 @@ namespace Charlotte
 				File.Exists(gitAttributesFile);
 		}
 
-		private void ClearRepository(string dir)
-		{
-			foreach (string subDir in Directory.GetDirectories(dir))
-			{
-				if (SCommon.EqualsIgnoreCase(Path.GetFileName(subDir), Consts.GIT_LOCAL_DIR))
-				{
-					// Skip
-				}
-				else
-				{
-					SCommon.DeletePath(subDir);
-				}
-			}
-			foreach (string file in Directory.GetFiles(dir))
-			{
-				if (SCommon.EqualsIgnoreCase(Path.GetFileName(file), Consts.GIT_ATTRIBUTES_LOCAL_FILE))
-				{
-					// Skip
-				}
-				else if (SCommon.EqualsIgnoreCase(Path.GetFileName(file), Consts.LICENSE_LOCAL_FILE))
-				{
-					// Skip
-				}
-				else
-				{
-					SCommon.DeletePath(file);
-				}
-			}
-		}
-
 		public void CopyToRepository(string rDir, string wDir)
 		{
+			string[] rSubDirs = Directory.GetDirectories(rDir);
+			string[] wSubDirs = Directory.GetDirectories(wDir);
+			string[] rFiles = Directory.GetFiles(rDir);
+			string[] wFiles = Directory.GetFiles(wDir);
+
+			Comparison<string> compLocalPath = (a, b) => SCommon.Comp(Path.GetFileName(a), Path.GetFileName(b));
+
 			Func<string, string, bool> accepter = (rPath, wPath) =>
 			{
 				string rLocalPath = Path.GetFileName(rPath);
@@ -129,20 +105,78 @@ namespace Charlotte
 
 				return
 					!SCommon.EqualsIgnoreCase(rExt, ".exe") &&
-					!SCommon.EqualsIgnoreCase(rExt, ".obj"); //&&
-				//!SCommon.EqualsIgnoreCase(rLocalPath, "desktop.ini"); // フォルダのアイコンを変更していることがある。
+					!SCommon.EqualsIgnoreCase(rExt, ".obj");
 			};
 
-			foreach (string rSubDir in Directory.GetDirectories(rDir))
+			using (FolderUpdateMonitor fum = new FolderUpdateMonitor())
 			{
-				SCommon.CopyDir(rSubDir, Path.Combine(wDir, Path.GetFileName(rSubDir)), accepter);
-			}
-			foreach (string rFile in Directory.GetFiles(rDir))
-			{
-				string wFile = Path.Combine(wDir, Path.GetFileName(rFile));
+				foreach (Common.PairInfo<string> pair in Common.Merge(rSubDirs, wSubDirs, compLocalPath))
+				{
+					string rSubDir = pair.A;
+					string wSubDir = pair.B;
 
-				if (accepter(rFile, wFile))
-					File.Copy(rFile, wFile);
+					if (rSubDir == null)
+					{
+						if (SCommon.EqualsIgnoreCase(Path.GetFileName(wSubDir), Consts.GIT_LOCAL_DIR))
+						{
+							// Skip
+						}
+						else
+						{
+							SCommon.DeletePath(wSubDir);
+						}
+					}
+					else
+					{
+						bool updated = fum.IsUpdated(rSubDir);
+
+						Console.WriteLine(wSubDir + " is" + (updated ? "" : " not") + " updated."); // cout
+
+						if (wSubDir == null)
+						{
+							wSubDir = Path.Combine(wDir, Path.GetFileName(rSubDir));
+							updated = true;
+						}
+						if (updated)
+						{
+							SCommon.DeletePath(wSubDir); // 大文字・小文字が変わっただけの場合を想定して、ここで削除する必要がある。
+							SCommon.CopyDir(rSubDir, wSubDir, accepter);
+						}
+					}
+				}
+			}
+
+			foreach (Common.PairInfo<string> pair in Common.Merge(rFiles, wFiles, compLocalPath))
+			{
+				string rFile = pair.A;
+				string wFile = pair.B;
+
+				if (rFile == null)
+				{
+					if (SCommon.EqualsIgnoreCase(Path.GetFileName(rFile), Consts.GIT_ATTRIBUTES_LOCAL_FILE))
+					{
+						// Skip
+					}
+					else if (SCommon.EqualsIgnoreCase(Path.GetFileName(rFile), Consts.LICENSE_LOCAL_FILE))
+					{
+						// Skip
+					}
+					else
+					{
+						SCommon.DeletePath(wFile);
+					}
+				}
+				else
+				{
+					if (wFile == null)
+						wFile = Path.Combine(wDir, Path.GetFileName(rFile));
+
+					if (accepter(rFile, wFile))
+					{
+						SCommon.DeletePath(wFile); // 大文字・小文字が変わっただけの場合を想定して、ここで削除する必要がある。
+						File.Copy(rFile, wFile);
+					}
+				}
 			}
 		}
 
