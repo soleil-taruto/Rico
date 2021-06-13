@@ -369,9 +369,14 @@ namespace Charlotte.CSSolutions
 					SAM_IsSpaceOrPunct(text[next - 1]) &&
 					SAM_IsSpaceOrPunct(text[next + targPtn.Length])
 					)
+				{
 					text = text.Substring(0, next) + destPtn + text.Substring(next + targPtn.Length);
-
-				index = next + destPtn.Length;
+					index = next + destPtn.Length;
+				}
+				else
+				{
+					index = next + targPtn.Length;
+				}
 			}
 			return text;
 		}
