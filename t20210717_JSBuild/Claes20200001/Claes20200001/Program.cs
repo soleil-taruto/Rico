@@ -48,7 +48,29 @@ namespace Charlotte
 
 		private void Main4(ArgsReader ar)
 		{
-			// TODO
+			Ground.I.ProjectDir = ar.NextArg();
+			Ground.I.ProjectDir = SCommon.MakeFullPath(Ground.I.ProjectDir);
+			Ground.I.SourceDir = Path.Combine(Ground.I.ProjectDir, "src");
+			Ground.I.DataDir = Path.Combine(Ground.I.ProjectDir, "dat");
+			Ground.I.OutputDir = Path.Combine(Ground.I.ProjectDir, "out");
+			Ground.I.TagsFile = Path.Combine(Ground.I.ProjectDir, "tags");
+
+			if (!Directory.Exists(Ground.I.ProjectDir))
+				throw new Exception("no ProjectDir: " + Ground.I.ProjectDir);
+
+			if (!Directory.Exists(Ground.I.SourceDir))
+				throw new Exception("no SourceDir: " + Ground.I.SourceDir);
+
+			if (!Directory.Exists(Ground.I.DataDir))
+				throw new Exception("no DataDir: " + Ground.I.DataDir);
+
+			SCommon.DeletePath(Ground.I.OutputDir);
+			SCommon.CreateDir(Ground.I.OutputDir);
+
+			SCommon.DeletePath(Ground.I.TagsFile);
+
+			ReadAllSourceFile();
+
 		}
 	}
 }
