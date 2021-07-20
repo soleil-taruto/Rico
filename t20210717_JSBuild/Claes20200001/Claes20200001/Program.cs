@@ -51,7 +51,7 @@ namespace Charlotte
 			Ground.I.ProjectDir = ar.NextArg();
 			Ground.I.ProjectDir = SCommon.MakeFullPath(Ground.I.ProjectDir);
 			Ground.I.SourceDir = Path.Combine(Ground.I.ProjectDir, "src");
-			Ground.I.DataDir = Path.Combine(Ground.I.ProjectDir, "dat");
+			Ground.I.DataDir = Path.Combine(Ground.I.ProjectDir, "dat\\b64");
 			Ground.I.OutputDir = Path.Combine(Ground.I.ProjectDir, "out");
 			Ground.I.TagsFile = Path.Combine(Ground.I.SourceDir, "tags");
 
@@ -90,6 +90,7 @@ namespace Charlotte
 				Ground.I.SourceLines.Add("\t\"" + relFile + "\": \"" + b64Data + "\",");
 			}
 			Ground.I.SourceLines.Add("};");
+			Ground.I.SourceLines.Add("");
 		}
 
 		private void ReadSourceFiles()

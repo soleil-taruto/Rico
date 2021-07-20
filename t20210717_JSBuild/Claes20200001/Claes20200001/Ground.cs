@@ -53,21 +53,8 @@ namespace Charlotte
 			}
 		}
 
-		public class DataFileInfo
-		{
-			public string FilePath;
-			public byte[] Data;
-
-			public DataFileInfo(string file, byte[] data)
-			{
-				this.FilePath = file;
-				this.Data = data;
-			}
-		}
-
 		public List<string> SourceLines = new List<string>();
 		public List<TagInfo> Tags = new List<TagInfo>();
 		public List<HtmlFileInfo> HtmlFiles = new List<HtmlFileInfo>();
-		public List<DataFileInfo> DataFiles = new List<DataFileInfo>();
 	}
 }
