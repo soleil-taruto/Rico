@@ -78,7 +78,7 @@ namespace Charlotte
 
 		private void ReadDataFiles()
 		{
-			Ground.I.SourceLines.Add("var Resource = [");
+			Ground.I.SourceLines.Add("var Resource = {");
 
 			foreach (string file in Directory.GetFiles(Ground.I.DataDir, "*", SearchOption.AllDirectories).OrderBy(SCommon.Comp))
 			{
@@ -87,9 +87,9 @@ namespace Charlotte
 				byte[] data = File.ReadAllBytes(file);
 				string b64Data = SCommon.Base64.I.Encode(data);
 
-				Ground.I.SourceLines.Add("\t[ \"" + relFile + "\", \"" + b64Data + "\" ],");
+				Ground.I.SourceLines.Add("\t\"" + relFile + "\": \"" + b64Data + "\",");
 			}
-			Ground.I.SourceLines.Add("];");
+			Ground.I.SourceLines.Add("};");
 		}
 
 		private void ReadSourceFiles()
