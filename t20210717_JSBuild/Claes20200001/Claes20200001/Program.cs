@@ -69,10 +69,27 @@ namespace Charlotte
 
 			SCommon.DeletePath(Ground.I.TagsFile);
 
+			ReadDataFiles();
 			ReadSourceFiles();
 			検査と整形();
 			WriteTagsFile();
 			WriteHtmlFiles();
+		}
+
+		private void ReadDataFiles()
+		{
+			Ground.I.SourceLines.Add("var Resource = [");
+
+			foreach (string file in Directory.GetFiles(Ground.I.DataDir, "*", SearchOption.AllDirectories).OrderBy(SCommon.Comp))
+			{
+				string relFile = SCommon.ChangeRoot(file, Ground.I.DataDir);
+				relFile = relFile.Replace('\\', '/');
+				byte[] data = File.ReadAllBytes(file);
+				string b64Data = SCommon.Base64.I.Encode(data);
+
+				Ground.I.SourceLines.Add("\t[ \"" + relFile + "\", \"" + b64Data + "\" ],");
+			}
+			Ground.I.SourceLines.Add("];");
 		}
 
 		private void ReadSourceFiles()

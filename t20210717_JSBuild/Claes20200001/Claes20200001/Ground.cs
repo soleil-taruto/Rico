@@ -18,18 +18,6 @@ namespace Charlotte
 		public string OutputDir;
 		public string TagsFile;
 
-		public class HtmlFileInfo
-		{
-			public string FilePath;
-			public string Text;
-
-			public HtmlFileInfo(string file, string text)
-			{
-				this.FilePath = file;
-				this.Text = text;
-			}
-		}
-
 		public enum 識別子タイプ_e
 		{
 			名前空間 = 1,
@@ -53,8 +41,33 @@ namespace Charlotte
 			}
 		}
 
+		public class HtmlFileInfo
+		{
+			public string FilePath;
+			public string Text;
+
+			public HtmlFileInfo(string file, string text)
+			{
+				this.FilePath = file;
+				this.Text = text;
+			}
+		}
+
+		public class DataFileInfo
+		{
+			public string FilePath;
+			public byte[] Data;
+
+			public DataFileInfo(string file, byte[] data)
+			{
+				this.FilePath = file;
+				this.Data = data;
+			}
+		}
+
 		public List<string> SourceLines = new List<string>();
 		public List<TagInfo> Tags = new List<TagInfo>();
 		public List<HtmlFileInfo> HtmlFiles = new List<HtmlFileInfo>();
+		public List<DataFileInfo> DataFiles = new List<DataFileInfo>();
 	}
 }
