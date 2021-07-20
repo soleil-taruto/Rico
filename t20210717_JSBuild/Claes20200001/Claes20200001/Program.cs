@@ -53,7 +53,7 @@ namespace Charlotte
 			Ground.I.SourceDir = Path.Combine(Ground.I.ProjectDir, "src");
 			Ground.I.DataDir = Path.Combine(Ground.I.ProjectDir, "dat");
 			Ground.I.OutputDir = Path.Combine(Ground.I.ProjectDir, "out");
-			Ground.I.TagsFile = Path.Combine(Ground.I.ProjectDir, "tags");
+			Ground.I.TagsFile = Path.Combine(Ground.I.SourceDir, "tags");
 
 			if (!Directory.Exists(Ground.I.ProjectDir))
 				throw new Exception("no ProjectDir: " + Ground.I.ProjectDir);
@@ -70,14 +70,14 @@ namespace Charlotte
 			SCommon.DeletePath(Ground.I.TagsFile);
 
 			ReadSourceFiles();
-			CheckSyntax();
+			検査と整形();
 			WriteTagsFile();
 			WriteHtmlFiles();
 		}
 
 		private void ReadSourceFiles()
 		{
-			foreach (string file in Directory.GetFiles(Ground.I.SourceDir, "*.js", SearchOption.AllDirectories))
+			foreach (string file in Directory.GetFiles(Ground.I.SourceDir, "*.js", SearchOption.AllDirectories).OrderBy(SCommon.Comp))
 			{
 				string nameOfSpace = Path.GetFileNameWithoutExtension(file);
 				string[] lines = File.ReadAllLines(file, SCommon.ENCODING_SJIS);
@@ -112,7 +112,7 @@ namespace Charlotte
 					}
 				}
 			}
-			foreach (string file in Directory.GetFiles(Ground.I.SourceDir, "*.html", SearchOption.AllDirectories))
+			foreach (string file in Directory.GetFiles(Ground.I.SourceDir, "*.html", SearchOption.AllDirectories).OrderBy(SCommon.Comp))
 			{
 				string text = File.ReadAllText(file, Encoding.UTF8);
 
@@ -120,19 +120,77 @@ namespace Charlotte
 			}
 		}
 
-		private void CheckSyntax()
+		private void 検査と整形()
 		{
-			throw new NotImplementedException();
+			Ground.I.Tags.Sort((a, b) =>
+			{
+				int ret = SCommon.Comp(a.識別子名, b.識別子名);
+
+				if (ret != 0)
+					return ret;
+
+				ret = (int)a.識別子タイプ - (int)b.識別子タイプ;
+				return ret;
+			});
+
+			for (int index = 1; index < Ground.I.Tags.Count; index++)
+			{
+				Ground.TagInfo tag1 = Ground.I.Tags[index - 1];
+				Ground.TagInfo tag2 = Ground.I.Tags[index - 0];
+
+				if (tag1.識別子名 == tag2.識別子名)
+				{
+					throw new Exception("同じ識別子があります。" + tag1.識別子名);
+				}
+			}
+
+			Ground.I.HtmlFiles.Sort((a, b) =>
+			{
+				int ret = SCommon.CompIgnoreCase(Path.GetFileName(a.FilePath), Path.GetFileName(b.FilePath));
+
+				if (ret != 0)
+					return ret;
+
+				ret = SCommon.Comp(a.FilePath, b.FilePath);
+				return ret;
+			});
+
+			for (int index = 1; index < Ground.I.HtmlFiles.Count; index++)
+			{
+				Ground.HtmlFileInfo hf1 = Ground.I.HtmlFiles[index - 1];
+				Ground.HtmlFileInfo hf2 = Ground.I.HtmlFiles[index - 0];
+
+				if (SCommon.EqualsIgnoreCase(Path.GetFileName(hf1.FilePath), Path.GetFileName(hf2.FilePath)))
+				{
+					throw new Exception("同じファイル名があります。" + Path.GetFileName(hf1.FilePath));
+				}
+			}
 		}
 
 		private void WriteTagsFile()
 		{
-			throw new NotImplementedException();
+			File.WriteAllLines(Ground.I.TagsFile, E_GetTagLines(), SCommon.ENCODING_SJIS);
+		}
+
+		private IEnumerable<string> E_GetTagLines()
+		{
+			foreach (Ground.TagInfo tag in Ground.I.Tags)
+			{
+				yield return tag.FilePath + "(" + tag.LineNo + ") : " + tag.識別子名 + " // " + tag.識別子タイプ;
+			}
 		}
 
 		private void WriteHtmlFiles()
 		{
-			throw new NotImplementedException();
+			foreach (Ground.HtmlFileInfo hf in Ground.I.HtmlFiles)
+			{
+				string file = Path.Combine(Ground.I.OutputDir, Path.GetFileName(hf.FilePath));
+				string text = hf.Text;
+
+				text = text.Replace("${Source}", SCommon.LinesToText(Ground.I.SourceLines.ToArray()));
+
+				File.WriteAllText(file, text, Encoding.UTF8);
+			}
 		}
 	}
 }
