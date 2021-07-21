@@ -539,9 +539,9 @@ namespace Charlotte.Commons
 		/// </summary>
 		/// <param name="lines">行リスト</param>
 		/// <returns>テキスト</returns>
-		public static string LinesToText(string[] lines)
+		public static string LinesToText(IList<string> lines)
 		{
-			return lines.Length == 0 ? "" : string.Join("\r\n", lines) + "\r\n";
+			return lines.Count == 0 ? "" : string.Join("\r\n", lines) + "\r\n";
 		}
 
 		/// <summary>

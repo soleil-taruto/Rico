@@ -51,7 +51,7 @@ namespace Charlotte
 			Ground.I.ProjectDir = ar.NextArg();
 			Ground.I.ProjectDir = SCommon.MakeFullPath(Ground.I.ProjectDir);
 			Ground.I.SourceDir = Path.Combine(Ground.I.ProjectDir, "src");
-			Ground.I.DataDir = Path.Combine(Ground.I.ProjectDir, "dat\\b64");
+			Ground.I.DataDir = Path.Combine(Ground.I.ProjectDir, "dat\\emb");
 			Ground.I.OutputDir = Path.Combine(Ground.I.ProjectDir, "out");
 			Ground.I.TagsFile = Path.Combine(Ground.I.SourceDir, "tags");
 
@@ -69,28 +69,11 @@ namespace Charlotte
 
 			SCommon.DeletePath(Ground.I.TagsFile);
 
-			ReadDataFiles();
 			ReadSourceFiles();
+			ReadDataFiles();
 			検査と整形();
 			WriteTagsFile();
 			WriteHtmlFiles();
-		}
-
-		private void ReadDataFiles()
-		{
-			Ground.I.SourceLines.Add("var Resource = {");
-
-			foreach (string file in Directory.GetFiles(Ground.I.DataDir, "*", SearchOption.AllDirectories).OrderBy(SCommon.Comp))
-			{
-				string relFile = SCommon.ChangeRoot(file, Ground.I.DataDir);
-				relFile = relFile.Replace('\\', '/');
-				byte[] data = File.ReadAllBytes(file);
-				string b64Data = SCommon.Base64.I.Encode(data);
-
-				Ground.I.SourceLines.Add("\t\"" + relFile + "\": \"" + b64Data + "\",");
-			}
-			Ground.I.SourceLines.Add("};");
-			Ground.I.SourceLines.Add("");
 		}
 
 		private void ReadSourceFiles()
@@ -112,11 +95,12 @@ namespace Charlotte
 
 					string tLine = line;
 					tLine = tLine.Replace('\t', ' ');
-					tLine = tLine.Replace('　', ' ');
+					//tLine = tLine.Replace('　', ' '); // 全角はケアしない。
 					for (int c = 0; c < 20; c++) tLine = tLine.Replace("  ", " ");
+					tLine = tLine.Replace("*", ""); // function* --> function
 					tLine = tLine.Trim();
 
-					if (Regex.IsMatch(tLine, "^var [^ ]+ ?;.*$")) // ? 広域変数宣言
+					if (Regex.IsMatch(tLine, "^var [^ ]+ ?[;=].*$")) // ? 広域変数宣言
 					{
 						string varName = tLine.Substring(4).Split(';')[0].Trim();
 
@@ -136,6 +120,22 @@ namespace Charlotte
 
 				Ground.I.HtmlFiles.Add(new Ground.HtmlFileInfo(file, text));
 			}
+		}
+
+		private void ReadDataFiles()
+		{
+			Ground.I.SourceLines.Add("var Resource = {");
+
+			foreach (string file in Directory.GetFiles(Ground.I.DataDir, "*", SearchOption.AllDirectories).OrderBy(SCommon.Comp))
+			{
+				string relFile = SCommon.ChangeRoot(file, Ground.I.DataDir);
+				relFile = relFile.Replace('\\', '/');
+				byte[] data = File.ReadAllBytes(file);
+				string b64Data = SCommon.Base64.I.Encode(data);
+
+				Ground.I.SourceLines.Add("\t\"" + relFile + "\": \"" + b64Data + "\",");
+			}
+			Ground.I.SourceLines.Add("};");
 		}
 
 		private void 検査と整形()
@@ -205,7 +205,7 @@ namespace Charlotte
 				string file = Path.Combine(Ground.I.OutputDir, Path.GetFileName(hf.FilePath));
 				string text = hf.Text;
 
-				text = text.Replace("${Source}", SCommon.LinesToText(Ground.I.SourceLines.ToArray()));
+				text = text.Replace("${Source}", SCommon.LinesToText(Ground.I.SourceLines));
 
 				File.WriteAllText(file, text, Encoding.UTF8);
 			}
