@@ -14,7 +14,6 @@ namespace Charlotte
 
 		public string ProjectDir;
 		public string SourceDir;
-		public string DataDir;
 		public string OutputDir;
 		public string TagsFile;
 

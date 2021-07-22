@@ -36,7 +36,8 @@ namespace Charlotte
 		{
 			// -- choose one --
 
-			Main4(ProcMain.ArgsReader);
+			//Main4(ProcMain.ArgsReader);
+			Main4(new ArgsReader(new string[] { "/E", @"C:\Dev\Gattonero\t20210717_Tests" }));
 			//new Test0001().Test01();
 			//new Test0002().Test01();
 			//new Test0003().Test01();
@@ -48,10 +49,21 @@ namespace Charlotte
 
 		private void Main4(ArgsReader ar)
 		{
+			bool embedFlag = false;
+
+			do
+			{
+				if (ar.ArgIs("/E"))
+				{
+					embedFlag = true;
+					continue;
+				}
+			}
+			while (false); // 流れ落ちる。
+
 			Ground.I.ProjectDir = ar.NextArg();
 			Ground.I.ProjectDir = SCommon.MakeFullPath(Ground.I.ProjectDir);
 			Ground.I.SourceDir = Path.Combine(Ground.I.ProjectDir, "src");
-			Ground.I.DataDir = Path.Combine(Ground.I.ProjectDir, "dat\\emb");
 			Ground.I.OutputDir = Path.Combine(Ground.I.ProjectDir, "out");
 			Ground.I.TagsFile = Path.Combine(Ground.I.SourceDir, "tags");
 
@@ -61,17 +73,17 @@ namespace Charlotte
 			if (!Directory.Exists(Ground.I.SourceDir))
 				throw new Exception("no SourceDir: " + Ground.I.SourceDir);
 
-			if (!Directory.Exists(Ground.I.DataDir))
-				throw new Exception("no DataDir: " + Ground.I.DataDir);
-
 			SCommon.DeletePath(Ground.I.OutputDir);
 			SCommon.CreateDir(Ground.I.OutputDir);
 
 			SCommon.DeletePath(Ground.I.TagsFile);
 
 			ReadSourceFiles();
-			ReadDataFiles();
-			検査と整形();
+			SyntaxCheck();
+
+			if (embedFlag)
+				Embed();
+
 			WriteTagsFile();
 			WriteHtmlFiles();
 		}
@@ -122,23 +134,7 @@ namespace Charlotte
 			}
 		}
 
-		private void ReadDataFiles()
-		{
-			Ground.I.SourceLines.Add("var Resource = {");
-
-			foreach (string file in Directory.GetFiles(Ground.I.DataDir, "*", SearchOption.AllDirectories).OrderBy(SCommon.Comp))
-			{
-				string relFile = SCommon.ChangeRoot(file, Ground.I.DataDir);
-				relFile = relFile.Replace('\\', '/');
-				byte[] data = File.ReadAllBytes(file);
-				string b64Data = SCommon.Base64.I.Encode(data);
-
-				Ground.I.SourceLines.Add("\t\"" + relFile + "\": \"" + b64Data + "\",");
-			}
-			Ground.I.SourceLines.Add("};");
-		}
-
-		private void 検査と整形()
+		private void SyntaxCheck()
 		{
 			Ground.I.Tags.Sort((a, b) =>
 			{
@@ -182,6 +178,40 @@ namespace Charlotte
 				{
 					throw new Exception("同じファイル名があります。" + Path.GetFileName(hf1.FilePath));
 				}
+			}
+		}
+
+		private void Embed()
+		{
+			for (int index = 0; index < Ground.I.SourceLines.Count; index++)
+			{
+				string line = Ground.I.SourceLines[index];
+				string[] encl = Common.ParseEnclosed(line, "\"", "\"");
+
+				if (encl != null)
+				{
+					string href = encl[2];
+
+					if (Common.IsFairHrefRelPath(href))
+					{
+						string file = href;
+
+						file = file.Replace('/', '\\');
+						file = Common.MakeFullPathByBaseDir(file, Ground.I.OutputDir);
+
+						if (File.Exists(file))
+						{
+							string ext = Path.GetExtension(file);
+							string mediaType = Common.GetMediaTypeByExt(ext);
+							byte[] data = File.ReadAllBytes(file);
+							string b64Data = SCommon.Base64.I.Encode(data);
+
+							encl[2] = "data:" + mediaType + ";base64," + b64Data;
+						}
+					}
+					line = string.Join("", encl);
+				}
+				Ground.I.SourceLines[index] = line;
 			}
 		}
 
