@@ -122,7 +122,10 @@ namespace Charlotte
 		#region ToFairLocalPath
 
 		/// <summary>
-		/// https://github.com/soleil-taruto/Factory/blob/main/Common/DataConv.c#L460-L491
+		/// Windowsのローカル名に使用出来ない予約名のリストを返す。
+		/// 今では使用可能なものも含む。
+		/// 元にしたコード：
+		/// https://github.com/stackprobe/Factory/blob/master/Common/DataConv.c#L460-L491
 		/// </summary>
 		/// <returns>予約名リスト</returns>
 		private static IEnumerable<string> GetReservedWordsForWindowsPath()
@@ -148,7 +151,10 @@ namespace Charlotte
 		}
 
 		/// <summary>
-		/// https://github.com/soleil-taruto/Factory/blob/main/Common/DataConv.c#L503-L552
+		/// 歴としたローカル名に変換する。
+		/// 実際に使用可能なローカル名より基準が厳しい。
+		/// 元にしたコード：
+		/// https://github.com/stackprobe/Factory/blob/master/Common/DataConv.c#L503-L552
 		/// </summary>
 		/// <param name="str">対象文字列(対象パス)</param>
 		/// <param name="dirSize">対象パスが存在するディレクトリのフルパスの長さ、考慮しない場合は 0 を指定すること。</param>
