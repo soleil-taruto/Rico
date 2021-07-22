@@ -110,11 +110,11 @@ namespace Charlotte
 					//tLine = tLine.Replace('　', ' '); // 全角はケアしない。
 					for (int c = 0; c < 20; c++) tLine = tLine.Replace("  ", " ");
 					tLine = tLine.Replace("*", ""); // function* --> function
-					tLine = tLine.Trim();
+					//tLine = tLine.Trim(); // トリムしない！
 
 					if (Regex.IsMatch(tLine, "^var [^ ]+ ?[;=].*$")) // ? 広域変数宣言
 					{
-						string varName = tLine.Substring(4).Split(';')[0].Trim();
+						string varName = tLine.Substring(4).Split(';')[0].Split('=')[0].Trim();
 
 						Ground.I.Tags.Add(new Ground.TagInfo(file, index + 1, varName, Ground.識別子タイプ_e.変数));
 					}
