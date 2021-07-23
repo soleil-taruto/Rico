@@ -90,7 +90,7 @@ namespace Charlotte
 
 		private void ReadSourceFiles()
 		{
-			foreach (string file in Directory.GetFiles(Ground.I.SourceDir, "*.js", SearchOption.AllDirectories).OrderBy(SCommon.Comp))
+			foreach (string file in Directory.GetFiles(Ground.I.SourceDir, "*.js", SearchOption.AllDirectories).OrderBy(Common.CompPath))
 			{
 				string nameOfSpace = Path.GetFileNameWithoutExtension(file);
 				string[] lines = File.ReadAllLines(file, SCommon.ENCODING_SJIS);
@@ -126,7 +126,7 @@ namespace Charlotte
 					}
 				}
 			}
-			foreach (string file in Directory.GetFiles(Ground.I.SourceDir, "*.html", SearchOption.AllDirectories).OrderBy(SCommon.Comp))
+			foreach (string file in Directory.GetFiles(Ground.I.SourceDir, "*.html", SearchOption.AllDirectories).OrderBy(Common.CompPath))
 			{
 				string text = File.ReadAllText(file, Encoding.UTF8);
 
@@ -165,7 +165,7 @@ namespace Charlotte
 				if (ret != 0)
 					return ret;
 
-				ret = SCommon.Comp(a.FilePath, b.FilePath);
+				ret = Common.CompPath(a.FilePath, b.FilePath);
 				return ret;
 			});
 

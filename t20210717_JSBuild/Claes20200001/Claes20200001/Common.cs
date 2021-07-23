@@ -450,9 +450,30 @@ namespace Charlotte
 		{
 			string homeDir = Directory.GetCurrentDirectory();
 			Directory.SetCurrentDirectory(baseDir);
-			file = SCommon.MakeFullPath(file);
-			Directory.SetCurrentDirectory(homeDir);
+			try
+			{
+				file = SCommon.MakeFullPath(file);
+			}
+			finally
+			{
+				try
+				{
+					Directory.SetCurrentDirectory(homeDir);
+				}
+				catch (Exception e)
+				{
+					ProcMain.WriteLog(e);
+				}
+			}
 			return file;
+		}
+
+		public static int CompPath(string path1, string path2)
+		{
+			path1 = path1.Replace('\\', '\t');
+			path2 = path2.Replace('\\', '\t');
+
+			return SCommon.Comp(path1, path2);
 		}
 	}
 }
