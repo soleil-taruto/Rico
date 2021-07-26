@@ -37,7 +37,8 @@ namespace Charlotte
 			// -- choose one --
 
 			//Main4(ProcMain.ArgsReader);
-			Main4(new ArgsReader(new string[] { "/E", @"C:\Dev\Gattonero\t20210717_Tests" }));
+			Main4(new ArgsReader(new string[] { @"C:\Dev\Gattonero\t20210717_Tests" }));
+			//Main4(new ArgsReader(new string[] { "/E", @"C:\Dev\Gattonero\t20210717_Tests" }));
 			//new Test0001().Test01();
 			//new Test0002().Test01();
 			//new Test0003().Test01();
@@ -92,6 +93,12 @@ namespace Charlotte
 		{
 			foreach (string file in Directory.GetFiles(Ground.I.SourceDir, "*.js", SearchOption.AllDirectories).OrderBy(Common.CompPath))
 			{
+				Ground.I.SourceLines.Add("");
+				Ground.I.SourceLines.Add("//");
+				Ground.I.SourceLines.Add("// " + file);
+				Ground.I.SourceLines.Add("//");
+				Ground.I.SourceLines.Add("");
+
 				string nameOfSpace = Path.GetFileNameWithoutExtension(file);
 				string[] lines = File.ReadAllLines(file, SCommon.ENCODING_SJIS);
 
@@ -125,6 +132,12 @@ namespace Charlotte
 						Ground.I.Tags.Add(new Ground.TagInfo(file, index + 1, funcName, Ground.識別子タイプ_e.関数));
 					}
 				}
+
+				Ground.I.SourceLines.Add("");
+				Ground.I.SourceLines.Add("//");
+				Ground.I.SourceLines.Add("// " + file + " </>");
+				Ground.I.SourceLines.Add("//");
+				Ground.I.SourceLines.Add("");
 			}
 			foreach (string file in Directory.GetFiles(Ground.I.SourceDir, "*.html", SearchOption.AllDirectories).OrderBy(Common.CompPath))
 			{
