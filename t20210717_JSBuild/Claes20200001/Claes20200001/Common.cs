@@ -468,10 +468,28 @@ namespace Charlotte
 			return file;
 		}
 
+		private static string ConvPathForCompPath(string path)
+		{
+			string[] ptkns = path.Split('\\');
+
+			for (int index = 0; index < ptkns.Length; index++)
+			{
+				string prefix;
+
+				if (index + 1 < path.Length) // ? ディレクトリ
+					prefix = "D:";
+				else // ? ファイル
+					prefix = "F:";
+
+				ptkns[index] = prefix + ptkns[index];
+			}
+			return string.Join("\\", ptkns);
+		}
+
 		public static int CompPath(string path1, string path2)
 		{
-			path1 = path1.Replace('\\', '\t');
-			path2 = path2.Replace('\\', '\t');
+			path1 = ConvPathForCompPath(path1);
+			path2 = ConvPathForCompPath(path2);
 
 			return SCommon.Comp(path1, path2);
 		}
