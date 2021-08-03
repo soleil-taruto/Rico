@@ -477,13 +477,16 @@ namespace Charlotte
 				string prefix;
 
 				if (index + 1 < path.Length) // ? ディレクトリ
-					prefix = "D:";
+					prefix = "1";
 				else // ? ファイル
-					prefix = "F:";
+					prefix = "2";
 
 				ptkns[index] = prefix + ptkns[index];
 			}
-			return string.Join("\\", ptkns);
+			path = string.Join("\t", ptkns);
+			path = path.Replace('.', '\n');
+			path = path.ToLower();
+			return path;
 		}
 
 		public static int CompPath(string path1, string path2)
