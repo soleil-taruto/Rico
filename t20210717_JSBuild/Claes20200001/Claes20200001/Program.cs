@@ -127,9 +127,16 @@ namespace Charlotte
 					}
 					if (Regex.IsMatch(tLine, "^function [^ ]+ ?\\(.*$")) // ? 広域関数宣言
 					{
-						string funcName = tLine.Substring(9).Split('(')[0].Trim();
+						// 関数宣言の直前の行に "// overload" と記述すると、この関数をオーバーロードと見做し、無視する。
 
-						Ground.I.Tags.Add(new Ground.TagInfo(file, index + 1, funcName, Ground.識別子タイプ_e.関数));
+						bool overloadFlag = 1 <= index && lines[index - 1] == "// overload";
+
+						if (!overloadFlag)
+						{
+							string funcName = tLine.Substring(9).Split('(')[0].Trim();
+
+							Ground.I.Tags.Add(new Ground.TagInfo(file, index + 1, funcName, Ground.識別子タイプ_e.関数));
+						}
 					}
 				}
 
