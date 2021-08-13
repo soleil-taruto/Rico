@@ -101,12 +101,18 @@ namespace Charlotte
 
 				string nameOfSpace = Path.GetFileNameWithoutExtension(file);
 				string[] lines = File.ReadAllLines(file, SCommon.ENCODING_SJIS);
+				bool insideComment = false;
 
 				Ground.I.Tags.Add(new Ground.TagInfo(file, 1, nameOfSpace, Ground.識別子タイプ_e.名前空間));
 
 				for (int index = 0; index < lines.Length; index++)
 				{
 					string line = lines[index];
+
+					if (line == "/*")
+						insideComment = true;
+					else if (line == "*/")
+						insideComment = false;
 
 					line = line.Replace("@@", nameOfSpace);
 
@@ -119,13 +125,13 @@ namespace Charlotte
 					tLine = tLine.Replace("*", ""); // function* --> function
 					//tLine = tLine.Trim(); // トリムしない！
 
-					if (Regex.IsMatch(tLine, "^var [^ ]+ ?[;=].*$")) // ? 広域変数宣言
+					if (!insideComment && Regex.IsMatch(tLine, "^var [^ ]+ ?[;=].*$")) // ? 広域変数宣言
 					{
 						string varName = tLine.Substring(4).Split(';')[0].Split('=')[0].Trim();
 
 						Ground.I.Tags.Add(new Ground.TagInfo(file, index + 1, varName, Ground.識別子タイプ_e.変数));
 					}
-					if (Regex.IsMatch(tLine, "^function [^ ]+ ?\\(.*$")) // ? 広域関数宣言
+					if (!insideComment && Regex.IsMatch(tLine, "^function [^ ]+ ?\\(.*$")) // ? 広域関数宣言
 					{
 						string funcName = tLine.Substring(9).Split('(')[0].Trim();
 
