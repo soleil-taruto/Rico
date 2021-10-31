@@ -680,7 +680,13 @@ namespace Charlotte.CSSolutions
 								case 't': chr = '\t'; break;
 								case 'r': chr = '\r'; break;
 								case 'n': chr = '\n'; break;
-								case 'u': throw null; // 想定外？？？
+								case 'u':
+									chr = (char)0;
+									HexToChar(ref chr, chrs[++index]);
+									HexToChar(ref chr, chrs[++index]);
+									HexToChar(ref chr, chrs[++index]);
+									HexToChar(ref chr, chrs[++index]);
+									break;
 								case '\\': break;
 
 								default:
@@ -698,6 +704,17 @@ namespace Charlotte.CSSolutions
 				}
 			}
 			File.WriteAllText(_file, dest.ToString(), Encoding.UTF8);
+		}
+
+		private void HexToChar(ref char dest, char chr)
+		{
+			int i = SCommon.hexadecimal.IndexOf(chr);
+
+			if (i == -1)
+				throw new Exception("not Hex");
+
+			dest <<= 4;
+			dest |= (char)i;
 		}
 
 		private void SolveLiteralStrings_02()
